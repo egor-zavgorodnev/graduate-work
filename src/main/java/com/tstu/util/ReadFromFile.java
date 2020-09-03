@@ -1,4 +1,4 @@
-package com.tstu.service;
+package com.tstu.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

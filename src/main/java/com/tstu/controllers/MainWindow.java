@@ -33,7 +33,7 @@ public class MainWindow {
     void openFileDialog(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
-        fileChooser.showOpenDialog(App.getCurrentStage());
+        fileChooser.showOpenDialog(App.getPrimaryStage());
     }
 
 }

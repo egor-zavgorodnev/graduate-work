@@ -1,7 +1,7 @@
 package com.tstu.controllers;
 
 import com.tstu.App;
-import com.tstu.service.ReadFromFile;
+import com.tstu.util.ReadFromFile;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;

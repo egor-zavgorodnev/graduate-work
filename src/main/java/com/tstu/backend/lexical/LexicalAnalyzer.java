@@ -49,7 +49,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     i++;
                 }
                 //TODO Method getKeyWord from doc
-                addKeyword(identifier.toString(), Lexems.Name);
+                addKeyword(identifier.toString(), Lexems.NAME);
                 continue;
             }
             //numbers
@@ -60,43 +60,45 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     i++;
                 }
                 //TODO Method getKeyWord from doc
-                addKeyword(number.toString(), Lexems.Number);
+                addKeyword(number.toString(), Lexems.NUMBER);
                 continue;
             }
             // >, >=
             if (symbols[i] == '>') {
                 if (symbols[i + 1] == '=') {
-                    addKeyword(twoSymbolWord, Lexems.MoreOrEqual);
+                    addKeyword(twoSymbolWord, Lexems.MOREOREQUAL);
                 } else {
-                    addKeyword(oneSymbolWord, Lexems.More);
+                    addKeyword(oneSymbolWord, Lexems.MORE);
                 }
                 continue;
             }
             // <, <=
             if (symbols[i] == '<') {
                 if (symbols[i + 1] == '=') {
-                    addKeyword(twoSymbolWord, Lexems.LessOrEqual);
+                    addKeyword(twoSymbolWord, Lexems.LESSOREQUAL);
                 } else {
-                    addKeyword(oneSymbolWord, Lexems.Less);
+                    addKeyword(oneSymbolWord, Lexems.LESS);
                 }
                 continue;
             }
-            if (symbols[i] == '+') {
-                addKeyword(oneSymbolWord, Lexems.Plus);
-                continue;
-            }
-            if (symbols[i] == '-') {
-                addKeyword(oneSymbolWord, Lexems.Minus);
-                continue;
-            }
-            if (symbols[i] == '*') {
-                addKeyword(oneSymbolWord, Lexems.Multiplication);
-                continue;
-            }
-            if (symbols[i] == '/') {
-                addKeyword(oneSymbolWord, Lexems.Division);
-                continue;
-            }
+//            if (symbols[i] == '+') {
+//                addKeyword(oneSymbolWord, Lexems.PLUS);
+//                continue;
+//            }
+//            if (symbols[i] == '-') {
+//                addKeyword(oneSymbolWord, Lexems.MINUS);
+//                continue;
+//            }
+//            if (symbols[i] == '*') {
+//                addKeyword(oneSymbolWord, Lexems.MULTIPLICATION);
+//                continue;
+//            }
+//            if (symbols[i] == '/') {
+//                addKeyword(oneSymbolWord, Lexems.DIVISION);
+//                continue;
+//            }
+
+            addKeyword(oneSymbolWord,Lexems.getLexema(String.valueOf(symbols[i])));
 
             throw new LexicalAnalyzeException("Недопустимый символ");
 

@@ -22,7 +22,6 @@ public class App extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-
         Parent root = FXMLLoader.load(getClass().getResource("fxml/MainWindow.fxml"));
         primaryStage.setTitle("Транслятор");
         primaryStage.setScene(new Scene(root));

@@ -39,10 +39,36 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
 
         for (int i = 0; i < symbols.length; i++) {
 
-            //spaces
-            if (symbols[i] == ' ') {
-                continue;
+            /* one symbol keywords */
+
+            String currentSymbol = String.valueOf(symbols[i]);
+            switch (symbols[i]) {
+                case ' ':
+                    continue;
+                case '+':
+                    addKeyword(currentSymbol, Lexems.PLUS);
+                    logger.info(symbols[i] + "(сложение)");
+                    continue;
+                case '-':
+                    addKeyword(currentSymbol, Lexems.MINUS);
+                    logger.info(symbols[i] + "(вычитание)");
+                    continue;
+                case '*':
+                    addKeyword(currentSymbol, Lexems.MULTIPLICATION);
+                    logger.info(symbols[i] + "(умножение)");
+                    continue;
+                case '/':
+                    addKeyword(currentSymbol, Lexems.DIVISION);
+                    logger.info(symbols[i] + "(деление)");
+                    continue;
+                case '\n':
+                    addKeyword(currentSymbol, Lexems.SPLITTER);
+                    logger.info("\\n" + "(перенос строки)");
+                    continue;
             }
+
+            /* two symbol keywords */
+
             // identifiers
             if (Character.isLetter(symbols[i])) {
                 StringBuilder identifier = new StringBuilder();
@@ -65,6 +91,24 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 }
                 addKeyword(number.toString(), Lexems.NUMBER);
                 logger.info(number.toString() + "(число)");
+                continue;
+            }
+            // =, ==
+            if (symbols[i] == '=') {
+                if (i == symbols.length - 1) {
+                    addKeyword(String.valueOf(symbols[i]), Lexems.ASSIGN);
+                    logger.info(symbols[i] + "(присваивание)");
+                    continue;
+                }
+                if (symbols[i + 1] == '=') {
+                    String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
+                    addKeyword(twoSymbolsWord, Lexems.EQUAL);
+                    logger.info(twoSymbolsWord + "(равенство)");
+                    i++;
+                } else {
+                    addKeyword(String.valueOf(symbols[i]), Lexems.ASSIGN);
+                    logger.info(symbols[i] + "(присваивание)");
+                }
                 continue;
             }
             // >, >=
@@ -102,27 +146,6 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 }
                 continue;
             }
-            if (symbols[i] == '+') {
-                addKeyword(String.valueOf(symbols[i]), Lexems.PLUS);
-                logger.info(symbols[i] + "(сложение)");
-                continue;
-            }
-            if (symbols[i] == '-') {
-                addKeyword(String.valueOf(symbols[i]), Lexems.MINUS);
-                logger.info(symbols[i] + "(вычитание)");
-                continue;
-            }
-            if (symbols[i] == '*') {
-                addKeyword(String.valueOf(symbols[i]), Lexems.MULTIPLICATION);
-                logger.info(symbols[i] + "(умножение)");
-                continue;
-            }
-            if (symbols[i] == '/') {
-                addKeyword(String.valueOf(symbols[i]), Lexems.DIVISION);
-                logger.info(symbols[i] + "(деление)");
-                continue;
-            }
-
 
             throw new LexicalAnalyzeException("Недопустимый символ");
 
@@ -133,7 +156,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
 
     public static void main(String[] args) throws LexicalAnalyzeException {
         ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-        lexicalAnalyzer.recognizeAllLexem("2+2+2+2");
+        lexicalAnalyzer.recognizeAllLexem(">=\n / + * == =");
     }
 
 }

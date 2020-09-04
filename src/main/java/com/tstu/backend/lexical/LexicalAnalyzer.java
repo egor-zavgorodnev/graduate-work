@@ -47,8 +47,8 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
             if (Character.isLetter(symbols[i])) {
                 StringBuilder identifier = new StringBuilder();
                 while (Character.isLetter(symbols[i])) {
-                    if (i == symbols.length - 1) break;
                     identifier.append(symbols[i]);
+                    if (i == symbols.length - 1) break;
                     i++;
                 }
                 addKeyword(identifier.toString(), getIdentifierLexem(identifier.toString()));
@@ -59,8 +59,8 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
             if (Character.isDigit(symbols[i])) {
                 StringBuilder number = new StringBuilder();
                 while (Character.isDigit(symbols[i])) {
-                    if (i == symbols.length - 1) break;
                     number.append(symbols[i]);
+                    if (i == symbols.length - 1) break;
                     i++;
                 }
                 addKeyword(number.toString(), Lexems.NUMBER);
@@ -72,10 +72,13 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 if (i == symbols.length - 1) {
                     addKeyword(String.valueOf(symbols[i]), Lexems.MORE);
                     logger.info(symbols[i] + "(больше)");
+                    continue;
                 }
                 if (symbols[i + 1] == '=') {
-                    addKeyword(String.valueOf(symbols[i] + symbols[i + 1]), Lexems.MOREOREQUAL);
-                    logger.info(symbols[i] + "(больше или равно)");
+                    String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
+                    addKeyword(twoSymbolsWord, Lexems.MOREOREQUAL);
+                    logger.info(twoSymbolsWord + "(больше или равно)");
+                    i++;
                 } else {
                     addKeyword(String.valueOf(symbols[i]), Lexems.MORE);
                     logger.info(symbols[i] + "(больше)");
@@ -89,8 +92,10 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     logger.info(symbols[i] + "(меньше)");
                 }
                 if (symbols[i + 1] == '=') {
-                    addKeyword(String.valueOf(symbols[i] + symbols[i + 1]), Lexems.LESSOREQUAL);
-                    logger.info(symbols[i] + "(меньше или равно)");
+                    String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
+                    addKeyword(twoSymbolsWord, Lexems.LESSOREQUAL);
+                    logger.info(twoSymbolsWord + "(меньше или равно)");
+                    i++;
                 } else {
                     addKeyword(String.valueOf(symbols[i]), Lexems.LESS);
                     logger.info(symbols[i] + "(меньше)");
@@ -118,7 +123,6 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 continue;
             }
 
-            //addKeyword(String.valueOf(symbols[i]), Lexems.getLexema(String.valueOf(symbols[i])));
 
             throw new LexicalAnalyzeException("Недопустимый символ");
 
@@ -129,7 +133,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
 
     public static void main(String[] args) throws LexicalAnalyzeException {
         ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-        lexicalAnalyzer.recognizeAllLexem("2 + 2");
+        lexicalAnalyzer.recognizeAllLexem("2+2+2+2");
     }
 
 }

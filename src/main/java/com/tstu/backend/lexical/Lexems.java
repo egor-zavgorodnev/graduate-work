@@ -2,26 +2,28 @@ package com.tstu.backend.lexical;
 
 public enum Lexems {
 
-    NAME, NUMBER, MULTIPLICATION("*"), DIVISION("/"), PLUS("+"),
-    MINUS("-"), EQUAL("=="), LESS("<"), LESSOREQUAL("<="), MORE(">"),
-    MOREOREQUAL(">="), ASSIGN("="),
-    EOF("EOF"), SPLITTER("\n");
+    NONE(' '), NAME, NUMBER, NOT('!'), AND('&'), OR('|'), XOR('^'), ASSIGN(":="),
+    SEMI(','), COLON(':'), SPLITTER('\n');
 
-    private String lexema;
+    private char value;
+    private String stringValue;
 
     Lexems() {
     }
 
-    Lexems(String lexema) {
-        this.lexema = lexema;
+    Lexems(String stringValue) {
+        this.stringValue = stringValue;
     }
 
-    public static Lexems getLexema(String string) throws LexicalAnalyzeException {
-        try {
-            return Lexems.valueOf(string);
-        } catch (Exception e) {
-            throw new LexicalAnalyzeException("Недопустимый символ");
-        }
+    Lexems(char value) {
+        this.value = value;
     }
 
+    public char getValue() {
+        return value;
+    }
+
+    public String getStringValue() {
+        return stringValue;
+    }
 }

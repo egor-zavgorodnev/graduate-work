@@ -1,4 +1,4 @@
-package com.tstu.backend.syntax;
+package com.tstu.backend.exceptions;
 
 public class SyntaxAnalyzeException extends Exception {
     public SyntaxAnalyzeException(String message) {

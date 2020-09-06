@@ -1,4 +1,4 @@
-package com.tstu.backend.lexical;
+package com.tstu.backend.model.enums;
 
 public enum Command {
     VAR("Var"), BEGIN("Begin"), END("End"), PRINT("Print");

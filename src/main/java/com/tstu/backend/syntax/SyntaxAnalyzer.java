@@ -3,7 +3,15 @@ package com.tstu.backend.syntax;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
+import com.tstu.backend.exceptions.SyntaxAnalyzeException;
 import com.tstu.backend.lexical.*;
+import com.tstu.backend.model.enums.Command;
+import com.tstu.backend.model.Keyword;
+import com.tstu.backend.model.enums.Lexems;
+import com.tstu.backend.exceptions.LexicalAnalyzeException;
+import com.tstu.backend.lexical.LexicalAnalyzer;
+import com.tstu.backend.model.enums.tCat;
+import com.tstu.backend.model.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +73,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void parseVarEnumeration(List<Keyword> varEnumeration) throws SyntaxAnalyzeException {
-        if (!nameTable.getIdentifier(varEnumeration.get(0).word).get().name.equals(Command.VAR.getName())) {
+        if (!nameTable.getIdentifier(varEnumeration.get(0).word).get().getName().equals(Command.VAR.getName())) {
             throw new SyntaxAnalyzeException("Ключевое слово Var не найдено");
         }
 
@@ -76,7 +84,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
             }
             switch (varEnumeration.get(i).lex) {
                 case NAME:
-                    if (nameTable.getIdentifier(varEnumeration.get(i).word).get().category != tCat.VAR) {
+                    if (nameTable.getIdentifier(varEnumeration.get(i).word).get().getCategory() != tCat.VAR) {
                         throw new SyntaxAnalyzeException("Ожидается переменная");
                     }
                     expected = Lexems.SEMI;
@@ -90,12 +98,12 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
     private void parseTypeDeclaration(List<Keyword> typeDeclaration) throws SyntaxAnalyzeException {
         Identifier dataTypeIdentifier = nameTable.getIdentifier(typeDeclaration.get(1).word).get();
-        if (!dataTypeIdentifier.category.equals(tCat.TYPE)) {
+        if (!dataTypeIdentifier.getCategory().equals(tCat.TYPE)) {
             throw new SyntaxAnalyzeException("Тип данных не найден");
         }
         for (Identifier varIdentifier : nameTable.getIdentifiers()) {
-            if (varIdentifier.category == tCat.VAR) {
-                varIdentifier.type = dataTypeIdentifier.type;
+            if (varIdentifier.getCategory() == tCat.VAR) {
+                varIdentifier.setType(dataTypeIdentifier.getType());
             }
         }
 

@@ -1,4 +1,4 @@
-package com.tstu.backend.lexical;
+package com.tstu.backend.exceptions;
 
 public class LexicalAnalyzeException extends Exception {
 

@@ -1,7 +1,7 @@
 package com.tstu.backend;
 
-import com.tstu.backend.lexical.Identifier;
-import com.tstu.backend.lexical.Keyword;
+import com.tstu.backend.model.Identifier;
+import com.tstu.backend.model.Keyword;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,9 @@
 package com.tstu.backend.lexical;
 
 import com.tstu.backend.ILexicalAnalyzer;
+import com.tstu.backend.exceptions.LexicalAnalyzeException;
+import com.tstu.backend.model.Keyword;
+import com.tstu.backend.model.enums.Lexems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +98,8 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     i++;
                 }
                 if (number.length() == 1) i--;
+                if(!isIntMaxOrMinValue(number.toString()))
+                    throw new LexicalAnalyzeException("Число вышло за граници допустимого значения");
                 addKeyword(number.toString(), Lexems.NUMBER);
                 logger.info(number.toString() + "(число)");
                 continue;
@@ -126,6 +131,16 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
     public static void main(String[] args) throws LexicalAnalyzeException {
         ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
         lexicalAnalyzer.recognizeAllLexem("var a,b,c :Logical\n");
+        int a = 2-1;
     }
 
+    private boolean isIntMaxOrMinValue(String number) {
+        long num;
+        try {
+            num = Long.parseLong(number);
+        } catch (Exception e) {
+            return false;
+        }
+        return num > Integer.MIN_VALUE && num < Integer.MAX_VALUE;
+    }
 }

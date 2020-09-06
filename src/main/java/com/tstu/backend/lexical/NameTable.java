@@ -2,6 +2,13 @@ package com.tstu.backend.lexical;
 
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
+import com.tstu.backend.model.*;
+import com.tstu.backend.exceptions.LexicalAnalyzeException;
+import com.tstu.backend.model.Identifier;
+import com.tstu.backend.model.enums.Command;
+import com.tstu.backend.model.enums.Lexems;
+import com.tstu.backend.model.enums.tCat;
+import com.tstu.backend.model.enums.tType;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -18,24 +25,24 @@ public class NameTable implements INameTable {
 
     private void addIdentifier(String name, tCat category) {
         Identifier identifier = new Identifier();
-        identifier.name = name;
-        identifier.category = category;
+        identifier.setName(name);
+        identifier.setCategory(category);
 
         identifiers.add(identifier);
     }
 
     private void addIdentifier(String name, tCat category, tType type) {
         Identifier identifier = new Identifier();
-        identifier.name = name;
-        identifier.category = category;
-        identifier.type = type;
+        identifier.setName(name);
+        identifier.setCategory(category);
+        identifier.setType(type);
 
         identifiers.add(identifier);
     }
 
     @Override
     public Optional<Identifier> getIdentifier(String name) {
-        return identifiers.stream().filter(i -> i.name.equals(name)).findAny();
+        return identifiers.stream().filter(i -> i.getName().equals(name)).findAny();
     }
 
     @Override

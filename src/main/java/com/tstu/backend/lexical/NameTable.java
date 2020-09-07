@@ -24,25 +24,27 @@ public class NameTable implements INameTable {
     }
 
     private void addIdentifier(String name, tCat category) {
-        Identifier identifier = new Identifier();
-        identifier.setName(name);
-        identifier.setCategory(category);
+        Identifier identifier = new Identifier(name,category,null);
+//        identifier.setName(name);
+//        identifier.setCategory(category);
 
         identifiers.add(identifier);
     }
 
     private void addIdentifier(String name, tCat category, tType type) {
-        Identifier identifier = new Identifier();
-        identifier.setName(name);
-        identifier.setCategory(category);
-        identifier.setType(type);
+        Identifier identifier = new Identifier(name,category,type);
+//        identifier.setName(name);
+//        identifier.setCategory(category);
+//        identifier.setType(type);
 
         identifiers.add(identifier);
     }
 
     @Override
-    public Optional<Identifier> getIdentifier(String name) {
-        return identifiers.stream().filter(i -> i.getName().equals(name)).findAny();
+    public Identifier getIdentifier(String name)  {
+        return identifiers.stream()
+                .filter(i -> i.getName().equals(name))
+                .findAny().orElseThrow();
     }
 
     @Override

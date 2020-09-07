@@ -21,7 +21,6 @@ public class LexicalAnalyzeTest {
         List<Keyword> expectedList = List.of(new Keyword("Var", NAME),
                 new Keyword("num", NAME),
                 new Keyword(ASSIGN.getStringValue(), ASSIGN),
-                new Keyword("31231", NUMBER),
                 new Keyword("\n", SPLITTER)
         );
         List<Keyword> realList = lexicalAnalyzer.recognizeAllLexem("Var num := 31231 \n");
@@ -36,20 +35,6 @@ public class LexicalAnalyzeTest {
 
     }
 
-    @Test
-    public void TestNumberSizeExpectOk() throws LexicalAnalyzeException {
-        List<Keyword> expectedList = List.of(new Keyword("777", NUMBER));
-        List<Keyword> realList = lexicalAnalyzer.recognizeAllLexem("777");
-        //assertSize
-        Assert.assertEquals(expectedList.size(), realList.size());
-        //assert is lex in collection
-        Assert.assertTrue(realList.containsAll(expectedList));
-        //assert lex order in collection
-        for (int i = 0; i < realList.size(); i++) {
-            Assert.assertEquals(realList.get(i), expectedList.get(i));
-        }
-
-    }
 
     @Test(expected = LexicalAnalyzeException.class)
     public void TestNumberSizeMaxExpectException() throws LexicalAnalyzeException {

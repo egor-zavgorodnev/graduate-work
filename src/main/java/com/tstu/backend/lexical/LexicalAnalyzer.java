@@ -68,6 +68,14 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     addKeyword(currentSymbol, Lexems.SEMI);
                     logger.info(symbols[i] + "(запятая)");
                     continue;
+                case '0':
+                    addKeyword(currentSymbol, Lexems.FALSE);
+                    logger.info(symbols[i] + "(ложь)");
+                    continue;
+                case '1':
+                    addKeyword(currentSymbol, Lexems.TRUE);
+                    logger.info(symbols[i] + "(истина)");
+                    continue;
                 case '\n':
                     addKeyword(currentSymbol, Lexems.SPLITTER);
                     logger.info("\\n" + "(перенос строки)");
@@ -89,21 +97,6 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 logger.info(identifier.toString() + "(идентификатор)");
                 continue;
             }
-            //numbers
-            if (Character.isDigit(symbols[i])) {
-                StringBuilder number = new StringBuilder();
-                while (Character.isDigit(symbols[i])) {
-                    number.append(symbols[i]);
-                    if (i == symbols.length - 1) break;
-                    i++;
-                }
-                if (number.length() == 1) i--;
-                if(!isIntMaxOrMinValue(number.toString()))
-                    throw new LexicalAnalyzeException("Число вышло за граници допустимого значения");
-                addKeyword(number.toString(), Lexems.NUMBER);
-                logger.info(number.toString() + "(число)");
-                continue;
-            }
             // :, :=
             if (symbols[i] == ':') {
                 if (i == symbols.length - 1) {
@@ -122,7 +115,10 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 }
                 continue;
             }
-            throw new LexicalAnalyzeException("Недопустимый символ");
+            if (Character.isDigit(symbols[i])) {
+                throw new LexicalAnalyzeException("Недопустимый символ: Из цифр только 0 или 1 (логическое значение)");
+            }
+            throw new LexicalAnalyzeException("Недопустимый символ : " + symbols[i]);
         }
 
         return keywords;
@@ -130,8 +126,8 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
 
     public static void main(String[] args) throws LexicalAnalyzeException {
         ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-        lexicalAnalyzer.recognizeAllLexem("var a,b,c :Logical\n");
-        int a = 2-1;
+        lexicalAnalyzer.recognizeAllLexem("var a,b,c 0 1 :Logical\n");
+        int a = 2 - 1;
     }
 
     private boolean isIntMaxOrMinValue(String number) {

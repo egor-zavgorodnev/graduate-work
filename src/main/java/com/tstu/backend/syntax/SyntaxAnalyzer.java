@@ -3,15 +3,15 @@ package com.tstu.backend.syntax;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
-import com.tstu.backend.exceptions.SyntaxAnalyzeException;
-import com.tstu.backend.lexical.*;
-import com.tstu.backend.model.enums.Command;
-import com.tstu.backend.model.Keyword;
-import com.tstu.backend.model.enums.Lexems;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
+import com.tstu.backend.exceptions.SyntaxAnalyzeException;
 import com.tstu.backend.lexical.LexicalAnalyzer;
-import com.tstu.backend.model.enums.tCat;
+import com.tstu.backend.lexical.NameTable;
 import com.tstu.backend.model.Identifier;
+import com.tstu.backend.model.Keyword;
+import com.tstu.backend.model.enums.Command;
+import com.tstu.backend.model.enums.Lexems;
+import com.tstu.backend.model.enums.tCat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +69,38 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
         parseVarEnumeration(varEnumeration);
         parseTypeDeclaration(typeDeclaration);
+    }
+
+    private void parseVariableAssign() throws SyntaxAnalyzeException {
+        int beginIndex = 1;
+
+        int endIndex = 0;
+        for (List<Keyword> codeline : codeLines) {
+            if (!codeline.get(0).word.equals(Command.END.getName())) {
+                endIndex++;
+            } else break;
+        }
+
+        if (endIndex == codeLines.size()) {
+            throw new SyntaxAnalyzeException("Пропущена команда \"END\" ");
+        }
+
+        List<List<Keyword>> mainArea = codeLines.subList(beginIndex + 1, endIndex);
+
+        for (List<Keyword> codeline : mainArea) {
+            if (nameTable.getIdentifier(codeline.get(0).word).get().getCategory() != tCat.VAR) {
+                throw new SyntaxAnalyzeException("Ожидается переменная");
+            }
+            if (codeline.get(1).lex != Lexems.ASSIGN) {
+                throw new SyntaxAnalyzeException("Ожидается присваивание");
+            }
+            if (!(codeline.get(2).lex == Lexems.FALSE || codeline.get(2).lex == Lexems.TRUE)) {
+                throw new SyntaxAnalyzeException("Ожидается Logical");
+            }
+            if (codeline.get(3).lex != Lexems.SPLITTER) {
+                throw new SyntaxAnalyzeException("Ожидается перенос строки");
+            }
+        }
 
     }
 
@@ -113,11 +145,16 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     public void checkSyntax() throws SyntaxAnalyzeException, LexicalAnalyzeException {
         splitIntoCodeLines();
         parseVariableDeclaration();
+        parseVariableAssign();
     }
 
     public static void main(String[] args) throws LexicalAnalyzeException, SyntaxAnalyzeException {
         SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(
-                "Var a,b,c :Logical\n"
+                "Var a,b,c :Logical\n" +
+                        "Begin\n" +
+                        "a:=0\n" +
+                        "b:=1\n" +
+                        "End\n"
         );
 
         syntaxAnalyzer.checkSyntax();

@@ -34,6 +34,14 @@ public class Identifier {
         this.type = type;
     }
 
+    public Identifier(String name, tCat category, tType type) {
+        this.name = name;
+        this.category = category;
+        this.type = type;
+    }
+
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

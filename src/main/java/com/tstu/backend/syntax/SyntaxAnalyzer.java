@@ -73,7 +73,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void parseVarEnumeration(List<Keyword> varEnumeration) throws SyntaxAnalyzeException {
-        if (!nameTable.getIdentifier(varEnumeration.get(0).word).get().getName().equals(Command.VAR.getName())) {
+        if (!nameTable.getIdentifier(varEnumeration.get(0).word).getName().equals(Command.VAR.getName())) {
             throw new SyntaxAnalyzeException("Ключевое слово Var не найдено");
         }
 
@@ -84,7 +84,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
             }
             switch (varEnumeration.get(i).lex) {
                 case NAME:
-                    if (nameTable.getIdentifier(varEnumeration.get(i).word).get().getCategory() != tCat.VAR) {
+                    if (nameTable.getIdentifier(varEnumeration.get(i).word).getCategory() != tCat.VAR) {
                         throw new SyntaxAnalyzeException("Ожидается переменная");
                     }
                     expected = Lexems.SEMI;
@@ -97,7 +97,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void parseTypeDeclaration(List<Keyword> typeDeclaration) throws SyntaxAnalyzeException {
-        Identifier dataTypeIdentifier = nameTable.getIdentifier(typeDeclaration.get(1).word).get();
+        Identifier dataTypeIdentifier = nameTable.getIdentifier(typeDeclaration.get(1).word);
         if (!dataTypeIdentifier.getCategory().equals(tCat.TYPE)) {
             throw new SyntaxAnalyzeException("Тип данных не найден");
         }

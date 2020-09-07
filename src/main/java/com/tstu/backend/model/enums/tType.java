@@ -16,6 +16,6 @@ public enum tType {
     }
 
     public static tType getTypeByName(String name) {
-        return EnumSet.allOf(tType.class).stream().filter(el -> el.getName().equals(name)).findAny().get();
+        return EnumSet.allOf(tType.class).stream().filter(el -> el.getName().equals(name)).findAny().orElseThrow();
     }
 }

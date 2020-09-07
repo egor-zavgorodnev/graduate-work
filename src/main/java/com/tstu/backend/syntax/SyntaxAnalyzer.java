@@ -88,20 +88,23 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         List<List<Keyword>> mainArea = codeLines.subList(beginIndex + 1, endIndex);
 
         for (List<Keyword> codeline : mainArea) {
-            if (nameTable.getIdentifier(codeline.get(0).word).get().getCategory() != tCat.VAR) {
+            if (nameTable.getIdentifier(codeline.get(0).word).getCategory() != tCat.VAR) {
                 throw new SyntaxAnalyzeException("Ожидается переменная");
             }
             if (codeline.get(1).lex != Lexems.ASSIGN) {
                 throw new SyntaxAnalyzeException("Ожидается присваивание");
             }
-            if (!(codeline.get(2).lex == Lexems.FALSE || codeline.get(2).lex == Lexems.TRUE)) {
-                throw new SyntaxAnalyzeException("Ожидается Logical");
-            }
-            if (codeline.get(3).lex != Lexems.SPLITTER) {
-                throw new SyntaxAnalyzeException("Ожидается перенос строки");
-            }
-        }
 
+            List<Keyword> expression = new ArrayList<>();
+            for (int i = 2; i < codeline.size(); i++) {
+                expression.add(codeline.get(i));
+            }
+
+        }
+    }
+
+    private void parseExpression(List<Keyword> expression) throws SyntaxAnalyzeException {
+        
     }
 
     private void parseVarEnumeration(List<Keyword> varEnumeration) throws SyntaxAnalyzeException {

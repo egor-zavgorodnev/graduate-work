@@ -5,6 +5,7 @@ import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
+import com.tstu.backend.expressions.Argument;
 import com.tstu.backend.lexical.LexicalAnalyzer;
 import com.tstu.backend.lexical.NameTable;
 import com.tstu.backend.model.Identifier;
@@ -95,16 +96,24 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                 throw new SyntaxAnalyzeException("Ожидается присваивание");
             }
 
-            List<Keyword> expression = new ArrayList<>();
-            for (int i = 2; i < codeline.size(); i++) {
-                expression.add(codeline.get(i));
-            }
+            switch (codeline.get(2).lex) {
+                case TRUE:
+                    Argument<Boolean> argument = new Argument<>(nameTable.getIdentifier(codeline.get(2).word), Boolean.TRUE);
 
+                case FALSE:
+                case NAME:
+                    List<Keyword> expression = new ArrayList<>();
+                    for (int i = 2; i < codeline.size(); i++) {
+                        expression.add(codeline.get(i));
+                    }
+                default:
+                    throw new SyntaxAnalyzeException("Ожидается выражение или значение");
+            }
         }
     }
 
     private void parseExpression(List<Keyword> expression) throws SyntaxAnalyzeException {
-        
+
     }
 
     private void parseVarEnumeration(List<Keyword> varEnumeration) throws SyntaxAnalyzeException {

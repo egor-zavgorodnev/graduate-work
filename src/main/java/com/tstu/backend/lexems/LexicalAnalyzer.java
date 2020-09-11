@@ -127,7 +127,6 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
     public static void main(String[] args) throws LexicalAnalyzeException {
         ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
         lexicalAnalyzer.recognizeAllLexem("var a,b,c 0 1 :Logical\n");
-        int a = 2 - 1;
     }
 
 }

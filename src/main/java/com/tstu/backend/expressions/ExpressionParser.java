@@ -71,6 +71,7 @@ public class ExpressionParser {
             Operation currentOperation;
             switch (expression.get(i).lex) {
                 case NOT:
+                    argumentStack.push("not");
                     currentOperation = new Operation(expression.get(i), 3);
                     calculateOperation(currentOperation.getPriority());
                     operationStack.push(currentOperation);
@@ -107,6 +108,13 @@ public class ExpressionParser {
             String arg2;
             currentOperation = operationStack.pop();
             switch (currentOperation.getSign().lex) {
+                case NOT:
+                    arg1 = argumentStack.pop();
+                    arg2 = argumentStack.pop();
+                    logger.info( "!" + arg1);
+
+                    argumentStack.push("expr");
+                    break;
                 case OR:
                 case XOR:
                     arg1 = argumentStack.pop();

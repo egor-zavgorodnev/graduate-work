@@ -151,7 +151,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                         "Begin\n" +
                         "a:=0\n" +
                         "b:=1\n" +
-                        "c:= a | b & a | b\n" + // 0 | 1 & 0 | 1
+                        "c:= !a | !b & a | b\n" + // 0 | 1 & 0 | 1
                         "End\n"
         );
 

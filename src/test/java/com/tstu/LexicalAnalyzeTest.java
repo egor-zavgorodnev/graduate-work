@@ -4,7 +4,7 @@ import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.model.Keyword;
 
-import com.tstu.backend.lexical.LexicalAnalyzer;
+import com.tstu.backend.lexems.LexicalAnalyzer;
 import org.junit.Assert;
 import org.junit.Test;
 

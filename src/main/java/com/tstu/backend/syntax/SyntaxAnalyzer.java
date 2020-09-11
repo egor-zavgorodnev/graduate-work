@@ -3,11 +3,12 @@ package com.tstu.backend.syntax;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
+import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
-import com.tstu.backend.expressions.Argument;
-import com.tstu.backend.lexical.LexicalAnalyzer;
-import com.tstu.backend.lexical.NameTable;
+import com.tstu.backend.expressions.ExpressionParser;
+import com.tstu.backend.lexems.IdentifierTable;
+import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
@@ -29,7 +30,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     public SyntaxAnalyzer(String data) {
         this.data = data;
         lexicalAnalyzer = new LexicalAnalyzer();
-        nameTable = new NameTable();
+        nameTable = new IdentifierTable();
         codeLines = new ArrayList<>();
     }
 
@@ -72,7 +73,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         parseTypeDeclaration(typeDeclaration);
     }
 
-    private void parseVariableAssign() throws SyntaxAnalyzeException {
+    private void parseVariableAssign() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
         int beginIndex = 1;
 
         int endIndex = 0;
@@ -89,31 +90,15 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         List<List<Keyword>> mainArea = codeLines.subList(beginIndex + 1, endIndex);
 
         for (List<Keyword> codeline : mainArea) {
-            if (nameTable.getIdentifier(codeline.get(0).word).getCategory() != tCat.VAR) {
-                throw new SyntaxAnalyzeException("Ожидается переменная");
-            }
-            if (codeline.get(1).lex != Lexems.ASSIGN) {
-                throw new SyntaxAnalyzeException("Ожидается присваивание");
-            }
-
-            switch (codeline.get(2).lex) {
-                case TRUE:
-                    Argument<Boolean> argument = new Argument<>(nameTable.getIdentifier(codeline.get(2).word), Boolean.TRUE);
-
-                case FALSE:
-                case NAME:
-                    List<Keyword> expression = new ArrayList<>();
-                    for (int i = 2; i < codeline.size(); i++) {
-                        expression.add(codeline.get(i));
-                    }
-                default:
-                    throw new SyntaxAnalyzeException("Ожидается выражение или значение");
-            }
+            List<Keyword> expression = new ArrayList<>(codeline);
+            parseExpression(expression);
         }
+
     }
 
-    private void parseExpression(List<Keyword> expression) throws SyntaxAnalyzeException {
-
+    private void parseExpression(List<Keyword> expression) throws ExpressionAnalyzeException {
+        ExpressionParser expressionParser = new ExpressionParser(expression, nameTable);
+        expressionParser.parseExpression();
     }
 
     private void parseVarEnumeration(List<Keyword> varEnumeration) throws SyntaxAnalyzeException {
@@ -154,18 +139,19 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     @Override
-    public void checkSyntax() throws SyntaxAnalyzeException, LexicalAnalyzeException {
+    public void checkSyntax() throws SyntaxAnalyzeException, LexicalAnalyzeException, ExpressionAnalyzeException {
         splitIntoCodeLines();
         parseVariableDeclaration();
         parseVariableAssign();
     }
 
-    public static void main(String[] args) throws LexicalAnalyzeException, SyntaxAnalyzeException {
+    public static void main(String[] args) throws LexicalAnalyzeException, SyntaxAnalyzeException, ExpressionAnalyzeException {
         SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(
                 "Var a,b,c :Logical\n" +
                         "Begin\n" +
                         "a:=0\n" +
                         "b:=1\n" +
+                        "c:= a | b & a | b\n" + // 0 | 1 & 0 | 1
                         "End\n"
         );
 

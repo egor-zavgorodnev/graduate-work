@@ -3,8 +3,8 @@ package com.tstu;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
-import com.tstu.backend.lexical.LexicalAnalyzer;
-import com.tstu.backend.lexical.NameTable;
+import com.tstu.backend.lexems.IdentifierTable;
+import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.tCat;
@@ -12,14 +12,10 @@ import com.tstu.backend.model.enums.tType;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.tstu.backend.model.enums.Lexems.*;
-import static com.tstu.backend.model.enums.Lexems.SPLITTER;
-
-public class NameTableTest
+public class IdentifierTableTest
 {
 
     INameTable nameTable;
@@ -42,7 +38,7 @@ public class NameTableTest
                 new Identifier("Var", tCat.COMMAND,null),
                 new Identifier("Logical",tCat.TYPE, tType.BOOL)
         );
-        nameTable = new NameTable();
+        nameTable = new IdentifierTable();
         nameTable.recognizeAllIdentifiers(keywords);
         Assert.assertTrue(nameTable.getIdentifiers().containsAll(identifiers));
 

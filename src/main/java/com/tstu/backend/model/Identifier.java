@@ -22,10 +22,6 @@ public class Identifier {
         return category;
     }
 
-    public void setCategory(tCat category) {
-        this.category = category;
-    }
-
     public tType getType() {
         return type;
     }
@@ -39,8 +35,6 @@ public class Identifier {
         this.category = category;
         this.type = type;
     }
-
-
 
     @Override
     public boolean equals(Object o) {

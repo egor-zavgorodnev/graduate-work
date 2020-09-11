@@ -1,15 +1,18 @@
-package com.tstu.backend.expressions;
+package com.tstu.backend.model;
 
 public class Operation {
-    private String sign;
+    private Keyword sign;
     private int priority;
 
-    public Operation(String sign, int priority) {
+    public Operation(Keyword sign, int priority) {
         this.sign = sign;
         this.priority = priority;
     }
 
-    public String getSign() {
+    public Operation() {
+    }
+
+    public Keyword getSign() {
         return sign;
     }
 

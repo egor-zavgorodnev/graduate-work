@@ -1,4 +1,4 @@
-package com.tstu.backend.lexical;
+package com.tstu.backend.lexems;
 
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
@@ -130,13 +130,4 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
         int a = 2 - 1;
     }
 
-    private boolean isIntMaxOrMinValue(String number) {
-        long num;
-        try {
-            num = Long.parseLong(number);
-        } catch (Exception e) {
-            return false;
-        }
-        return num > Integer.MIN_VALUE && num < Integer.MAX_VALUE;
-    }
 }

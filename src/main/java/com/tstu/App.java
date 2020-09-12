@@ -1,5 +1,8 @@
 package com.tstu;
 
+import com.tstu.backend.ILexicalAnalyzer;
+import com.tstu.backend.lexems.LexicalAnalyzer;
+import com.tstu.controllers.MainWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +24,7 @@ public class App extends Application {
         primaryStage.setTitle("Транслятор");
         primaryStage.setScene(new Scene(root));
         runStage(primaryStage);
+
     }
 
     public static void runStage(Stage stage) throws IOException {

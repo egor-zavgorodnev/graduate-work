@@ -8,12 +8,13 @@ import com.tstu.backend.model.enums.Command;
 import com.tstu.backend.model.enums.Lexems;
 import com.tstu.backend.model.enums.tCat;
 import com.tstu.backend.model.enums.tType;
+import org.apache.log4j.Logger;
 
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+
 
 public class IdentifierTable implements com.tstu.backend.INameTable {
 

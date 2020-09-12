@@ -4,10 +4,10 @@ import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Lexems;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class LexicalAnalyzer implements ILexicalAnalyzer {
 

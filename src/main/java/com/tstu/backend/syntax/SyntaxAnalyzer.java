@@ -14,12 +14,16 @@ import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
 import com.tstu.backend.model.enums.Lexems;
 import com.tstu.backend.model.enums.tCat;
+import com.tstu.util.CustomLogger;
+import com.tstu.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SyntaxAnalyzer implements ISyntaxAnalyzer {
+
+    private Logger logger = new CustomLogger(SyntaxAnalyzer.class.getName());
 
     private String data;
     private ILexicalAnalyzer lexicalAnalyzer;
@@ -139,10 +143,15 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     @Override
-    public void checkSyntax() throws SyntaxAnalyzeException, LexicalAnalyzeException, ExpressionAnalyzeException {
-        splitIntoCodeLines();
-        parseVariableDeclaration();
-        parseVariableAssign();
+    public void checkSyntax() {
+        try {
+            splitIntoCodeLines();
+            parseVariableDeclaration();
+            parseVariableAssign();
+        } catch (SyntaxAnalyzeException | LexicalAnalyzeException | ExpressionAnalyzeException e) {
+            logger.error(e.getMessage());
+        }
+
     }
 
     public static void main(String[] args) throws LexicalAnalyzeException, SyntaxAnalyzeException, ExpressionAnalyzeException {

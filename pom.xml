@@ -26,12 +26,6 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-file-watch -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

@@ -4,14 +4,16 @@ import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Lexems;
-import org.apache.log4j.Logger;
+import com.tstu.util.CustomLogger;
+import com.tstu.util.Logger;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LexicalAnalyzer implements ILexicalAnalyzer {
 
-    private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());
+    private Logger logger = new CustomLogger(LexicalAnalyzer.class.getName());//Logger.getLogger(LexicalAnalyzer.class.getName());
 
     private List<Keyword> keywords;
 

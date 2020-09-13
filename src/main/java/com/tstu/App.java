@@ -17,10 +17,17 @@ public class App extends Application {
     }
 
     private static Stage primaryStage;
+    private static MainWindow mainWindow;
+
+    public static MainWindow getMainWindow() {
+        return mainWindow;
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("fxml/MainWindow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        Parent root = fxmlLoader.load(getClass().getResource("fxml/MainWindow.fxml").openStream());
+        mainWindow = (MainWindow) fxmlLoader.getController();
         primaryStage.setTitle("Транслятор");
         primaryStage.setScene(new Scene(root));
         runStage(primaryStage);

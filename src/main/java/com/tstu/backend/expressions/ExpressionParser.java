@@ -7,11 +7,12 @@ import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.Operation;
 import com.tstu.backend.model.enums.Lexems;
 import com.tstu.backend.model.enums.tCat;
+import com.tstu.util.CustomLogger;
+import com.tstu.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.logging.Logger;
 
 public class ExpressionParser {
 
@@ -23,7 +24,7 @@ public class ExpressionParser {
 
     private List<Keyword> expression;
 
-    private Logger logger = Logger.getLogger(ExpressionParser.class.getName());
+    private Logger logger = new CustomLogger(ExpressionParser.class.getName());
 
     static {
         arguments = new ArrayList<>();

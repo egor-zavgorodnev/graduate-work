@@ -4,10 +4,9 @@ package com.tstu.util;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.logging.Logger;
 
 public class ReadFromFile {
-    private Logger logger = Logger.getLogger(ReadFromFile.class.getName());
+    private Logger logger = new CustomLogger(ReadFromFile.class.getName());
 
     public String parseFromFile(String filePath) {
         StringBuilder input = new StringBuilder();

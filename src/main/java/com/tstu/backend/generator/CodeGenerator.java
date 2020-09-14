@@ -14,6 +14,10 @@ public class CodeGenerator {
 
     }
 
+    public static String generateCode() {
+        return assemblerCode.toString();
+    }
+
     public static void declareDataSegment() {
         addInstruction("data segment para public \"data\"");
     }

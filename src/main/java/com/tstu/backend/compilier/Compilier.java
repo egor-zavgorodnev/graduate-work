@@ -11,13 +11,14 @@ import com.tstu.backend.lexems.IdentifierTable;
 import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.syntax.SyntaxAnalyzer;
-import org.apache.log4j.Logger;
+import com.tstu.util.CustomLogger;
+import com.tstu.util.Logger;
 
 import java.util.List;
 
 public class Compilier {
 
-    private Logger logger = Logger.getLogger(Compilier.class.getName());
+    private Logger logger = new CustomLogger("Compilier");
 
     private ILexicalAnalyzer lexicalAnalyzer;
     private INameTable nameTable;
@@ -27,6 +28,7 @@ public class Compilier {
         lexicalAnalyzer = new LexicalAnalyzer();
         nameTable = new IdentifierTable();
     }
+
 
     public boolean compile(String data) {
         List<Keyword> lexems;

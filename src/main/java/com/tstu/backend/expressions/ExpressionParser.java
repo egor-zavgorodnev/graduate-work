@@ -91,11 +91,12 @@ public class ExpressionParser {
                     break;
                 case NAME:
                     argumentStack.push(getVariableValue(expression.get(i).word));
+                    CodeGenerator.addInstruction("mov ax," + argumentStack.peek() + "b");
+                    CodeGenerator.addInstruction("push ax");
                     break;
             }
         }
 
-        CodeGenerator.addInstruction("mov ax," + argumentStack.peek() + "b");
 
         calculateOperation(0);
 
@@ -115,30 +116,28 @@ public class ExpressionParser {
                 case NOT:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    //logger.info("!" + arg1);
+                    logger.info("!" + arg1);
                     argumentStack.push("expr");
                     break;
                 case OR:
                 case XOR:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    if (!arg2.equals("expr")) {
-                        CodeGenerator.addInstruction("or ax," + arg2 + "b");
-                    } else {
-                        CodeGenerator.addInstruction("or ax," + arg1 + "b");
-                    }
-                    //logger.info(arg1 + " | " + arg2);
+                    CodeGenerator.addInstruction("pop bx");
+                    CodeGenerator.addInstruction("pop ax");
+                    CodeGenerator.addInstruction("or ax,bx");
+                    CodeGenerator.addInstruction("push bx");
+                    logger.info(arg1 + " | " + arg2);
                     argumentStack.push("expr");
                     break;
                 case AND:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    if (!arg2.equals("expr")) {
-                        CodeGenerator.addInstruction("and ax," + arg2 + "b");
-                    } else {
-                        CodeGenerator.addInstruction("and ax," + arg1 + "b");
-                    }
-                    // logger.info(arg1 + " & " + arg2);
+                    CodeGenerator.addInstruction("pop bx");
+                    CodeGenerator.addInstruction("pop ax");
+                    CodeGenerator.addInstruction("and ax,bx");
+                    CodeGenerator.addInstruction("push bx");
+                    logger.info(arg1 + " & " + arg2);
                     argumentStack.push("expr");
                     break;
             }

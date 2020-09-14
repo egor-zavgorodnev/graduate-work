@@ -64,7 +64,7 @@ public class Compilier {
                         "Begin\n" +
                         "a:=0\n" +
                         "b:=1\n" +
-                        "c:= a | b & a\n" + // 0 | 1 & 0 = 0
+                        "c:= a | b & a | b\n" + // 0 | 1 & 0 = 0
                         "Print c\n" +
                         "End\n");
     }

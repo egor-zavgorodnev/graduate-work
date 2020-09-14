@@ -1,12 +1,8 @@
 package com.tstu.controllers;
 
 import com.tstu.App;
-import com.tstu.backend.ILexicalAnalyzer;
-import com.tstu.backend.exceptions.LexicalAnalyzeException;
-import com.tstu.backend.lexems.LexicalAnalyzer;
-import com.tstu.backend.syntax.SyntaxAnalyzer;
+import com.tstu.backend.compilier.Compilier;
 import com.tstu.util.ReadFromFile;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,13 +10,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
-import java.util.stream.Collectors;
-
-import static java.nio.file.StandardWatchEventKinds.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class MainWindow {
 
@@ -59,8 +54,8 @@ public class MainWindow {
 
     @FXML
     void compile(ActionEvent event) {
-       SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(sourceCodeBox.getText());
-       syntaxAnalyzer.checkSyntax();
+        Compilier compilier = new Compilier();
+        compilier.compile(sourceCodeBox.getText());
     }
 
 
@@ -75,8 +70,7 @@ public class MainWindow {
         sourceCodeBox.appendText(text);
     }
 
-    public void appendLog(String log)
-    {
+    public void appendLog(String log) {
         logsBox.appendText(log);
     }
 

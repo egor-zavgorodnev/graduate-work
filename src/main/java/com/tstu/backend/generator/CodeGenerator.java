@@ -1,8 +1,16 @@
 package com.tstu.backend.generator;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Properties;
+
 public class CodeGenerator {
 
     private static StringBuilder assemblerCode = new StringBuilder();
+
+    private static Properties appProps = new Properties();
 
     public static void addInstruction(String instruction) {
         System.out.println(instruction);
@@ -10,8 +18,13 @@ public class CodeGenerator {
         assemblerCode.append('\n');
     }
 
-    public static void generateFile() {
-
+    public static void generateFile() throws IOException {
+        appProps.load(Objects.requireNonNull(CodeGenerator.class.getClassLoader().getResourceAsStream("application.properties")));
+        File asmCode = new File(appProps.getProperty("asmEnviroment") + "/sample.asm");
+        if (asmCode.exists()) asmCode.delete();
+        FileWriter myWriter = new FileWriter(asmCode);
+        myWriter.write(assemblerCode.toString());
+        myWriter.close();
     }
 
     public static String generateCode() {

@@ -11,9 +11,11 @@ import com.tstu.backend.lexems.IdentifierTable;
 import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.syntax.SyntaxAnalyzer;
+import com.tstu.execution.Executor;
 import com.tstu.util.CustomLogger;
 import com.tstu.util.Logger;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Compilier {
@@ -54,6 +56,15 @@ public class Compilier {
         CodeGenerator.declareEndMainProcedure();
         CodeGenerator.declarePrintProcedure();
         CodeGenerator.declareEndProgram();
+
+        try {
+            CodeGenerator.generateFile();
+            Executor.execute();
+        } catch (IOException | InterruptedException ex) {
+            logger.error("Ошибка записи файла " + ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
 
         return true;
     }

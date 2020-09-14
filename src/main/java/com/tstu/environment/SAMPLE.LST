@@ -1,0 +1,109 @@
+Turbo Assembler	 Version 3.1	    09/14/20 20:03:49	    Page 1
+sample.asm
+
+
+
+      1	0000			     data segment para public "data"
+      2	0000			     data segment para public "data"
+      3	0000  0000		     a dw 0b
+      4	0002  0000		     b dw 0b
+      5	0004  0000		     c dw 0b
+      6	0006  20*(0A)		     PRINT_BUF DB ' ' DUP(10)
+      7	0026  24		     BUFEND DB '$'
+      8	0027			     data ends
+      9	0000			     stk segment stack
+     10	0000  0100*(3F)		     db	256 dup	("?")
+     11	0100			     stk ends
+     12	0000			     code segment para public "code"
+     13	0000			     main proc
+     14				     assume cs:code,ds:data,ss:stk
+     15	0000  B8 0000s		     mov ax,data
+     16	0003  8E D8		     mov ds,ax
+     17	0005  C7 06 0000r 0000	     mov a,0b
+     18	000B  C7 06 0002r 0001	     mov b,1b
+     19	0011  B8 0000		     mov ax,0b
+     20	0014  50		     push ax
+     21	0015  B8 0001		     mov ax,1b
+     22	0018  50		     push ax
+     23	0019  B8 0000		     mov ax,0b
+     24	001C  50		     push ax
+     25	001D  5B		     pop bx
+     26	001E  58		     pop ax
+     27	001F  23 C3		     and ax,bx
+     28	0021  50		     push ax
+     29	0022  5B		     pop bx
+     30	0023  58		     pop ax
+     31	0024  0B C3		     or	ax,bx
+     32	0026  50		     push ax
+     33	0027  B8 0001		     mov ax,1b
+     34	002A  50		     push ax
+     35	002B  5B		     pop bx
+     36	002C  58		     pop ax
+     37	002D  0B C3		     or	ax,bx
+     38	002F  50		     push ax
+     39	0030  A3 0004r		     mov c, ax
+     40	0033  B8 4C00		     mov ax,4c00h
+     41	0036  CD 21		     int 21h
+     42	0038			     main endp
+     43	0038			     PRINT PROC	NEAR
+     44	0038  B9 000A		     MOV CX, 10
+     45	003B  BF 0020		     MOV DI, BUFEND - PRINT_BUF
+     46	003E			     PRINT_LOOP:
+     47	003E  BA 0000		     MOV DX, 0
+     48	0041  F7 F1		     DIV CX
+     49	0043  80 C2 30		     ADD DL, '0'
+     50	0046  88 95 0005r	     MOV [PRINT_BUF + DI - 1], DL
+     51	004A  4F		     DEC DI
+     52	004B  3C 00		     CMP AL, 0
+     53	004D  75 EF		     JNE PRINT_LOOP
+     54	004F  BA 0006r		     LEA DX, PRINT_BUF
+     55	0052  03 D7		     ADD DX, DI
+     56	0054  B4 09		     MOV AH, 09H
+     57	0056  CD 21		     INT 21H
+Turbo Assembler	 Version 3.1	    09/14/20 20:03:49	    Page 2
+sample.asm
+
+
+
+     58	0058  C3		     RET
+     59	0059			     PRINT ENDP
+     60	0059			     code ends
+     61				     end main
+*Warning* sample.asm(61) Open segment: DATA
+Turbo Assembler	 Version 3.1	    09/14/20 20:03:49	    Page 3
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "09/14/20"
+??FILENAME			  Text	 "sample  "
+??TIME				  Text	 "20:03:49"
+??VERSION			  Number 030A
+@CPU				  Text	 0101H
+@CURSEG				  Text	 DATA
+@FILENAME			  Text	 SAMPLE
+@WORDSIZE			  Text	 2
+A				  Word	 DATA:0000
+B				  Word	 DATA:0002
+BUFEND				  Byte	 DATA:0026
+C				  Word	 DATA:0004
+MAIN				  Near	 CODE:0000
+PRINT				  Near	 CODE:0038
+PRINT_BUF			  Byte	 DATA:0006
+PRINT_LOOP			  Near	 CODE:003E
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+CODE				  16  0059 Para	  Public  CODE
+DATA				  16  0027 Para	  Public  DATA
+STK				  16  0100 Para	  Stack
+Turbo Assembler	 Version 3.1	    09/14/20 20:03:49	    Page 4
+Error Summary
+
+
+
+*Warning* sample.asm(61) Open segment: DATA
+

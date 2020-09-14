@@ -126,7 +126,7 @@ public class ExpressionParser {
                     CodeGenerator.addInstruction("pop bx");
                     CodeGenerator.addInstruction("pop ax");
                     CodeGenerator.addInstruction("or ax,bx");
-                    CodeGenerator.addInstruction("push bx");
+                    CodeGenerator.addInstruction("push ax");
                     logger.info(arg1 + " | " + arg2);
                     argumentStack.push("expr");
                     break;
@@ -136,7 +136,7 @@ public class ExpressionParser {
                     CodeGenerator.addInstruction("pop bx");
                     CodeGenerator.addInstruction("pop ax");
                     CodeGenerator.addInstruction("and ax,bx");
-                    CodeGenerator.addInstruction("push bx");
+                    CodeGenerator.addInstruction("push ax");
                     logger.info(arg1 + " & " + arg2);
                     argumentStack.push("expr");
                     break;

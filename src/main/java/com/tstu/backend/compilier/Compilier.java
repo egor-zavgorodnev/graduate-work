@@ -11,7 +11,6 @@ import com.tstu.backend.lexems.IdentifierTable;
 import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.syntax.SyntaxAnalyzer;
-import com.tstu.execution.Executor;
 import com.tstu.util.CustomLogger;
 import com.tstu.util.Logger;
 
@@ -59,25 +58,14 @@ public class Compilier {
 
         try {
             CodeGenerator.generateFile();
-            Executor.execute();
-        } catch (IOException | InterruptedException ex) {
+          //  Executor.execute();
+        } catch (IOException  ex) {
             logger.error("Ошибка записи файла " + ex.getMessage());
             ex.printStackTrace();
             return false;
         }
 
         return true;
-    }
-
-    public static void main(String[] args) {
-        new Compilier().compile(
-                "Var a,b,c :Logical\n" +
-                        "Begin\n" +
-                        "a:=0\n" +
-                        "b:=1\n" +
-                        "c:= b & b\n" + // 0 | 1 & 0 = 0
-                        "Print c\n" +
-                        "End\n");
     }
 
 }

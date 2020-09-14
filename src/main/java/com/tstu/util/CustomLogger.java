@@ -1,6 +1,7 @@
 package com.tstu.util;
 
 import com.tstu.App;
+import javafx.scene.paint.Color;
 import org.apache.log4j.Logger;
 import com.tstu.controllers.MainWindow;
 
@@ -42,7 +43,8 @@ public class CustomLogger implements com.tstu.util.Logger {
     private void appendLogToDisplay(String log , LoggingLevel loggingLevel)
     {
         if(window != null)
-            window.appendLog(String.format("%s %s %s - %s \n", getDate(),loggingLevel, loggerName,log));
+            window.appendLog(String.format("%s - %s \n",loggingLevel,log));
+           // window.appendLog(String.format("%s %s %s - %s \n", getDate(),loggingLevel, loggerName,log));
     }
 
     private String getDate() {

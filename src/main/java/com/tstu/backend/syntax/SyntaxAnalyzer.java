@@ -159,18 +159,4 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         parseVariableAssign();
     }
 
-    public static void main(String[] args) throws LexicalAnalyzeException, SyntaxAnalyzeException, ExpressionAnalyzeException {
-//        SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(
-//                "Var a,b,c :Logical\n" +
-//                        "Begin\n" +
-//                        "a:=0\n" +
-//                        "b:=1\n" +
-//                        "c:= !a | !b & a | b\n" + // 0 | 1 & 0 | 1
-//                        "End\n"
-//        );
-//
-//        syntaxAnalyzer.checkSyntax();
-//
-//        System.out.println("OK");
-    }
 }

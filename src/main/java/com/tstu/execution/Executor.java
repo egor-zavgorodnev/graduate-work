@@ -15,13 +15,13 @@ public class Executor {
     public static void execute() throws IOException, InterruptedException {
         appProps.load(Objects.requireNonNull(CodeGenerator.class.getClassLoader().getResourceAsStream("application.properties")));
 
-        File startBat = new File("C://start.bat");
+        File startBat = new File("start.bat");
         FileWriter fileWriter = new FileWriter(startBat);
 
-        fileWriter.write("\"" + appProps.getProperty("dosBoxPath") + "/dos.lnk\" \n");
+        fileWriter.write("start DOSBox-0.74-3/DOSBox.exe -noconsole -conf \"DOSBox-0.74-3/asmProg.conf\"");
         fileWriter.close();
 
-        String path="cmd /c start c://start.bat";
+        String path="start.bat";
         Runtime rn=Runtime.getRuntime();
         Process pr=rn.exec(path);
 

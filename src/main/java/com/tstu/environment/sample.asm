@@ -1,5 +1,4 @@
 data segment para public "data"
-data segment para public "data"
 a dw 0b
 b dw 0b
 c dw 0b

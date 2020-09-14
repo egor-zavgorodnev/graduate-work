@@ -2,6 +2,8 @@ package com.tstu.controllers;
 
 import com.tstu.App;
 import com.tstu.backend.compilier.Compilier;
+import com.tstu.backend.generator.CodeGenerator;
+import com.tstu.execution.Executor;
 import com.tstu.util.ReadFromFile;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,6 +45,9 @@ public class MainWindow {
     private Button clearLogs;
 
     @FXML
+    private Button ExecuteButton;
+
+    @FXML
     void clear(ActionEvent event) {
         logsBox.clear();
         try {
@@ -51,11 +56,18 @@ public class MainWindow {
             e.printStackTrace();
         }
     }
-
     @FXML
     void compile(ActionEvent event) {
         Compilier compilier = new Compilier();
-        compilier.compile(sourceCodeBox.getText());
+        boolean isCompiled = compilier.compile(sourceCodeBox.getText());
+        if(isCompiled){
+            resultBox.setText(CodeGenerator.generateCode());
+            ExecuteButton.setVisible(true);
+        }else {
+            compileStatusBox.appendText("Произошла ошибка компиляции \n");
+            ExecuteButton.setVisible(false);
+        }
+        compileStatusBox.appendText("Программа успешно скомпилировалась \n");
     }
 
 
@@ -64,10 +76,23 @@ public class MainWindow {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         File file = fileChooser.showOpenDialog(App.getPrimaryStage());
+        if(file != null) {
+            sourceCodeBox.clear();
+            resultBox.clear();
+            compileStatusBox.clear();
+            ReadFromFile readFromFile = new ReadFromFile();
+            String text = readFromFile.parseFromFile(file.getPath());
+            sourceCodeBox.appendText(text);
+        }
+    }
 
-        ReadFromFile readFromFile = new ReadFromFile();
-        String text = readFromFile.parseFromFile(file.getPath());
-        sourceCodeBox.appendText(text);
+    @FXML
+    void execute(ActionEvent event) {
+        try {
+            Executor.execute();
+        } catch (IOException | InterruptedException e) {
+           appendLog(e.getMessage());
+        }
     }
 
     public void appendLog(String log) {

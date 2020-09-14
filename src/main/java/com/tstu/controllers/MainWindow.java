@@ -63,11 +63,12 @@ public class MainWindow {
         if(isCompiled){
             resultBox.setText(CodeGenerator.generateCode());
             ExecuteButton.setVisible(true);
+            compileStatusBox.appendText("Программа успешно скомпилировалась \n");
         }else {
             compileStatusBox.appendText("Произошла ошибка компиляции \n");
             ExecuteButton.setVisible(false);
         }
-        compileStatusBox.appendText("Программа успешно скомпилировалась \n");
+
     }
 
 
@@ -80,6 +81,7 @@ public class MainWindow {
             sourceCodeBox.clear();
             resultBox.clear();
             compileStatusBox.clear();
+            ExecuteButton.setVisible(false);
             ReadFromFile readFromFile = new ReadFromFile();
             String text = readFromFile.parseFromFile(file.getPath());
             sourceCodeBox.appendText(text);

@@ -2,6 +2,7 @@ package com.tstu.backend.expressions;
 
 import com.tstu.backend.INameTable;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
+import com.tstu.backend.generator.CodeGenerator;
 import com.tstu.backend.model.Argument;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.Operation;
@@ -94,6 +95,8 @@ public class ExpressionParser {
             }
         }
 
+        CodeGenerator.addInstruction("mov ax," + argumentStack.peek() + "b");
+
         calculateOperation(0);
 
     }
@@ -112,23 +115,30 @@ public class ExpressionParser {
                 case NOT:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    logger.info( "!" + arg1);
-
+                    //logger.info("!" + arg1);
                     argumentStack.push("expr");
                     break;
                 case OR:
                 case XOR:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-
-                    logger.info(arg1 + " | " + arg2);
+                    if (!arg2.equals("expr")) {
+                        CodeGenerator.addInstruction("or ax," + arg2 + "b");
+                    } else {
+                        CodeGenerator.addInstruction("or ax," + arg1 + "b");
+                    }
+                    //logger.info(arg1 + " | " + arg2);
                     argumentStack.push("expr");
                     break;
                 case AND:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-
-                    logger.info(arg1 + " & " + arg2);
+                    if (!arg2.equals("expr")) {
+                        CodeGenerator.addInstruction("and ax," + arg2 + "b");
+                    } else {
+                        CodeGenerator.addInstruction("and ax," + arg1 + "b");
+                    }
+                    // logger.info(arg1 + " & " + arg2);
                     argumentStack.push("expr");
                     break;
             }
@@ -145,7 +155,11 @@ public class ExpressionParser {
         if (expression.size() == 4) {
             parseDeclaration();
         } else {
+            CodeGenerator.declareStackAndCodeSegments();
+            arguments.forEach(a -> CodeGenerator.addInstruction("mov " + a.getVariable().getName() + "," + a.getValue() + "b"));
             calculateExpression();
+            CodeGenerator.addInstruction("mov " + expression.get(0).word + ", ax");
         }
+
     }
 }

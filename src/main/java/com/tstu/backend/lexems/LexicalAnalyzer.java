@@ -15,7 +15,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
 
     private Logger logger = new CustomLogger(LexicalAnalyzer.class.getName());//Logger.getLogger(LexicalAnalyzer.class.getName());
 
-    private List<Keyword> keywords;
+    private static List<Keyword> keywords;
 
     public LexicalAnalyzer() {
         keywords = new ArrayList<>();
@@ -38,7 +38,6 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
         return Lexems.NAME;
     }
 
-    @Override
     public List<Keyword> recognizeAllLexem(String data) throws LexicalAnalyzeException {
         char[] symbols = data.toCharArray();
 
@@ -127,8 +126,8 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
     }
 
     public static void main(String[] args) throws LexicalAnalyzeException {
-        ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-        lexicalAnalyzer.recognizeAllLexem("var a,b,c 0 1 :Logical\n");
+//        ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
+//        lexicalAnalyzer.recognizeAllLexem("var a,b,c 0 1 :Logical\n");
     }
 
 }

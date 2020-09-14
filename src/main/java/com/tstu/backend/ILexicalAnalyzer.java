@@ -1,7 +1,7 @@
 package com.tstu.backend;
 
-import com.tstu.backend.model.Keyword;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
+import com.tstu.backend.model.Keyword;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
 package com.tstu.backend.lexems;
 
-import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
@@ -65,10 +64,10 @@ public class IdentifierTable implements com.tstu.backend.INameTable {
     }
 
     public static void main(String[] args) throws LexicalAnalyzeException {
-        ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-        com.tstu.backend.INameTable nameTable = new IdentifierTable();
-
-        nameTable.recognizeAllIdentifiers(lexicalAnalyzer.recognizeAllLexem("Var a,b,c :Logical\n"));
+//        ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
+//        INameTable nameTable = new IdentifierTable();
+//
+//        nameTable.recognizeAllIdentifiers(lexicalAnalyzer.recognizeAllLexem("Var a,b,c :Logical\n"));
     }
 
     @Override

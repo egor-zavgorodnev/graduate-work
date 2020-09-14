@@ -1,8 +1,5 @@
 package com.tstu;
 
-import com.tstu.backend.ILexicalAnalyzer;
-import com.tstu.backend.lexems.LexicalAnalyzer;
-import com.tstu.controllers.MainWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

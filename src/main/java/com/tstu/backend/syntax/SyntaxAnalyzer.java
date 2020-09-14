@@ -1,14 +1,12 @@
 package com.tstu.backend.syntax;
 
-import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
 import com.tstu.backend.expressions.ExpressionParser;
-import com.tstu.backend.lexems.IdentifierTable;
-import com.tstu.backend.lexems.LexicalAnalyzer;
+import com.tstu.backend.generator.CodeGenerator;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
@@ -23,37 +21,32 @@ import java.util.stream.Collectors;
 
 public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
-    private Logger logger = new CustomLogger(SyntaxAnalyzer.class.getName());
 
-    private String data;
-    private ILexicalAnalyzer lexicalAnalyzer;
+    private List<Keyword> lexems;
     private INameTable nameTable;
 
     private List<List<Keyword>> codeLines;
 
-    public SyntaxAnalyzer(String data) {
-        this.data = data;
-        lexicalAnalyzer = new LexicalAnalyzer();
-        nameTable = new IdentifierTable();
+    public SyntaxAnalyzer(List<Keyword> lexems, INameTable nameTable) {
+        this.lexems = lexems;
+        this.nameTable = nameTable;
         codeLines = new ArrayList<>();
     }
 
-    private void splitIntoCodeLines() throws LexicalAnalyzeException {
-        List<Keyword> lexemsList = lexicalAnalyzer.recognizeAllLexem(data);
-        nameTable.recognizeAllIdentifiers(lexemsList);
+    private void splitIntoCodeLines() {
+        nameTable.recognizeAllIdentifiers(lexems);
 
         List<Keyword> codeLine = new ArrayList<>();
-        for (int i = 0; i < lexemsList.size(); i++) {
+        for (int i = 0; i < lexems.size(); i++) {
 
-            if (lexemsList.get(i).lex != Lexems.SPLITTER) {
-                codeLine.add(lexemsList.get(i));
+            if (lexems.get(i).lex != Lexems.SPLITTER) {
+                codeLine.add(lexems.get(i));
             } else {
-                codeLine.add(lexemsList.get(i));
+                codeLine.add(lexems.get(i));
                 codeLines.add(codeLine);
                 codeLine = new ArrayList<>();
             }
         }
-
     }
 
     private void parseVariableDeclaration() throws SyntaxAnalyzeException {
@@ -94,10 +87,26 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         List<List<Keyword>> mainArea = codeLines.subList(beginIndex + 1, endIndex);
 
         for (List<Keyword> codeline : mainArea) {
-            List<Keyword> expression = new ArrayList<>(codeline);
-            parseExpression(expression);
+            Identifier currentIdentifier = nameTable.getIdentifier(codeline.get(0).word);
+            switch (currentIdentifier.getCategory()) {
+                case COMMAND:
+                    if (currentIdentifier.getName().equals(Command.PRINT.getName())) {
+                        parsePrintCommand(codeline);
+                    }
+                    break;
+                case VAR:
+                    List<Keyword> expression = new ArrayList<>(codeline);
+                    parseExpression(expression);
+                    break;
+            }
         }
+    }
 
+    private void parsePrintCommand(List<Keyword> codeline) {
+        CodeGenerator.addInstruction("push ax");
+        CodeGenerator.addInstruction("mov ax, " + codeline.get(1).word);
+        CodeGenerator.addInstruction("CALL PRINT");
+        CodeGenerator.addInstruction("pop ax");
     }
 
     private void parseExpression(List<Keyword> expression) throws ExpressionAnalyzeException {
@@ -120,6 +129,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                     if (nameTable.getIdentifier(varEnumeration.get(i).word).getCategory() != tCat.VAR) {
                         throw new SyntaxAnalyzeException("Ожидается переменная");
                     }
+                    CodeGenerator.addInstruction(varEnumeration.get(i).word + " dw 0b");
                     expected = Lexems.SEMI;
                     break;
                 case SEMI:
@@ -127,6 +137,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                     break;
             }
         }
+
     }
 
     private void parseTypeDeclaration(List<Keyword> typeDeclaration) throws SyntaxAnalyzeException {
@@ -142,30 +153,24 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
     }
 
-    @Override
-    public void checkSyntax() {
-        try {
-            splitIntoCodeLines();
-            parseVariableDeclaration();
-            parseVariableAssign();
-        } catch (SyntaxAnalyzeException | LexicalAnalyzeException | ExpressionAnalyzeException e) {
-            logger.error(e.getMessage());
-        }
-
+    public void checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
+        splitIntoCodeLines();
+        parseVariableDeclaration();
+        parseVariableAssign();
     }
 
     public static void main(String[] args) throws LexicalAnalyzeException, SyntaxAnalyzeException, ExpressionAnalyzeException {
-        SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(
-                "Var a,b,c :Logical\n" +
-                        "Begin\n" +
-                        "a:=0\n" +
-                        "b:=1\n" +
-                        "c:= !a | !b & a | b\n" + // 0 | 1 & 0 | 1
-                        "End\n"
-        );
-
-        syntaxAnalyzer.checkSyntax();
-
-        System.out.println("OK");
+//        SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(
+//                "Var a,b,c :Logical\n" +
+//                        "Begin\n" +
+//                        "a:=0\n" +
+//                        "b:=1\n" +
+//                        "c:= !a | !b & a | b\n" + // 0 | 1 & 0 | 1
+//                        "End\n"
+//        );
+//
+//        syntaxAnalyzer.checkSyntax();
+//
+//        System.out.println("OK");
     }
 }

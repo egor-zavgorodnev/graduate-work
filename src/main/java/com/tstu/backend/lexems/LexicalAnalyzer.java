@@ -7,7 +7,6 @@ import com.tstu.backend.model.enums.Lexems;
 import com.tstu.util.CustomLogger;
 import com.tstu.util.Logger;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +38,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
     }
 
     public List<Keyword> recognizeAllLexem(String data) throws LexicalAnalyzeException {
+        logger.info("\n---Разбор лексем---\n");
         char[] symbols = data.toCharArray();
 
         for (int i = 0; i < symbols.length; i++) {

@@ -3,7 +3,6 @@ package com.tstu.backend.syntax;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
-import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
 import com.tstu.backend.expressions.ExpressionParser;
 import com.tstu.backend.generator.CodeGenerator;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
+    private Logger logger = new CustomLogger(SyntaxAnalyzer.class.getName());
 
     private List<Keyword> lexems;
     private INameTable nameTable;
@@ -34,7 +34,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void splitIntoCodeLines() {
-        nameTable.recognizeAllIdentifiers(lexems);
+       // nameTable.recognizeAllIdentifiers(lexems);
 
         List<Keyword> codeLine = new ArrayList<>();
         for (int i = 0; i < lexems.size(); i++) {
@@ -154,9 +154,11 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     public void checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
+        logger.info("\n---Синтаксический анализ---\n");
         splitIntoCodeLines();
         parseVariableDeclaration();
         parseVariableAssign();
+        logger.info("\nOK!");
     }
 
 }

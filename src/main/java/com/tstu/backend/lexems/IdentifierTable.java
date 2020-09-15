@@ -46,6 +46,7 @@ public class IdentifierTable implements com.tstu.backend.INameTable {
 
     @Override
     public void recognizeAllIdentifiers(List<Keyword> keywords) {
+        logger.info("\n---Разбор идентификаторов---\n");
         for (Keyword keyword : keywords) {
             if (keyword.lex.equals(Lexems.NAME)) {
                 if (EnumSet.allOf(tType.class).stream().anyMatch(e -> e.getName().equals(keyword.word))) {

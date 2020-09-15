@@ -58,14 +58,26 @@ public class Compilier {
 
         try {
             CodeGenerator.generateFile();
-          //  Executor.execute();
-        } catch (IOException  ex) {
+            //Executor.execute();
+        } catch (IOException ex) {
             logger.error("Ошибка записи файла " + ex.getMessage());
             ex.printStackTrace();
             return false;
         }
 
         return true;
+    }
+
+    public static void main(String[] args) {
+        new Compilier().compile(
+                "Var a,b,c,d :Logical\n" +
+                        "Begin\n" +
+                        "a:=1\n" +
+                        "b:=1\n" +
+                        "d:=0\n" +
+                        "c:=a & b & d \n" + // 1 & 1 | 0 = 1
+                        "Print c\n" +
+                        "End\n");
     }
 
 }

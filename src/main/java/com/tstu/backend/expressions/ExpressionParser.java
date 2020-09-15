@@ -48,6 +48,7 @@ public class ExpressionParser {
             case TRUE:
             case FALSE:
                 arguments.add(new Argument<>(nameTable.getIdentifier(expression.get(0).word), String.valueOf(value.lex.getValue())));
+                logger.info("Присваивание - " + expression.get(0).word + " = " + value.lex.getValue());
                 break;
             default:
                 throw new ExpressionAnalyzeException("Ожидается значение переменной");
@@ -154,6 +155,9 @@ public class ExpressionParser {
         if (expression.size() == 4) {
             parseDeclaration();
         } else {
+            StringBuilder expr = new StringBuilder();
+            expression.forEach(e -> expr.append(e.word));
+            logger.info("\nРазбор выражения - " + expr);
             CodeGenerator.declareStackAndCodeSegments();
             arguments.forEach(a -> CodeGenerator.addInstruction("mov " + a.getVariable().getName() + "," + a.getValue() + "b"));
             calculateExpression();

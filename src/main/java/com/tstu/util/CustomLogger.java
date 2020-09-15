@@ -1,9 +1,8 @@
 package com.tstu.util;
 
 import com.tstu.App;
-import javafx.scene.paint.Color;
-import org.apache.log4j.Logger;
 import com.tstu.controllers.MainWindow;
+import org.apache.log4j.Logger;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,7 +16,7 @@ public class CustomLogger implements com.tstu.util.Logger {
     private final String loggerName;
 
     public CustomLogger(String loggerName) {
-        this.loggerName = loggerName.substring(loggerName.lastIndexOf(".")+1);
+        this.loggerName = loggerName.substring(loggerName.lastIndexOf(".") + 1);
         this.window = App.getMainWindow();
         this.logger = Logger.getLogger(loggerName);
     }
@@ -25,26 +24,31 @@ public class CustomLogger implements com.tstu.util.Logger {
     @Override
     public void info(String log) {
         logger.info(log);
-        appendLogToDisplay(log,LoggingLevel.INFO);
+        appendLogToDisplay(log, LoggingLevel.INFO);
     }
 
     @Override
     public void debug(String log) {
         logger.debug(log);
-        appendLogToDisplay(log,LoggingLevel.DEBUG);
+        appendLogToDisplay(log, LoggingLevel.DEBUG);
     }
 
     @Override
     public void error(String log) {
         logger.error(log);
-        appendLogToDisplay(log,LoggingLevel.ERROR);
+        appendLogToDisplay(log, LoggingLevel.ERROR);
     }
 
-    private void appendLogToDisplay(String log , LoggingLevel loggingLevel)
-    {
-        if(window != null)
-            window.appendLog(String.format("%s - %s \n",loggingLevel,log));
-           // window.appendLog(String.format("%s %s %s - %s \n", getDate(),loggingLevel, loggerName,log));
+    private void appendLogToDisplay(String log, LoggingLevel loggingLevel) {
+        if (window != null) {
+            if (loggingLevel.equals(LoggingLevel.ERROR)) {
+                window.appendLog(String.format("%s - %s \n", loggingLevel, log));
+            } else {
+                window.appendLog(String.format("%s \n", log));
+            }
+        }
+        // window.appendLog(String.format("%s - %s \n",loggingLevel,log));
+        // window.appendLog(String.format("%s %s %s - %s \n", getDate(),loggingLevel, loggerName,log));
     }
 
     private String getDate() {

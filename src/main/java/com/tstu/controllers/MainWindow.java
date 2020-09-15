@@ -56,15 +56,16 @@ public class MainWindow {
             e.printStackTrace();
         }
     }
+
     @FXML
     void compile(ActionEvent event) {
         Compilier compilier = new Compilier();
         boolean isCompiled = compilier.compile(sourceCodeBox.getText());
-        if(isCompiled){
+        if (isCompiled) {
             resultBox.setText(CodeGenerator.generateCode());
             ExecuteButton.setVisible(true);
             compileStatusBox.appendText("Программа успешно скомпилировалась \n");
-        }else {
+        } else {
             compileStatusBox.appendText("Произошла ошибка компиляции \n");
             ExecuteButton.setVisible(false);
         }
@@ -76,8 +77,9 @@ public class MainWindow {
     void openFileDialog(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         File file = fileChooser.showOpenDialog(App.getPrimaryStage());
-        if(file != null) {
+        if (file != null) {
             sourceCodeBox.clear();
             resultBox.clear();
             compileStatusBox.clear();
@@ -93,7 +95,7 @@ public class MainWindow {
         try {
             Executor.execute();
         } catch (IOException | InterruptedException e) {
-           appendLog(e.getMessage());
+            appendLog(e.getMessage());
         }
     }
 

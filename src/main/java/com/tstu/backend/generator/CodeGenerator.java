@@ -1,5 +1,8 @@
 package com.tstu.backend.generator;
 
+import com.tstu.util.CustomLogger;
+import com.tstu.util.Logger;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,23 +11,28 @@ import java.util.Properties;
 
 public class CodeGenerator {
 
+    private static Logger logger = new CustomLogger(CodeGenerator.class.getName());
+
     private static StringBuilder assemblerCode = new StringBuilder();
 
     private static Properties appProps = new Properties();
 
     public static void addInstruction(String instruction) {
-        System.out.println(instruction);
         assemblerCode.append(instruction);
         assemblerCode.append('\n');
     }
 
     public static void generateFile() throws IOException {
+        logger.info("\n---Генерация кода---\n");
+        logger.info("Создание .asm файла");
         appProps.load(Objects.requireNonNull(CodeGenerator.class.getClassLoader().getResourceAsStream("application.properties")));
         File asmCode = new File(appProps.getProperty("asmEnviroment") + "/sample.asm");
         if (asmCode.exists()) asmCode.delete();
         FileWriter myWriter = new FileWriter(asmCode);
         myWriter.write(assemblerCode.toString());
         myWriter.close();
+        logger.info(".asm файл создан");
+        logger.info("Программа скомпилирована!");
     }
 
     public static String generateCode() {

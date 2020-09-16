@@ -34,7 +34,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void splitIntoCodeLines() {
-       // nameTable.recognizeAllIdentifiers(lexems);
+        // nameTable.recognizeAllIdentifiers(lexems);
 
         List<Keyword> codeLine = new ArrayList<>();
         for (int i = 0; i < lexems.size(); i++) {
@@ -137,7 +137,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                     break;
             }
         }
-
+        CodeGenerator.declareStackAndCodeSegments();
     }
 
     private void parseTypeDeclaration(List<Keyword> typeDeclaration) throws SyntaxAnalyzeException {

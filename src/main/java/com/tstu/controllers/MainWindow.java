@@ -69,7 +69,7 @@ public class MainWindow {
             compileStatusBox.appendText("Произошла ошибка компиляции \n");
             ExecuteButton.setVisible(false);
         }
-
+        CodeGenerator.clear();
     }
 
 

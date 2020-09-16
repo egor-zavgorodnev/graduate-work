@@ -22,6 +22,10 @@ public class CodeGenerator {
         assemblerCode.append('\n');
     }
 
+    public static void clear() {
+        assemblerCode = new StringBuilder();
+    }
+
     public static void generateFile() throws IOException {
         logger.info("\n---Генерация кода---\n");
         logger.info("Создание .asm файла");

@@ -49,6 +49,13 @@ public class ExpressionParser {
             case FALSE:
                 arguments.add(new Argument<>(nameTable.getIdentifier(expression.get(0).word), String.valueOf(value.lex.getValue())));
                 logger.info("Присваивание - " + expression.get(0).word + " = " + value.lex.getValue());
+                CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + value.word + "b");
+                break;
+            case NAME:
+                if (nameTable.getIdentifier(value.word).getCategory() != tCat.VAR) {
+                    CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + value.word);
+                }
+                CodeGenerator.addInstruction("mov " + expression.get(0).word + ", " + getVariableValue(value.word) + "b");
                 break;
             default:
                 throw new ExpressionAnalyzeException("Ожидается значение переменной");
@@ -69,15 +76,12 @@ public class ExpressionParser {
         if (expression.get(1).lex != Lexems.ASSIGN) {
             throw new ExpressionAnalyzeException("Ожидается присваивание");
         }
-
+        boolean willBeInverted = false;
         for (int i = 2; i < expression.size(); i++) {
             Operation currentOperation;
             switch (expression.get(i).lex) {
                 case NOT:
-                    argumentStack.push("not");
-                    currentOperation = new Operation(expression.get(i), 3);
-                    calculateOperation(currentOperation.getPriority());
-                    operationStack.push(currentOperation);
+                    willBeInverted = true;
                     break;
                 case AND:
                     currentOperation = new Operation(expression.get(i), 2);
@@ -92,15 +96,24 @@ public class ExpressionParser {
                     break;
                 case NAME:
                     argumentStack.push(getVariableValue(expression.get(i).word));
-                    CodeGenerator.addInstruction("mov ax," + argumentStack.peek() + "b");
+                    if (willBeInverted) {
+                        CodeGenerator.addInstruction("mov ax," + invert(argumentStack.peek()) + "b");
+                        willBeInverted = false;
+                    } else {
+                        CodeGenerator.addInstruction("mov ax," + argumentStack.peek() + "b");
+                    }
+
                     CodeGenerator.addInstruction("push ax");
                     break;
             }
         }
 
-
         calculateOperation(0);
 
+    }
+
+    private String invert(String value) {
+        return value.equals("0") ? "1" : "0";
     }
 
     private void calculateOperation(int minPriority) {
@@ -158,8 +171,7 @@ public class ExpressionParser {
             StringBuilder expr = new StringBuilder();
             expression.forEach(e -> expr.append(e.word));
             logger.info("\nРазбор выражения - " + expr);
-            CodeGenerator.declareStackAndCodeSegments();
-            arguments.forEach(a -> CodeGenerator.addInstruction("mov " + a.getVariable().getName() + "," + a.getValue() + "b"));
+            //arguments.forEach(a -> CodeGenerator.addInstruction("mov " + a.getVariable().getName() + "," + a.getValue() + "b"));
             calculateExpression();
             CodeGenerator.addInstruction("mov " + expression.get(0).word + ", ax");
         }

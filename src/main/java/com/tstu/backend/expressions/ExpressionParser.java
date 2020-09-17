@@ -62,8 +62,12 @@ public class ExpressionParser {
         }
     }
 
-    private String getVariableValue(String word) {
-        return arguments.stream().filter(v -> v.getVariable().getName().equals(word)).findFirst().get().getValue();
+    private String getVariableValue(String word) throws ExpressionAnalyzeException {
+        return arguments.stream()
+                .filter(v -> v.getVariable().getName().equals(word))
+                .findFirst()
+                .orElseThrow(()->new ExpressionAnalyzeException("Переменная не объявлена"))
+                .getValue();
     }
 
     private void calculateExpression() throws ExpressionAnalyzeException {

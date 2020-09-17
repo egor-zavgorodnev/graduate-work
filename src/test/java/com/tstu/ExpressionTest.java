@@ -120,21 +120,25 @@ public class ExpressionTest {
         init("res:=!!a\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
-    @Test(expected = LexicalAnalyzeException.class)
+
+    @Test(expected = ExpressionAnalyzeException.class)
     public void negativeTestNothingAfterAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
         init("res:= \n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
+
     @Test(expected = ExpressionAnalyzeException.class)
     public void negativeTestUnknownVariable() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
         init("res:=z\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
+
     @Test(expected = LexicalAnalyzeException.class)
     public void negativeTestUnknownSymbols1() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
         init("res:=a|b#c\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
+
     @Test(expected = LexicalAnalyzeException.class)
     public void negativeTestUnknownSymbols2() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
         init("res:=a%b&c\n");
@@ -146,6 +150,7 @@ public class ExpressionTest {
         init("res=a&b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
+
     @Test(expected = ExpressionAnalyzeException.class)
     public void negativeMissedEqualSigInAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
         init("res:a&b\n");

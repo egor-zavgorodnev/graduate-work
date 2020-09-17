@@ -66,7 +66,7 @@ public class ExpressionParser {
         return arguments.stream()
                 .filter(v -> v.getVariable().getName().equals(word))
                 .findFirst()
-                .orElseThrow(()->new ExpressionAnalyzeException("Переменная не объявлена"))
+                .orElseThrow(() -> new ExpressionAnalyzeException("Переменная не объявлена"))
                 .getValue();
     }
 
@@ -87,6 +87,11 @@ public class ExpressionParser {
             Operation currentOperation;
             switch (expression.get(i).lex) {
                 case NOT:
+                    if (i != expression.size() - 1) {
+                        if (expression.get(i + 1).lex.equals(Lexems.NOT)) {
+                            throw new ExpressionAnalyzeException("Ожидается значение");
+                        }
+                    }
                     willBeInverted = true;
                     break;
                 case AND:
@@ -188,7 +193,7 @@ public class ExpressionParser {
     }
 
     public void parseExpression() throws ExpressionAnalyzeException {
-        if (expression.size() == 4) {
+        if (expression.size() <= 4) {
             parseDeclaration();
         } else {
             StringBuilder expr = new StringBuilder();

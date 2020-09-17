@@ -15,6 +15,8 @@ mov ax,data
 mov ds,ax
 mov a,0b
 mov b,1b
+mov ax,0b
+push ax
 mov c, ax
 push ax
 mov ax, c

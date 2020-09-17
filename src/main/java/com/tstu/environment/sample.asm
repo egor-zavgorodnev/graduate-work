@@ -13,16 +13,8 @@ main proc
 assume cs:code,ds:data,ss:stk
 mov ax,data
 mov ds,ax
-mov a,1b
+mov a,0b
 mov b,1b
-mov ax,1b
-push ax
-mov ax,1b
-push ax
-pop bx
-pop ax
-and ax,bx
-push ax
 mov c, ax
 push ax
 mov ax, c

@@ -3,7 +3,7 @@ package com.tstu.backend.model.enums;
 public enum Lexems {
 
     NAME, TRUE('1'), FALSE('0'), NOT('!'), AND('&'), OR('|'), XOR('^'), ASSIGN(":="),
-    SEMI(','), COLON(':'), SPLITTER('\n');
+    SEMI(','), COLON(':'), SPLITTER('\n'), LEFT_BRACKET('('), RIGHT_BRACKET(')');
 
     private char value;
     private String stringValue;

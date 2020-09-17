@@ -81,6 +81,14 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     addKeyword(currentSymbol, Lexems.SPLITTER);
                     logger.info("\\n" + "(перенос строки)");
                     continue;
+                case '(':
+                    addKeyword(currentSymbol, Lexems.LEFT_BRACKET);
+                    logger.info(symbols[i] + "(левая скобка)");
+                    continue;
+                case ')':
+                    addKeyword(currentSymbol, Lexems.RIGHT_BRACKET);
+                    logger.info(symbols[i] + "(правая скобка)");
+                    continue;
             }
 
             /* two symbol keywords */

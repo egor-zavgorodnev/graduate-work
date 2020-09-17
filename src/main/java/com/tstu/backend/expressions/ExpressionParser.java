@@ -77,6 +77,8 @@ public class ExpressionParser {
             throw new ExpressionAnalyzeException("Ожидается присваивание");
         }
         boolean willBeInverted = false;
+        //int depth = 0;
+        boolean needValue = true;
         for (int i = 2; i < expression.size(); i++) {
             Operation currentOperation;
             switch (expression.get(i).lex) {
@@ -84,17 +86,28 @@ public class ExpressionParser {
                     willBeInverted = true;
                     break;
                 case AND:
-                    currentOperation = new Operation(expression.get(i), 2);
+                    if (needValue) {
+                        throw new ExpressionAnalyzeException("Ожидается операция");
+                    }
+                    currentOperation = new Operation(expression.get(i), 2); //+ depth
                     calculateOperation(currentOperation.getPriority());
                     operationStack.push(currentOperation);
+                    needValue = true;
                     break;
                 case OR:
                 case XOR:
-                    currentOperation = new Operation(expression.get(i), 1);
+                    if (needValue) {
+                        throw new ExpressionAnalyzeException("Ожидается операция");
+                    }
+                    currentOperation = new Operation(expression.get(i), 1); //+ depth
                     calculateOperation(currentOperation.getPriority());
                     operationStack.push(currentOperation);
+                    needValue = true;
                     break;
                 case NAME:
+                    if (!needValue) {
+                        throw new ExpressionAnalyzeException("Ожидается значение");
+                    }
                     argumentStack.push(getVariableValue(expression.get(i).word));
                     if (willBeInverted) {
                         CodeGenerator.addInstruction("mov ax," + invert(argumentStack.peek()) + "b");
@@ -104,6 +117,12 @@ public class ExpressionParser {
                     }
 
                     CodeGenerator.addInstruction("push ax");
+                    needValue = false;
+                    break;
+                case LEFT_BRACKET:
+                    // depth = 10;
+                case RIGHT_BRACKET:
+                    // depth = 0;
                     break;
             }
         }
@@ -129,7 +148,6 @@ public class ExpressionParser {
             switch (currentOperation.getSign().lex) {
                 case NOT:
                     arg1 = argumentStack.pop();
-                    arg2 = argumentStack.pop();
                     logger.info("!" + arg1);
                     argumentStack.push("expr");
                     break;
@@ -154,6 +172,7 @@ public class ExpressionParser {
                     logger.info(arg1 + " & " + arg2);
                     argumentStack.push("expr");
                     break;
+
             }
 
             if (currentOperation.getPriority() >= minPriority) {
@@ -171,10 +190,8 @@ public class ExpressionParser {
             StringBuilder expr = new StringBuilder();
             expression.forEach(e -> expr.append(e.word));
             logger.info("\nРазбор выражения - " + expr);
-            //arguments.forEach(a -> CodeGenerator.addInstruction("mov " + a.getVariable().getName() + "," + a.getValue() + "b"));
             calculateExpression();
             CodeGenerator.addInstruction("mov " + expression.get(0).word + ", ax");
         }
-
     }
 }

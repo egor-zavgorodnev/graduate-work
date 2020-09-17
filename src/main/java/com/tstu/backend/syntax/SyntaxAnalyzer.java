@@ -153,12 +153,14 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
     }
 
-    public void checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
+    public boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
         logger.info("\n---Синтаксический анализ---\n");
         splitIntoCodeLines();
         parseVariableDeclaration();
         parseVariableAssign();
         logger.info("\nOK!");
+
+        return true;
     }
 
 }

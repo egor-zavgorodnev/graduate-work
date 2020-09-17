@@ -4,5 +4,5 @@ import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
 
 public interface ISyntaxAnalyzer {
-    void checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException;
+    boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException;
 }

@@ -71,7 +71,24 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void parseVariableAssign() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
-        int beginIndex = 1;
+        //int beginIndex = 1;
+
+        int beginIndex = 0;
+
+        if (codeLines.stream().filter(e -> e.get(0).word.equals(Command.BEGIN.getName())).count() > 1 ||
+                codeLines.stream().filter(e -> e.get(0).word.equals(Command.END.getName())).count() > 1) {
+            throw new SyntaxAnalyzeException("BEGIN или END не должен встречатся больше 1 раза");
+        }
+
+        for (List<Keyword> codeline : codeLines) {
+            if (!codeline.get(0).word.equals(Command.BEGIN.getName())) {
+                beginIndex++;
+            } else break;
+        }
+
+        if (beginIndex == codeLines.size()) {
+            throw new SyntaxAnalyzeException("Пропущена команда \"END\" ");
+        }
 
         int endIndex = 0;
         for (List<Keyword> codeline : codeLines) {
@@ -80,8 +97,13 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
             } else break;
         }
 
+
         if (endIndex == codeLines.size()) {
             throw new SyntaxAnalyzeException("Пропущена команда \"END\" ");
+        }
+
+        if (beginIndex > endIndex) {
+            throw new SyntaxAnalyzeException("BEGIN встречается раньше END");
         }
 
         List<List<Keyword>> mainArea = codeLines.subList(beginIndex + 1, endIndex);

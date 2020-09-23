@@ -3,5 +3,8 @@ Begin
 a:=0
 b:=1
 c:= !a | !b & a | b
+If c != 0 Then
+c:= 0
+Endif
 Print c
 End

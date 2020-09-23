@@ -1,9 +1,13 @@
 package com.tstu.backend.syntax;
 
+import com.tstu.backend.IConditionParser;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
+import com.tstu.backend.exceptions.ConditionAnalyzeException;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
+import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
+import com.tstu.backend.expressions.ConditionParser;
 import com.tstu.backend.expressions.ExpressionParser;
 import com.tstu.backend.generator.CodeGenerator;
 import com.tstu.backend.model.Identifier;
@@ -34,8 +38,6 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void splitIntoCodeLines() {
-        // nameTable.recognizeAllIdentifiers(lexems);
-
         List<Keyword> codeLine = new ArrayList<>();
         for (int i = 0; i < lexems.size(); i++) {
 
@@ -49,7 +51,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         }
     }
 
-    private void parseVariableDeclaration() throws SyntaxAnalyzeException {
+    private void parseVariableDeclaration() throws SyntaxAnalyzeException, LexicalAnalyzeException {
         List<Keyword> varDeclareCodeLine = codeLines.get(0);
 
         int colonIndex = 0;
@@ -70,50 +72,62 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         parseTypeDeclaration(typeDeclaration);
     }
 
-    private void parseVariableAssign() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
-        //int beginIndex = 1;
+    private List<List<Keyword>> singleOutPartOfCode(Command start, Command end) throws SyntaxAnalyzeException {
+        int startIndex = 0;
 
-        int beginIndex = 0;
-
-        if (codeLines.stream().filter(e -> e.get(0).word.equals(Command.BEGIN.getName())).count() > 1 ||
-                codeLines.stream().filter(e -> e.get(0).word.equals(Command.END.getName())).count() > 1) {
-            throw new SyntaxAnalyzeException("BEGIN или END не должен встречатся больше 1 раза");
+        if (codeLines.stream().filter(e -> e.get(0).word.equals(start.getName())).count() > 1 ||
+                codeLines.stream().filter(e -> e.get(0).word.equals(end.getName())).count() > 1) {
+            throw new SyntaxAnalyzeException(start.getName() + " или " + end.getName() + " не должны встречатся больше 1 раза");
         }
 
         for (List<Keyword> codeline : codeLines) {
-            if (!codeline.get(0).word.equals(Command.BEGIN.getName())) {
-                beginIndex++;
+            if (!codeline.get(0).word.equals(start.getName())) {
+                startIndex++;
             } else break;
         }
 
-        if (beginIndex == codeLines.size()) {
-            throw new SyntaxAnalyzeException("Пропущена команда \"END\" ");
+        if (startIndex == codeLines.size()) {
+            throw new SyntaxAnalyzeException("Пропущена команда " + start.getName());
         }
 
         int endIndex = 0;
         for (List<Keyword> codeline : codeLines) {
-            if (!codeline.get(0).word.equals(Command.END.getName())) {
+            if (!codeline.get(0).word.equals(end.getName())) {
                 endIndex++;
             } else break;
         }
 
 
         if (endIndex == codeLines.size()) {
-            throw new SyntaxAnalyzeException("Пропущена команда \"END\" ");
+            throw new SyntaxAnalyzeException("Пропущена команда " + end.getName());
         }
 
-        if (beginIndex > endIndex) {
-            throw new SyntaxAnalyzeException("BEGIN встречается раньше END");
+        if (startIndex > endIndex) {
+            throw new SyntaxAnalyzeException(end.getName() + " встречается раньше " + start.getName());
         }
 
-        List<List<Keyword>> mainArea = codeLines.subList(beginIndex + 1, endIndex);
+        return codeLines.subList(startIndex, endIndex + 1);
+    }
 
-        for (List<Keyword> codeline : mainArea) {
+    private void parseProcedureCode() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException {
+
+
+        List<List<Keyword>> mainArea = singleOutPartOfCode(Command.BEGIN, Command.END);
+
+
+        for (int i = 0; i < mainArea.size(); i++) {
+            List<Keyword> codeline = mainArea.get(i);
             Identifier currentIdentifier = nameTable.getIdentifier(codeline.get(0).word);
             switch (currentIdentifier.getCategory()) {
                 case COMMAND:
                     if (currentIdentifier.getName().equals(Command.PRINT.getName())) {
                         parsePrintCommand(codeline);
+                    }
+                    if (currentIdentifier.getName().equals(Command.IF.getName())) {
+                        List<List<Keyword>> conditionArea = singleOutPartOfCode(Command.IF, Command.ENDIF);
+                        IConditionParser conditionParser = new ConditionParser(conditionArea, nameTable);
+                        conditionParser.parseCondition();
+                        i += conditionArea.size() - 1;
                     }
                     break;
                 case VAR:
@@ -131,12 +145,12 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         CodeGenerator.addInstruction("pop ax");
     }
 
-    private void parseExpression(List<Keyword> expression) throws ExpressionAnalyzeException {
+    private void parseExpression(List<Keyword> expression) throws ExpressionAnalyzeException, LexicalAnalyzeException {
         ExpressionParser expressionParser = new ExpressionParser(expression, nameTable);
         expressionParser.parseExpression();
     }
 
-    private void parseVarEnumeration(List<Keyword> varEnumeration) throws SyntaxAnalyzeException {
+    private void parseVarEnumeration(List<Keyword> varEnumeration) throws SyntaxAnalyzeException, LexicalAnalyzeException {
         if (!nameTable.getIdentifier(varEnumeration.get(0).word).getName().equals(Command.VAR.getName())) {
             throw new SyntaxAnalyzeException("Ключевое слово Var не найдено");
         }
@@ -162,7 +176,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         CodeGenerator.declareStackAndCodeSegments();
     }
 
-    private void parseTypeDeclaration(List<Keyword> typeDeclaration) throws SyntaxAnalyzeException {
+    private void parseTypeDeclaration(List<Keyword> typeDeclaration) throws SyntaxAnalyzeException, LexicalAnalyzeException {
         Identifier dataTypeIdentifier = nameTable.getIdentifier(typeDeclaration.get(1).word);
         if (!dataTypeIdentifier.getCategory().equals(tCat.TYPE)) {
             throw new SyntaxAnalyzeException("Тип данных не найден");
@@ -175,11 +189,11 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
     }
 
-    public boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException {
+    public boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException {
         logger.info("\n---Синтаксический анализ---\n");
         splitIntoCodeLines();
         parseVariableDeclaration();
-        parseVariableAssign();
+        parseProcedureCode();
         logger.info("\nOK!");
 
         return true;

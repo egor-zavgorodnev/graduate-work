@@ -38,10 +38,10 @@ public class IdentifierTable implements com.tstu.backend.INameTable {
     }
 
     @Override
-    public Identifier getIdentifier(String name) {
+    public Identifier getIdentifier(String name) throws LexicalAnalyzeException {
         return identifiers.stream()
                 .filter(i -> i.getName().equals(name))
-                .findAny().orElseThrow();
+                .findAny().orElseThrow(() -> new LexicalAnalyzeException("Не удалось получить идентификатор"));
     }
 
     @Override

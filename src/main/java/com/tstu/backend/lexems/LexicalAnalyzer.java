@@ -49,9 +49,9 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
             switch (symbols[i]) {
                 case ' ':
                     continue;
-                case '!':
-                    addKeyword(currentSymbol, Lexems.NOT);
-                    logger.info(symbols[i] + "(NOT)");
+                case '=':
+                    addKeyword(currentSymbol, Lexems.EQUAL);
+                    logger.info(symbols[i] + "(равно)");
                     continue;
                 case '&':
                     addKeyword(currentSymbol, Lexems.AND);
@@ -121,6 +121,24 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 } else {
                     addKeyword(currentSymbol, Lexems.COLON);
                     logger.info(symbols[i] + "(двоеточие)");
+                }
+                continue;
+            }
+            // !, !=
+            if (symbols[i] == '!') {
+                if (i == symbols.length - 1) {
+                    addKeyword(currentSymbol, Lexems.NOT);
+                    logger.info(symbols[i] + "(NOT)");
+                    continue;
+                }
+                if (symbols[i + 1] == '=') {
+                    String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
+                    addKeyword(twoSymbolsWord, Lexems.NOT_EQUAL);
+                    logger.info(twoSymbolsWord + "(не равно)");
+                    i++;
+                } else {
+                    addKeyword(currentSymbol, Lexems.NOT);
+                    logger.info(symbols[i] + "(NOT)");
                 }
                 continue;
             }

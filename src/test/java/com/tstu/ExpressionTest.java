@@ -3,6 +3,7 @@ package com.tstu;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
+import com.tstu.backend.exceptions.ConditionAnalyzeException;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
@@ -36,123 +37,123 @@ public class ExpressionTest {
     }
 
     @Test
-    public void positiveTestAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
 
     @Test
-    public void positiveTestOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a|b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test
-    public void positiveTestAndOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestAndOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a&b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test
-    public void positiveTestAndOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestAndOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a&b|c\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test
-    public void positiveTestNotOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestNotOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=!a\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test
-    public void positiveTestNotOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestNotOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=!a|b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test
-    public void positiveTestNotAndOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestNotAndOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=!a&b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test
-    public void positiveTestNotAndNotNotOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestNotAndNotNotOrOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=!a&!b|!c\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test
-    public void positiveTestOrNotAndOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void positiveTestOrNotAndOperation() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a&!b|c\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeTestTwoOperationOrInARow() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestTwoOperationOrInARow() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a||\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeTestTwoOperationAndInARow() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestTwoOperationAndInARow() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a&&\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeTestTwoOperationOrInARowAndVariable() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestTwoOperationOrInARowAndVariable() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a||b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeTestTwoOperationAndInARowAndVariable() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestTwoOperationAndInARowAndVariable() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a&&b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     //TODO хз по логике правильно конечно , а по коду по идеии ошибка должна быть
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeTestTwoNotOperationInARow() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestTwoNotOperationInARow() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=!!a\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeTestNothingAfterAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestNothingAfterAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:= \n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeTestUnknownVariable() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestUnknownVariable() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=z\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = LexicalAnalyzeException.class)
-    public void negativeTestUnknownSymbols1() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestUnknownSymbols1() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a|b#c\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = LexicalAnalyzeException.class)
-    public void negativeTestUnknownSymbols2() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeTestUnknownSymbols2() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:=a%b&c\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = LexicalAnalyzeException.class)
-    public void negativeMissedСolonInAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeMissedСolonInAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res=a&b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }
 
     @Test(expected = ExpressionAnalyzeException.class)
-    public void negativeMissedEqualSigInAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException {
+    public void negativeMissedEqualSigInAssign() throws LexicalAnalyzeException, ExpressionAnalyzeException, SyntaxAnalyzeException, ConditionAnalyzeException {
         init("res:a&b\n");
         Assert.assertTrue(syntaxAnalyzer.checkSyntax());
     }

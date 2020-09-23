@@ -15,9 +15,26 @@ mov ax,data
 mov ds,ax
 mov a,0b
 mov b,1b
-mov d, 0b
+mov ax,0b
 push ax
-mov ax, c
+mov ax,1b
+push ax
+pop bx
+pop ax
+or ax,bx
+push ax
+mov c, ax
+mov ax,c
+mov bx,0b
+cmp ax,bx
+je if
+jmp cont
+if: 
+mov b,0b
+jmp cont
+cont:
+push ax
+mov ax, b
 CALL PRINT
 pop ax
 mov ax,4c00h

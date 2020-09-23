@@ -3,6 +3,7 @@ package com.tstu.backend.compilier;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
+import com.tstu.backend.exceptions.ConditionAnalyzeException;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.exceptions.SyntaxAnalyzeException;
@@ -47,7 +48,7 @@ public class Compilier {
 
         try {
             syntaxAnalyzer.checkSyntax();
-        } catch (ExpressionAnalyzeException | SyntaxAnalyzeException e) {
+        } catch (ExpressionAnalyzeException | SyntaxAnalyzeException | ConditionAnalyzeException | LexicalAnalyzeException e) {
             logger.error(e.getMessage());
             return false;
         }

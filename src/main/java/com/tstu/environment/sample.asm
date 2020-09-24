@@ -21,20 +21,28 @@ mov ax,1b
 push ax
 pop bx
 pop ax
-or ax,bx
+and ax,bx
 push ax
-mov c, ax
+mov ff, ax
 mov ax,c
-mov bx,0b
+mov bx,a
 cmp ax,bx
 je if
 jmp cont
 if: 
-mov b,0b
+mov ax,0b
+push ax
+mov ax,1b
+push ax
+pop bx
+pop ax
+or ax,bx
+push ax
+mov c, ax
 jmp cont
 cont:
 push ax
-mov ax, b
+mov ax, c
 CALL PRINT
 pop ax
 mov ax,4c00h

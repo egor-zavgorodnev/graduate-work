@@ -3,18 +3,15 @@ package com.tstu.backend.syntax;
 import com.tstu.backend.IConditionParser;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
-import com.tstu.backend.exceptions.ConditionAnalyzeException;
-import com.tstu.backend.exceptions.ExpressionAnalyzeException;
-import com.tstu.backend.exceptions.LexicalAnalyzeException;
-import com.tstu.backend.exceptions.SyntaxAnalyzeException;
-import com.tstu.backend.expressions.ConditionParser;
-import com.tstu.backend.expressions.ExpressionParser;
+import com.tstu.backend.exceptions.*;
 import com.tstu.backend.generator.CodeGenerator;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
 import com.tstu.backend.model.enums.Lexems;
 import com.tstu.backend.model.enums.tCat;
+import com.tstu.backend.structures.ConditionParser;
+import com.tstu.backend.structures.ExpressionParser;
 import com.tstu.util.CustomLogger;
 import com.tstu.util.Logger;
 
@@ -30,17 +27,18 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     private INameTable nameTable;
 
     private List<List<Keyword>> codeLines;
+    private List<Identifier> declaratedVariable;
 
     public SyntaxAnalyzer(List<Keyword> lexems, INameTable nameTable) {
         this.lexems = lexems;
         this.nameTable = nameTable;
         codeLines = new ArrayList<>();
+        declaratedVariable = new ArrayList<>();
     }
 
     private void splitIntoCodeLines() {
         List<Keyword> codeLine = new ArrayList<>();
         for (int i = 0; i < lexems.size(); i++) {
-
             if (lexems.get(i).lex != Lexems.SPLITTER) {
                 codeLine.add(lexems.get(i));
             } else {
@@ -75,9 +73,9 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     private List<List<Keyword>> singleOutPartOfCode(Command start, Command end) throws SyntaxAnalyzeException {
         int startIndex = 0;
 
-        if (codeLines.stream().filter(e -> e.get(0).word.equals(start.getName())).count() > 1 ||
-                codeLines.stream().filter(e -> e.get(0).word.equals(end.getName())).count() > 1) {
-            throw new SyntaxAnalyzeException(start.getName() + " или " + end.getName() + " не должны встречатся больше 1 раза");
+        if (codeLines.stream().filter(e -> e.get(0).word.equals(start.getName())).count() !=
+                codeLines.stream().filter(e -> e.get(0).word.equals(end.getName())).count()) {
+            throw new SyntaxAnalyzeException(" Не найдена открывающая или закрывающая команда");
         }
 
         for (List<Keyword> codeline : codeLines) {
@@ -109,11 +107,9 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
         return codeLines.subList(startIndex, endIndex + 1);
     }
 
-    private void parseProcedureCode() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException {
-
+    private void parseProcedureCode() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException, WhileAnalyzeException {
 
         List<List<Keyword>> mainArea = singleOutPartOfCode(Command.BEGIN, Command.END);
-
 
         for (int i = 0; i < mainArea.size(); i++) {
             List<Keyword> codeline = mainArea.get(i);
@@ -125,7 +121,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                     }
                     if (currentIdentifier.getName().equals(Command.IF.getName())) {
                         List<List<Keyword>> conditionArea = singleOutPartOfCode(Command.IF, Command.ENDIF);
-                        IConditionParser conditionParser = new ConditionParser(conditionArea, nameTable);
+                        IConditionParser conditionParser = new ConditionParser(conditionArea, declaratedVariable,  nameTable);
                         conditionParser.parseCondition();
                         i += conditionArea.size() - 1;
                     }
@@ -146,7 +142,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
     }
 
     private void parseExpression(List<Keyword> expression) throws ExpressionAnalyzeException, LexicalAnalyzeException {
-        ExpressionParser expressionParser = new ExpressionParser(expression, nameTable);
+        ExpressionParser expressionParser = new ExpressionParser(expression, declaratedVariable, nameTable);
         expressionParser.parseExpression();
     }
 
@@ -165,6 +161,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                     if (nameTable.getIdentifier(varEnumeration.get(i).word).getCategory() != tCat.VAR) {
                         throw new SyntaxAnalyzeException("Ожидается переменная");
                     }
+                    declaratedVariable.add(nameTable.getIdentifier(varEnumeration.get(i).word));
                     CodeGenerator.addInstruction(varEnumeration.get(i).word + " dw 0b");
                     expected = Lexems.SEMI;
                     break;
@@ -189,7 +186,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
 
     }
 
-    public boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException {
+    public boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException, WhileAnalyzeException {
         logger.info("\n---Синтаксический анализ---\n");
         splitIntoCodeLines();
         parseVariableDeclaration();

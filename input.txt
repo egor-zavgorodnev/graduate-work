@@ -2,9 +2,9 @@ Var a,b,c :Logical
 Begin
 a:=0
 b:=1
-c:= !a | !b & a | b
-If c != 0 Then
-c:= 0
+c:= a & b
+If c = a Then
+c:= a | b
 Endif
 Print c
 End

@@ -11,4 +11,5 @@ public interface INameTable {
     void recognizeAllIdentifiers(List<Keyword> keywords);
     Identifier getIdentifier(String name) throws LexicalAnalyzeException;
     Set<Identifier> getIdentifiers();
+    void clear();
 }

@@ -3,10 +3,8 @@ package com.tstu.backend.compilier;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
-import com.tstu.backend.exceptions.ConditionAnalyzeException;
-import com.tstu.backend.exceptions.ExpressionAnalyzeException;
-import com.tstu.backend.exceptions.LexicalAnalyzeException;
-import com.tstu.backend.exceptions.SyntaxAnalyzeException;
+import com.tstu.backend.exceptions.*;
+import com.tstu.backend.structures.ArgumentList;
 import com.tstu.backend.generator.CodeGenerator;
 import com.tstu.backend.lexems.IdentifierTable;
 import com.tstu.backend.lexems.LexicalAnalyzer;
@@ -48,7 +46,7 @@ public class Compilier {
 
         try {
             syntaxAnalyzer.checkSyntax();
-        } catch (ExpressionAnalyzeException | SyntaxAnalyzeException | ConditionAnalyzeException | LexicalAnalyzeException e) {
+        } catch (ExpressionAnalyzeException | SyntaxAnalyzeException | ConditionAnalyzeException | LexicalAnalyzeException | WhileAnalyzeException e) {
             logger.error(e.getMessage());
             return false;
         }
@@ -59,12 +57,14 @@ public class Compilier {
 
         try {
             CodeGenerator.generateFile();
-            //Executor.execute();
         } catch (IOException ex) {
             logger.error("Ошибка записи файла " + ex.getMessage());
             ex.printStackTrace();
             return false;
         }
+
+        ArgumentList.clear();
+        nameTable.clear();
 
         return true;
     }

@@ -1,10 +1,7 @@
 package com.tstu.backend;
 
-import com.tstu.backend.exceptions.ConditionAnalyzeException;
-import com.tstu.backend.exceptions.ExpressionAnalyzeException;
-import com.tstu.backend.exceptions.LexicalAnalyzeException;
-import com.tstu.backend.exceptions.SyntaxAnalyzeException;
+import com.tstu.backend.exceptions.*;
 
 public interface ISyntaxAnalyzer {
-    boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException;
+    boolean checkSyntax() throws SyntaxAnalyzeException, ExpressionAnalyzeException, ConditionAnalyzeException, LexicalAnalyzeException, WhileAnalyzeException;
 }

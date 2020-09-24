@@ -75,4 +75,9 @@ public class IdentifierTable implements com.tstu.backend.INameTable {
     public Set<Identifier> getIdentifiers() {
         return identifiers;
     }
+
+    @Override
+    public void clear() {
+        identifiers.clear();
+    }
 }

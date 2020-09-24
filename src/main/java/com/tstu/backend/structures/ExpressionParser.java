@@ -1,10 +1,11 @@
-package com.tstu.backend.expressions;
+package com.tstu.backend.structures;
 
 import com.tstu.backend.INameTable;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.generator.CodeGenerator;
 import com.tstu.backend.model.Argument;
+import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.Operation;
 import com.tstu.backend.model.enums.Lexems;
@@ -22,18 +23,26 @@ public class ExpressionParser {
     private Stack<String> argumentStack;
 
     private List<Keyword> expression;
+    private List<Identifier> declaratedVariable;
 
     private Logger logger = new CustomLogger(ExpressionParser.class.getName());
 
-
-    public ExpressionParser(List<Keyword> expression, INameTable nameTable) {
+    public ExpressionParser(List<Keyword> expression, List<Identifier> declaratedVariable, INameTable nameTable) {
         this.expression = expression;
         this.nameTable = nameTable;
+        this.declaratedVariable = declaratedVariable;
     }
 
+
     private void parseDeclaration() throws ExpressionAnalyzeException, LexicalAnalyzeException {
-        if (nameTable.getIdentifier(expression.get(0).word).getCategory() != tCat.VAR) {
+
+        Identifier variable = nameTable.getIdentifier(expression.get(0).word);
+
+        if (variable.getCategory() != tCat.VAR) {
             throw new ExpressionAnalyzeException("Ожидается переменная");
+        }
+        if (declaratedVariable.stream().noneMatch(v -> v.equals(variable))) {
+            throw new ExpressionAnalyzeException("Переменная не объявлена");
         }
         if (expression.get(1).lex != Lexems.ASSIGN) {
             throw new ExpressionAnalyzeException("Ожидается присваивание");
@@ -61,8 +70,13 @@ public class ExpressionParser {
         operationStack = new Stack<>();
         argumentStack = new Stack<>();
 
-        if (nameTable.getIdentifier(expression.get(0).word).getCategory() != tCat.VAR) {
+        Identifier variable = nameTable.getIdentifier(expression.get(0).word);
+
+        if (variable.getCategory() != tCat.VAR) {
             throw new ExpressionAnalyzeException("Ожидается переменная");
+        }
+        if (declaratedVariable.stream().noneMatch(v -> v.equals(variable))) {
+            throw new ExpressionAnalyzeException("Переменная не объявлена");
         }
         if (expression.get(1).lex != Lexems.ASSIGN) {
             throw new ExpressionAnalyzeException("Ожидается присваивание");

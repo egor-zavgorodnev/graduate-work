@@ -1,4 +1,4 @@
-package com.tstu.backend.expressions;
+package com.tstu.backend.structures;
 
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.model.Argument;
@@ -20,6 +20,10 @@ public class ArgumentList {
                 .findFirst()
                 .orElseThrow(() -> new ExpressionAnalyzeException("Переменная не объявлена"))
                 .getValue();
+    }
+
+    public static void clear() {
+        arguments.clear();
     }
 
     public static void addArgument(Argument<String> argument) {

@@ -1,4 +1,4 @@
-package com.tstu.backend.expressions;
+package com.tstu.backend.structures;
 
 import com.tstu.backend.IConditionParser;
 import com.tstu.backend.INameTable;
@@ -6,6 +6,7 @@ import com.tstu.backend.exceptions.ConditionAnalyzeException;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.generator.CodeGenerator;
+import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
 import com.tstu.backend.model.enums.Lexems;
@@ -17,10 +18,12 @@ public class ConditionParser implements IConditionParser {
 
     private List<List<Keyword>> conditionArea;
     private INameTable nameTable;
+    private List<Identifier> declaratedVariable;
 
-    public ConditionParser(List<List<Keyword>> conditionArea, INameTable nameTable) {
+    public ConditionParser(List<List<Keyword>> conditionArea, List<Identifier> declaratedVariable, INameTable nameTable) {
         this.conditionArea = conditionArea;
         this.nameTable = nameTable;
+        this.declaratedVariable = declaratedVariable;
     }
 
     @Override
@@ -30,13 +33,13 @@ public class ConditionParser implements IConditionParser {
 
         switch (conditionArea.size()) {
             case 3:
+            case 2:
                 parseIfThen(conditionArea.get(0));
                 CodeGenerator.addInstruction("if: ");
-                expressionParser = new ExpressionParser(conditionArea.get(1), nameTable);
+                expressionParser = new ExpressionParser(conditionArea.get(1), declaratedVariable, nameTable);
                 expressionParser.parseExpression();
                 CodeGenerator.addInstruction("jmp cont");
                 CodeGenerator.addInstruction("cont:");
-
                 break;
             case 5:
                 parseIfThen(conditionArea.get(0));

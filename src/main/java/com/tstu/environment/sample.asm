@@ -29,8 +29,8 @@ mov c, ax
 mov ax,c
 mov bx,a
 cmp ax,bx
-jne if
-je else
+je if
+jne else
 if: 
 mov ax,0b
 push ax

@@ -53,29 +53,25 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     addKeyword(currentSymbol, Lexems.EQUAL);
                     logger.info(symbols[i] + "(равно)");
                     continue;
-                case '&':
-                    addKeyword(currentSymbol, Lexems.AND);
-                    logger.info(symbols[i] + "(AND)");
+                case '+':
+                    addKeyword(currentSymbol, Lexems.ADDITION);
+                    logger.info(symbols[i] + "(сложение)");
                     continue;
-                case '|':
-                    addKeyword(currentSymbol, Lexems.OR);
-                    logger.info(symbols[i] + "(OR)");
-                    continue;
-                case '^':
-                    addKeyword(currentSymbol, Lexems.XOR);
-                    logger.info(symbols[i] + "(XOR)");
+                case '-':
+                    addKeyword(currentSymbol, Lexems.SUBSTRACTION);
+                    logger.info(symbols[i] + "(вычитание)");
                     continue;
                 case ',':
                     addKeyword(currentSymbol, Lexems.SEMI);
                     logger.info(symbols[i] + "(запятая)");
                     continue;
-                case '0':
-                    addKeyword(currentSymbol, Lexems.FALSE);
-                    logger.info(symbols[i] + "(ложь)");
+                case '*':
+                    addKeyword(currentSymbol, Lexems.MULTIPLICATION);
+                    logger.info(symbols[i] + "(умножение)");
                     continue;
-                case '1':
-                    addKeyword(currentSymbol, Lexems.TRUE);
-                    logger.info(symbols[i] + "(истина)");
+                case '/':
+                    addKeyword(currentSymbol, Lexems.DIVISION);
+                    logger.info(symbols[i] + "(деление)");
                     continue;
                 case '\n':
                     addKeyword(currentSymbol, Lexems.SPLITTER);
@@ -124,27 +120,22 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 }
                 continue;
             }
-            // !, !=
-            if (symbols[i] == '!') {
-                if (i == symbols.length - 1) {
-                    addKeyword(currentSymbol, Lexems.NOT);
-                    logger.info(symbols[i] + "(NOT)");
-                    continue;
-                }
-                if (symbols[i + 1] == '=') {
-                    String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
-                    addKeyword(twoSymbolsWord, Lexems.NOT_EQUAL);
-                    logger.info(twoSymbolsWord + "(не равно)");
+            // numbers
+            if (Character.isDigit(symbols[i]))
+            {
+                StringBuilder number = new StringBuilder();
+                while (Character.isDigit(symbols[i]))
+                {
+                    number.append(symbols[i]);
+                    if (i == symbols.length - 1) break;
                     i++;
-                } else {
-                    addKeyword(currentSymbol, Lexems.NOT);
-                    logger.info(symbols[i] + "(NOT)");
                 }
+                i--;
+                addKeyword(number.toString(), Lexems.NUMBER);
+                logger.info(number.toString() + "(число)");
                 continue;
             }
-            if (Character.isDigit(symbols[i])) {
-                throw new LexicalAnalyzeException("Недопустимый символ: Из цифр только 0 или 1 (логическое значение)");
-            }
+
             throw new LexicalAnalyzeException("Недопустимый символ : " + symbols[i]);
         }
 

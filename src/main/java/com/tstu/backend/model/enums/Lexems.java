@@ -2,7 +2,7 @@ package com.tstu.backend.model.enums;
 
 public enum Lexems {
 
-    NAME, TRUE('1'), FALSE('0'), NOT('!'), AND('&'), OR('|'), XOR('^'), ASSIGN(":="),
+    NAME, NUMBER,ADDITION('+'), SUBSTRACTION('-'), MULTIPLICATION('*'), DIVISION('/'), ASSIGN(":="),
     EQUAL('='),NOT_EQUAL("!="), SEMI(','), COLON(':'), SPLITTER('\n'), LEFT_BRACKET('('), RIGHT_BRACKET(')');
 
     private char value;

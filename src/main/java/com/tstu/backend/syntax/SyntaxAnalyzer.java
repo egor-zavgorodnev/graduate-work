@@ -162,7 +162,7 @@ public class SyntaxAnalyzer implements ISyntaxAnalyzer {
                         throw new SyntaxAnalyzeException("Ожидается переменная");
                     }
                     declaratedVariable.add(nameTable.getIdentifier(varEnumeration.get(i).word));
-                    CodeGenerator.addInstruction(varEnumeration.get(i).word + " dw 0b");
+                    CodeGenerator.addInstruction(varEnumeration.get(i).word + " dw 0");
                     expected = Lexems.SEMI;
                     break;
                 case SEMI:

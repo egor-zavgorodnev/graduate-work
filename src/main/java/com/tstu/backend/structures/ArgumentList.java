@@ -21,11 +21,14 @@ public class ArgumentList {
                 .orElseThrow(() -> new ExpressionAnalyzeException("Переменная не объявлена"))
                 .getValue();
 
-        if (value.equals("0b") || value.equals("1b")) {
+        try {
+            Integer.parseInt(value);
             return value;
-        } else {
+        }
+        catch (NumberFormatException e) {
             return getVariableValue(value);
         }
+
     }
 
     public static void clear() {

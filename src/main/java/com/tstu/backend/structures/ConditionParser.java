@@ -87,8 +87,7 @@ public class ConditionParser implements IConditionParser {
         }
 
         switch (ifThenCodeLine.get(3).lex) {
-            case TRUE:
-            case FALSE:
+            case NUMBER:
                 break;
             case NAME:
                 if (!nameTable.getIdentifier(ifThenCodeLine.get(3).word).getCategory().equals(tCat.VAR)) {

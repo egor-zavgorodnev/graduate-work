@@ -49,11 +49,10 @@ public class ExpressionParser {
         }
         Keyword sourceVariable = expression.get(2);
         switch (sourceVariable.lex) {
-            case TRUE:
-            case FALSE:
-                ArgumentList.addArgument(new Argument<>(nameTable.getIdentifier(expression.get(0).word), sourceVariable.lex.getValue() + "b"));
-                logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.lex.getValue());
-                CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + sourceVariable.word + "b");
+            case NUMBER:
+                ArgumentList.addArgument(new Argument<>(nameTable.getIdentifier(expression.get(0).word), sourceVariable.word));
+                logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + sourceVariable.word);
                 break;
             case NAME:
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == tCat.VAR) {
@@ -83,34 +82,27 @@ public class ExpressionParser {
             throw new ExpressionAnalyzeException("Ожидается присваивание");
         }
         boolean willBeInverted = false;
-        //int depth = 0;
+        int depth = 0;
         boolean needValue = true;
         for (int i = 2; i < expression.size(); i++) {
             Operation currentOperation;
             switch (expression.get(i).lex) {
-                case NOT:
-                    if (i != expression.size() - 1) {
-                        if (expression.get(i + 1).lex.equals(Lexems.NOT)) {
-                            throw new ExpressionAnalyzeException("Ожидается значение");
-                        }
-                    }
-                    willBeInverted = true;
-                    break;
-                case AND:
+                case ADDITION:
+                case SUBSTRACTION:
                     if (needValue) {
                         throw new ExpressionAnalyzeException("Ожидается операция");
                     }
-                    currentOperation = new Operation(expression.get(i), 2); //+ depth
+                    currentOperation = new Operation(expression.get(i), 1 + depth);
                     calculateOperation(currentOperation.getPriority());
                     operationStack.push(currentOperation);
                     needValue = true;
                     break;
-                case OR:
-                case XOR:
+                case MULTIPLICATION:
+                case DIVISION:
                     if (needValue) {
                         throw new ExpressionAnalyzeException("Ожидается операция");
                     }
-                    currentOperation = new Operation(expression.get(i), 1); //+ depth
+                    currentOperation = new Operation(expression.get(i), 2 + depth);
                     calculateOperation(currentOperation.getPriority());
                     operationStack.push(currentOperation);
                     needValue = true;
@@ -120,21 +112,16 @@ public class ExpressionParser {
                         throw new ExpressionAnalyzeException("Ожидается значение");
                     }
                     argumentStack.push(ArgumentList.getVariableValue(expression.get(i).word));
-                    if (willBeInverted) {
-                        CodeGenerator.addInstruction("mov ax," + invert(argumentStack.peek()));
-                        willBeInverted = false;
-                    } else {
-                        CodeGenerator.addInstruction("mov ax," + argumentStack.peek());
-                    }
-
+                    CodeGenerator.addInstruction("mov ax," + argumentStack.peek());
                     CodeGenerator.addInstruction("push ax");
                     needValue = false;
                     break;
-//                case LEFT_BRACKET:
-//                    // depth = 10;
-//                case RIGHT_BRACKET:
-//                    // depth = 0;
-//                    break;
+                case LEFT_BRACKET:
+                    depth = 10;
+                    break;
+                case RIGHT_BRACKET:
+                    // depth = 0;
+                    break;
             }
         }
 
@@ -157,39 +144,45 @@ public class ExpressionParser {
             String arg2;
             currentOperation = operationStack.pop();
             switch (currentOperation.getSign().lex) {
-                case NOT:
-                    arg1 = argumentStack.pop();
-                    logger.info("!" + arg1);
-                    argumentStack.push("expr");
-                    break;
-                case OR:
+                case ADDITION:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
                     CodeGenerator.addInstruction("pop bx");
                     CodeGenerator.addInstruction("pop ax");
-                    CodeGenerator.addInstruction("or ax,bx");
+                    CodeGenerator.addInstruction("add ax,bx");
                     CodeGenerator.addInstruction("push ax");
-                    logger.info(arg1 + " | " + arg2);
+                    logger.info(arg1 + " + " + arg2);
                     argumentStack.push("expr");
                     break;
-                case XOR:
+                case SUBSTRACTION:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
                     CodeGenerator.addInstruction("pop bx");
                     CodeGenerator.addInstruction("pop ax");
-                    CodeGenerator.addInstruction("xor ax,bx");
+                    CodeGenerator.addInstruction("sub ax,bx");
                     CodeGenerator.addInstruction("push ax");
-                    logger.info(arg1 + " ^ " + arg2);
+                    logger.info(arg1 + " - " + arg2);
                     argumentStack.push("expr");
                     break;
-                case AND:
+                case MULTIPLICATION:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
                     CodeGenerator.addInstruction("pop bx");
                     CodeGenerator.addInstruction("pop ax");
-                    CodeGenerator.addInstruction("and ax,bx");
+                    CodeGenerator.addInstruction("mul bx");
                     CodeGenerator.addInstruction("push ax");
-                    logger.info(arg1 + " & " + arg2);
+                    logger.info(arg1 + " * " + arg2);
+                    argumentStack.push("expr");
+                    break;
+                case DIVISION:
+                    arg1 = argumentStack.pop();
+                    arg2 = argumentStack.pop();
+                    CodeGenerator.addInstruction("pop bx");
+                    CodeGenerator.addInstruction("pop ax");
+                    CodeGenerator.addInstruction("cwd");
+                    CodeGenerator.addInstruction("div bl");
+                    CodeGenerator.addInstruction("push ax");
+                    logger.info(arg1 + " / " + arg2);
                     argumentStack.push("expr");
                     break;
 

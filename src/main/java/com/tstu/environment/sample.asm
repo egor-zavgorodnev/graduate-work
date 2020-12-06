@@ -1,8 +1,8 @@
 data segment para public "data"
-a dw 0b
-b dw 0b
-c dw 0b
-d dw 0b
+a dw 0
+b dw 0
+c dw 0
+d dw 0
 PRINT_BUF DB ' ' DUP(10)
 BUFEND DB '$'
 data ends
@@ -14,9 +14,26 @@ main proc
 assume cs:code,ds:data,ss:stk
 mov ax,data
 mov ds,ax
-mov a,0b
+mov a,2
+mov b,2
+mov c,2
+mov ax,2
 push ax
-mov ax, a
+mov ax,2
+push ax
+mov ax,2
+push ax
+pop bx
+pop ax
+mul bx
+push ax
+pop bx
+pop ax
+add ax,bx
+push ax
+mov d, ax
+push ax
+mov ax, d
 CALL PRINT
 pop ax
 mov ax,4c00h

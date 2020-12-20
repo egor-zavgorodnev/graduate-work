@@ -3,15 +3,14 @@ package com.tstu.backend.structures;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
-import com.tstu.backend.generator.CodeGenerator;
 import com.tstu.backend.model.Argument;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.Operation;
 import com.tstu.backend.model.enums.Lexems;
-import com.tstu.backend.model.enums.tCat;
-import com.tstu.util.CustomLogger;
-import com.tstu.util.Logger;
+import com.tstu.backend.model.enums.IdentifierCategory;
+import org.apache.log4j.Logger;
+
 
 import java.util.List;
 import java.util.Stack;
@@ -25,7 +24,8 @@ public class ExpressionParser {
     private List<Keyword> expression;
     private List<Identifier> declaratedVariable;
 
-    private Logger logger = new CustomLogger(ExpressionParser.class.getName());
+    private Logger logger = Logger.getLogger(ExpressionParser.class.getName());
+            //= new CustomLogger(ExpressionParser.class.getName());
 
     public ExpressionParser(List<Keyword> expression, List<Identifier> declaratedVariable, INameTable nameTable) {
         this.expression = expression;
@@ -33,12 +33,11 @@ public class ExpressionParser {
         this.declaratedVariable = declaratedVariable;
     }
 
-
     private void parseDeclaration() throws ExpressionAnalyzeException, LexicalAnalyzeException {
 
         Identifier receiveVariable = nameTable.getIdentifier(expression.get(0).word);
 
-        if (receiveVariable.getCategory() != tCat.VAR) {
+        if (receiveVariable.getCategory() != IdentifierCategory.VAR) {
             throw new ExpressionAnalyzeException("Ожидается переменная");
         }
         if (declaratedVariable.stream().noneMatch(v -> v.equals(receiveVariable))) {
@@ -52,13 +51,13 @@ public class ExpressionParser {
             case NUMBER:
                 ArgumentList.addArgument(new Argument<>(nameTable.getIdentifier(expression.get(0).word), sourceVariable.word));
                 logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
-                CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + sourceVariable.word);
+                //CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + sourceVariable.word);
                 break;
             case NAME:
-                if (nameTable.getIdentifier(sourceVariable.word).getCategory() == tCat.VAR) {
+                if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.VAR) {
                     ArgumentList.addArgument(new Argument<>(nameTable.getIdentifier(expression.get(0).word), sourceVariable.word));
                     logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
-                    CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + ArgumentList.getVariableValue(sourceVariable.word));
+                   //CodeGenerator.addInstruction("mov " + expression.get(0).word + "," + ArgumentList.getVariableValue(sourceVariable.word));
                 }
                 break;
             default:
@@ -72,7 +71,7 @@ public class ExpressionParser {
 
         Identifier variable = nameTable.getIdentifier(expression.get(0).word);
 
-        if (variable.getCategory() != tCat.VAR) {
+        if (variable.getCategory() != IdentifierCategory.VAR) {
             throw new ExpressionAnalyzeException("Ожидается переменная");
         }
         if (declaratedVariable.stream().noneMatch(v -> v.equals(variable))) {
@@ -88,7 +87,7 @@ public class ExpressionParser {
             Operation currentOperation;
             switch (expression.get(i).lex) {
                 case ADDITION:
-                case SUBSTRACTION:
+                case SUBTRACTION:
                     if (needValue) {
                         throw new ExpressionAnalyzeException("Ожидается операция");
                     }
@@ -112,8 +111,8 @@ public class ExpressionParser {
                         throw new ExpressionAnalyzeException("Ожидается значение");
                     }
                     argumentStack.push(ArgumentList.getVariableValue(expression.get(i).word));
-                    CodeGenerator.addInstruction("mov ax," + argumentStack.peek());
-                    CodeGenerator.addInstruction("push ax");
+                    //CodeGenerator.addInstruction("mov ax," + argumentStack.peek());
+                    //CodeGenerator.addInstruction("push ax");
                     needValue = false;
                     break;
                 case LEFT_BRACKET:
@@ -147,41 +146,41 @@ public class ExpressionParser {
                 case ADDITION:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    CodeGenerator.addInstruction("pop bx");
-                    CodeGenerator.addInstruction("pop ax");
-                    CodeGenerator.addInstruction("add ax,bx");
-                    CodeGenerator.addInstruction("push ax");
+                    //CodeGenerator.addInstruction("pop bx");
+                    //CodeGenerator.addInstruction("pop ax");
+                    //CodeGenerator.addInstruction("add ax,bx");
+                    //CodeGenerator.addInstruction("push ax");
                     logger.info(arg1 + " + " + arg2);
                     argumentStack.push("expr");
                     break;
-                case SUBSTRACTION:
+                case SUBTRACTION:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    CodeGenerator.addInstruction("pop bx");
-                    CodeGenerator.addInstruction("pop ax");
-                    CodeGenerator.addInstruction("sub ax,bx");
-                    CodeGenerator.addInstruction("push ax");
+                    //CodeGenerator.addInstruction("pop bx");
+                    //CodeGenerator.addInstruction("pop ax");
+                    //CodeGenerator.addInstruction("sub ax,bx");
+                    //CodeGenerator.addInstruction("push ax");
                     logger.info(arg1 + " - " + arg2);
                     argumentStack.push("expr");
                     break;
                 case MULTIPLICATION:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    CodeGenerator.addInstruction("pop bx");
-                    CodeGenerator.addInstruction("pop ax");
-                    CodeGenerator.addInstruction("mul bx");
-                    CodeGenerator.addInstruction("push ax");
+                    //CodeGenerator.addInstruction("pop bx");
+                    //CodeGenerator.addInstruction("pop ax");
+                    //CodeGenerator.addInstruction("mul bx");
+                    //CodeGenerator.addInstruction("push ax");
                     logger.info(arg1 + " * " + arg2);
                     argumentStack.push("expr");
                     break;
                 case DIVISION:
                     arg1 = argumentStack.pop();
                     arg2 = argumentStack.pop();
-                    CodeGenerator.addInstruction("pop bx");
-                    CodeGenerator.addInstruction("pop ax");
-                    CodeGenerator.addInstruction("cwd");
-                    CodeGenerator.addInstruction("div bl");
-                    CodeGenerator.addInstruction("push ax");
+                   // CodeGenerator.addInstruction("pop bx");
+                    //CodeGenerator.addInstruction("pop ax");
+                    //CodeGenerator.addInstruction("cwd");
+                    //CodeGenerator.addInstruction("div bl");
+                    //CodeGenerator.addInstruction("push ax");
                     logger.info(arg1 + " / " + arg2);
                     argumentStack.push("expr");
                     break;
@@ -204,7 +203,7 @@ public class ExpressionParser {
             expression.forEach(e -> expr.append(e.word));
             logger.info("\nРазбор выражения - " + expr);
             calculateExpression();
-            CodeGenerator.addInstruction("mov " + expression.get(0).word + ", ax");
+            //CodeGenerator.addInstruction("mov " + expression.get(0).word + ", ax");
         }
     }
 }

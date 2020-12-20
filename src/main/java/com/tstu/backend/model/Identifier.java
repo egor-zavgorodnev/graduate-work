@@ -1,14 +1,12 @@
 package com.tstu.backend.model;
 
-import com.tstu.backend.model.enums.tCat;
-import com.tstu.backend.model.enums.tType;
+import com.tstu.backend.model.enums.IdentifierCategory;
 
 import java.util.Objects;
 
 public class Identifier {
     private String name;
-    private tCat category;
-    private tType type;
+    private IdentifierCategory category;
 
     public String getName() {
         return name;
@@ -18,22 +16,17 @@ public class Identifier {
         this.name = name;
     }
 
-    public tCat getCategory() {
+    public IdentifierCategory getCategory() {
         return category;
     }
 
-    public tType getType() {
-        return type;
+    public void setCategory(IdentifierCategory category) {
+        this.category = category;
     }
 
-    public void setType(tType type) {
-        this.type = type;
-    }
-
-    public Identifier(String name, tCat category, tType type) {
+    public Identifier(String name, IdentifierCategory category) {
         this.name = name;
         this.category = category;
-        this.type = type;
     }
 
     @Override

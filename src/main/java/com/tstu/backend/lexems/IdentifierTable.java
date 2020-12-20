@@ -1,14 +1,13 @@
 package com.tstu.backend.lexems;
 
+import com.tstu.backend.INameTable;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
 import com.tstu.backend.model.enums.Lexems;
-import com.tstu.backend.model.enums.tCat;
-import com.tstu.backend.model.enums.tType;
-import com.tstu.util.CustomLogger;
-import com.tstu.util.Logger;
+import com.tstu.backend.model.enums.IdentifierCategory;
+import org.apache.log4j.Logger;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -16,9 +15,9 @@ import java.util.List;
 import java.util.Set;
 
 
-public class IdentifierTable implements com.tstu.backend.INameTable {
+public class IdentifierTable implements INameTable {
 
-    private Logger logger = new CustomLogger(LexicalAnalyzer.class.getName());
+    private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());
 
     private static Set<Identifier> identifiers;
 
@@ -26,14 +25,9 @@ public class IdentifierTable implements com.tstu.backend.INameTable {
         identifiers = new HashSet<>();
     }
 
-    private void addIdentifier(String name, tCat category) {
-        Identifier identifier = new Identifier(name, category, null);
+    private void addIdentifier(String name, IdentifierCategory category) {
+        Identifier identifier = new Identifier(name, category);
 
-        identifiers.add(identifier);
-    }
-
-    private void addIdentifier(String name, tCat category, tType type) {
-        Identifier identifier = new Identifier(name, category, type);
         identifiers.add(identifier);
     }
 
@@ -41,7 +35,7 @@ public class IdentifierTable implements com.tstu.backend.INameTable {
     public Identifier getIdentifier(String name) throws LexicalAnalyzeException {
         return identifiers.stream()
                 .filter(i -> i.getName().equals(name))
-                .findAny().orElseThrow(() -> new LexicalAnalyzeException("Не удалось получить идентификатор"));
+                .findAny().orElse(null);
     }
 
     @Override
@@ -49,26 +43,16 @@ public class IdentifierTable implements com.tstu.backend.INameTable {
         logger.info("\n---Разбор идентификаторов---\n");
         for (Keyword keyword : keywords) {
             if (keyword.lex.equals(Lexems.NAME)) {
-                if (EnumSet.allOf(tType.class).stream().anyMatch(e -> e.getName().equals(keyword.word))) {
-                    addIdentifier(keyword.word, tCat.TYPE, tType.getTypeByName(keyword.word));
-                    logger.info(keyword.word + "(тип данных)");
-                } else if (EnumSet.allOf(Command.class).stream().anyMatch(e -> e.getName().equals(keyword.word))) {
-                    addIdentifier(keyword.word, tCat.COMMAND);
+                if (EnumSet.allOf(Command.class).stream().anyMatch(e -> e.getName().equals(keyword.word))) {
+                    addIdentifier(keyword.word, IdentifierCategory.COMMAND);
                     logger.info(keyword.word + "(команда)");
                 } else {
-                    addIdentifier(keyword.word, tCat.VAR);
-                    logger.info(keyword.word + "(переменная)");
+                    addIdentifier(keyword.word, IdentifierCategory.NONE);
+                    logger.info(keyword.word + "(нет данных)");
                 }
             }
         }
 
-    }
-
-    public static void main(String[] args) throws LexicalAnalyzeException {
-//        ILexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
-//        INameTable nameTable = new IdentifierTable();
-//
-//        nameTable.recognizeAllIdentifiers(lexicalAnalyzer.recognizeAllLexem("Var a,b,c :Logical\n"));
     }
 
     @Override

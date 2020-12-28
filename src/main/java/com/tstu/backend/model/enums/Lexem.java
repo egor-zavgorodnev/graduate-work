@@ -1,6 +1,6 @@
 package com.tstu.backend.model.enums;
 
-public enum Lexems {
+public enum Lexem {
 
     NAME,
     NUMBER,
@@ -21,9 +21,9 @@ public enum Lexems {
     LEFT_BRACKET("("),
     RIGHT_BRACKET(")");
 
-    Lexems(String value) {
+    Lexem(String value) {
     }
 
-    Lexems() {
+    Lexem() {
     }
 }

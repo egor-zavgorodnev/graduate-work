@@ -1,14 +1,14 @@
 package com.tstu.backend.model;
 
-import com.tstu.backend.model.enums.Lexems;
+import com.tstu.backend.model.enums.Lexem;
 
 import java.util.Objects;
 
 public class Keyword {
     public String word;
-    public Lexems lex;
+    public Lexem lex;
 
-    public Keyword(String word, Lexems lex) {
+    public Keyword(String word, Lexem lex) {
         this.word = word;
         this.lex = lex;
     }

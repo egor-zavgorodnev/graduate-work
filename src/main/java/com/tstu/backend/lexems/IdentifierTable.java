@@ -5,7 +5,7 @@ import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
-import com.tstu.backend.model.enums.Lexems;
+import com.tstu.backend.model.enums.Lexem;
 import com.tstu.backend.model.enums.IdentifierCategory;
 import org.apache.log4j.Logger;
 
@@ -42,7 +42,7 @@ public class IdentifierTable implements INameTable {
     public void recognizeAllIdentifiers(List<Keyword> keywords) {
         logger.info("\n---Разбор идентификаторов---\n");
         for (Keyword keyword : keywords) {
-            if (keyword.lex.equals(Lexems.NAME)) {
+            if (keyword.lex.equals(Lexem.NAME)) {
                 if (EnumSet.allOf(Command.class).stream().anyMatch(e -> e.getName().equals(keyword.word))) {
                     addIdentifier(keyword.word, IdentifierCategory.COMMAND);
                     logger.info(keyword.word + "(команда)");

@@ -1,7 +1,5 @@
 package com.tstu.backend.model;
 
-import com.tstu.backend.model.Identifier;
-
 public class Argument<T> {
     private Identifier variable;
     private T value;

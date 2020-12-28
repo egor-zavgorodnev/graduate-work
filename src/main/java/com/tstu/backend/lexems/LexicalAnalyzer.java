@@ -3,7 +3,7 @@ package com.tstu.backend.lexems;
 import com.tstu.backend.ILexicalAnalyzer;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.model.Keyword;
-import com.tstu.backend.model.enums.Lexems;
+import com.tstu.backend.model.enums.Lexem;
 import org.apache.log4j.Logger;
 
 
@@ -21,7 +21,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
         keywords = new ArrayList<>();
     }
 
-    private void addKeyword(String word, Lexems lexem) {
+    private void addKeyword(String word, Lexem lexem) {
         Keyword keyword = new Keyword(word, lexem);
         keyword.word = word;
         keyword.lex = lexem;
@@ -29,13 +29,13 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
         keywords.add(keyword);
     }
 
-    private Lexems getIdentifierLexem(String identifier) {
+    private Lexem getIdentifierLexem(String identifier) {
         for (Keyword keyword : keywords) {
             if (keyword.word.equals(identifier)) {
                 return keyword.lex;
             }
         }
-        return Lexems.NAME;
+        return Lexem.NAME;
     }
 
     public List<Keyword> recognizeAllLexem(String data) throws LexicalAnalyzeException {
@@ -53,47 +53,47 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                 case '\r':
                     continue;
                 case '=':
-                    addKeyword(currentSymbol, Lexems.EQUAL);
+                    addKeyword(currentSymbol, Lexem.EQUAL);
                     logger.info(symbols[i] + "(равно)");
                     continue;
                 case '#':
-                    addKeyword(currentSymbol, Lexems.NOT_EQUAL);
+                    addKeyword(currentSymbol, Lexem.NOT_EQUAL);
                     logger.info(symbols[i] + "(не равно)");
                     continue;
                 case '+':
-                    addKeyword(currentSymbol, Lexems.ADDITION);
+                    addKeyword(currentSymbol, Lexem.ADDITION);
                     logger.info(symbols[i] + "(сложение)");
                     continue;
                 case '-':
-                    addKeyword(currentSymbol, Lexems.SUBTRACTION);
+                    addKeyword(currentSymbol, Lexem.SUBTRACTION);
                     logger.info(symbols[i] + "(вычитание)");
                     continue;
                 case ',':
-                    addKeyword(currentSymbol, Lexems.SEMI);
+                    addKeyword(currentSymbol, Lexem.SEMI);
                     logger.info(symbols[i] + "(запятая)");
                     continue;
                 case '*':
-                    addKeyword(currentSymbol, Lexems.MULTIPLICATION);
+                    addKeyword(currentSymbol, Lexem.MULTIPLICATION);
                     logger.info(symbols[i] + "(умножение)");
                     continue;
                 case '/':
-                    addKeyword(currentSymbol, Lexems.DIVISION);
+                    addKeyword(currentSymbol, Lexem.DIVISION);
                     logger.info(symbols[i] + "(деление)");
                     continue;
                 case '.':
-                    addKeyword(currentSymbol, Lexems.DOT);
+                    addKeyword(currentSymbol, Lexem.DOT);
                     logger.info(symbols[i] + "(точка)");
                     continue;
                 case ';':
-                    addKeyword(currentSymbol, Lexems.SEMICOLON);
+                    addKeyword(currentSymbol, Lexem.SEMICOLON);
                     logger.info(symbols[i] + "(точка с запятой)");
                     continue;
                 case '(':
-                    addKeyword(currentSymbol, Lexems.LEFT_BRACKET);
+                    addKeyword(currentSymbol, Lexem.LEFT_BRACKET);
                     logger.info(symbols[i] + "(левая скобка)");
                     continue;
                 case ')':
-                    addKeyword(currentSymbol, Lexems.RIGHT_BRACKET);
+                    addKeyword(currentSymbol, Lexem.RIGHT_BRACKET);
                     logger.info(symbols[i] + "(правая скобка)");
                     continue;
             }
@@ -116,17 +116,17 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
             // <, <=
             if (symbols[i] == '<') {
                 if (i == symbols.length - 1) {
-                    addKeyword(currentSymbol, Lexems.LESS_THAN);
+                    addKeyword(currentSymbol, Lexem.LESS_THAN);
                     logger.info(symbols[i] + "(меньше)");
                     continue;
                 }
                 if (symbols[i + 1] == '=') {
                     String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
-                    addKeyword(twoSymbolsWord, Lexems.LESS_OR_EQUAL_THAN);
+                    addKeyword(twoSymbolsWord, Lexem.LESS_OR_EQUAL_THAN);
                     logger.info(twoSymbolsWord + "(меньше или равно)");
                     i++;
                 } else {
-                    addKeyword(currentSymbol, Lexems.LESS_THAN);
+                    addKeyword(currentSymbol, Lexem.LESS_THAN);
                     logger.info(symbols[i] + "(меньше)");
                 }
                 continue;
@@ -134,17 +134,17 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
             // >, >=
             if (symbols[i] == '>') {
                 if (i == symbols.length - 1) {
-                    addKeyword(currentSymbol, Lexems.MORE_THAN);
+                    addKeyword(currentSymbol, Lexem.MORE_THAN);
                     logger.info(symbols[i] + "(больше)");
                     continue;
                 }
                 if (symbols[i + 1] == '=') {
                     String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
-                    addKeyword(twoSymbolsWord, Lexems.MORE_OR_EQUAL_THAN);
+                    addKeyword(twoSymbolsWord, Lexem.MORE_OR_EQUAL_THAN);
                     logger.info(twoSymbolsWord + "(больше или равно)");
                     i++;
                 } else {
-                    addKeyword(currentSymbol, Lexems.MORE_THAN);
+                    addKeyword(currentSymbol, Lexem.MORE_THAN);
                     logger.info(symbols[i] + "(больше)");
                 }
                 continue;
@@ -153,7 +153,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
             if (symbols[i] == ':') {
                 if (symbols[i + 1] == '=') {
                     String twoSymbolsWord = symbols[i] + String.valueOf(symbols[i + 1]);
-                    addKeyword(twoSymbolsWord, Lexems.ASSIGN);
+                    addKeyword(twoSymbolsWord, Lexem.ASSIGN);
                     logger.info(twoSymbolsWord + "(присваивание)");
                     i++;
                     continue;
@@ -170,7 +170,7 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     i++;
                 }
                 i--;
-                addKeyword(number.toString(), Lexems.NUMBER);
+                addKeyword(number.toString(), Lexem.NUMBER);
                 logger.info(number.toString() + "(число)");
                 continue;
             }

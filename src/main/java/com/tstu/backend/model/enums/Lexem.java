@@ -21,9 +21,16 @@ public enum Lexem {
     LEFT_BRACKET("("),
     RIGHT_BRACKET(")");
 
+    String value;
+
     Lexem(String value) {
+        this.value = value;
     }
 
     Lexem() {
+    }
+
+    public String getValue() {
+        return value;
     }
 }

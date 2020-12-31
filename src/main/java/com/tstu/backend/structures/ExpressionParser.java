@@ -3,8 +3,7 @@ package com.tstu.backend.structures;
 import com.tstu.backend.INameTable;
 import com.tstu.backend.exceptions.ExpressionAnalyzeException;
 import com.tstu.backend.exceptions.LexicalAnalyzeException;
-import com.tstu.backend.generator.PL0CodeGenerator;
-import com.tstu.backend.model.Argument;
+import com.tstu.backend.generator.pl0.PL0CodeGenerator;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.Operation;
@@ -40,13 +39,11 @@ public class ExpressionParser {
         Identifier currentIdentifier = nameTable.getIdentifier(expression.get(0).word);
         switch (sourceVariable.lex) {
             case NUMBER:
-                ArgumentList.addArgument(new Argument<>(currentIdentifier, sourceVariable.word));
                 // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                 PL0CodeGenerator.addInstruction(Function.LIT, 0, expression.get(0).word);
                 break;
             case NAME:
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.VAR) {
-                    ArgumentList.addArgument(new Argument<>(currentIdentifier, sourceVariable.word));
                     // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(Function.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                 }

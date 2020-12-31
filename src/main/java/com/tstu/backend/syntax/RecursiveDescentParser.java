@@ -2,7 +2,7 @@ package com.tstu.backend.syntax;
 
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
-import com.tstu.backend.generator.PL0CodeGenerator;
+import com.tstu.backend.generator.pl0.PL0CodeGenerator;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
@@ -144,20 +144,30 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         if (isAccept(Command.ODD)) {
             expression();
         } else {
-            expression();
-            if (currentKeyword.lex == Lexem.EQUAL ||
-                    currentKeyword.lex == Lexem.NOT_EQUAL ||
-                    currentKeyword.lex == Lexem.LESS_THAN ||
-                    currentKeyword.lex == Lexem.LESS_OR_EQUAL_THAN ||
-                    currentKeyword.lex == Lexem.MORE_THAN ||
-                    currentKeyword.lex == Lexem.MORE_OR_EQUAL_THAN) {
+            evaluateExpression();
+            Lexem operator =  currentKeyword.lex;
+            if (operator == Lexem.EQUAL ||
+                    operator == Lexem.NOT_EQUAL ||
+                    operator == Lexem.LESS_THAN ||
+                    operator == Lexem.LESS_OR_EQUAL_THAN ||
+                    operator == Lexem.MORE_THAN ||
+                    operator == Lexem.MORE_OR_EQUAL_THAN) {
                 getNextKeyword();
-                expression();
+                evaluateExpression();
+                PL0CodeGenerator.addInstruction(Function.OPR, 0, operator.getValue());
+                PL0CodeGenerator.addInstruction(Function.JPC, 0, null);
             } else {
                 error(20);
                 getNextKeyword();
             }
         }
+    }
+
+    private void evaluateExpression() {
+        currentExpression.clear();
+        expression();
+        ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable);
+        expressionParser.parseExpression();
     }
 
     void statement() {
@@ -171,11 +181,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         }
         if (isAccept(IdentifierCategory.VAR)) {
             isExpect(Lexem.ASSIGN, 19);
-            currentExpression.clear();
-            expression();
-            currentExpression.forEach(expr -> System.out.print(expr.word));
-            ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable);
-            expressionParser.parseExpression();
+            evaluateExpression();
             PL0CodeGenerator.addInstruction(Function.STO, identifier.getLevel(), identifier.getAddress());
         } else if (isAccept(Command.CALL)) {
             isExpect(Lexem.NAME, 14);
@@ -187,7 +193,10 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         } else if (isAccept(Command.IF)) {
             condition();
             isExpect(Command.THEN, 16);
+            int jumpCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             statement();
+            int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
+            PL0CodeGenerator.changeInstructionAddress(jumpCodeAddress,currentCodeAddress + 1);
         } else if (isAccept(Command.WHILE)) {
             condition();
             isExpect(Command.DO, 18);
@@ -335,6 +344,8 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     @Override
     public boolean checkSyntax() {
         program();
+        PL0CodeGenerator.addInstruction(Function.OPR,0, "return");
+        PL0CodeGenerator.printInstructions();
         return hasErrors;
     }
 }

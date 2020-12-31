@@ -145,7 +145,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
             expression();
         } else {
             evaluateExpression();
-            Lexem operator =  currentKeyword.lex;
+            Lexem operator = currentKeyword.lex;
             if (operator == Lexem.EQUAL ||
                     operator == Lexem.NOT_EQUAL ||
                     operator == Lexem.LESS_THAN ||
@@ -196,11 +196,16 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
             int jumpCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             statement();
             int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
-            PL0CodeGenerator.changeInstructionAddress(jumpCodeAddress,currentCodeAddress + 1);
+            PL0CodeGenerator.changeInstructionAddress(jumpCodeAddress, currentCodeAddress + 1);
         } else if (isAccept(Command.WHILE)) {
+            int jmpCodeAddress = PL0CodeGenerator.getLastCodeAddress() + 1;
             condition();
             isExpect(Command.DO, 18);
+            int jpcCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             statement();
+            int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
+            PL0CodeGenerator.changeInstructionAddress(jpcCodeAddress, currentCodeAddress + 2);
+            PL0CodeGenerator.addInstruction(Function.JMP, 0, String.valueOf(jmpCodeAddress));
         } else {
             error(11);
             getNextKeyword();
@@ -344,7 +349,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     @Override
     public boolean checkSyntax() {
         program();
-        PL0CodeGenerator.addInstruction(Function.OPR,0, "return");
+        PL0CodeGenerator.addInstruction(Function.OPR, 0, "return");
         PL0CodeGenerator.printInstructions();
         return hasErrors;
     }

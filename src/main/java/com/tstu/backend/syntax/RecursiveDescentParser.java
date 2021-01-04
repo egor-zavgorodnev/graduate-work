@@ -142,7 +142,9 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
 
     void condition() {
         if (isAccept(Command.ODD)) {
-            expression();
+            evaluateExpression();
+            PL0CodeGenerator.addInstruction(Function.OPR, 0, "odd");
+            PL0CodeGenerator.addInstruction(Function.JPC, 0, null);
         } else {
             evaluateExpression();
             Lexem operator = currentKeyword.lex;

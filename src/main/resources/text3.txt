@@ -7,7 +7,7 @@ Procedure square;
 
  Begin
    x := 1;
-   While x <= 10 Do
+   While Odd x Do
    Begin
       Call square;
       x := x + 1

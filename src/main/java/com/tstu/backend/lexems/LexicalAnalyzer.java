@@ -41,8 +41,10 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
     public List<Keyword> recognizeAllLexem(String data) throws LexicalAnalyzeException {
         logger.info("\n---Разбор лексем---\n");
         char[] symbols = data.toCharArray();
-
+        boolean isExit = false;
         for (int i = 0; i < symbols.length; i++) {
+
+            if (isExit) break;
 
             /* one symbol keywords */
 
@@ -98,14 +100,17 @@ public class LexicalAnalyzer implements ILexicalAnalyzer {
                     continue;
             }
 
-            /* two symbol keywords */
-
+            /* two symbol and more keywords */
             // identifiers
             if (Character.isLetter(symbols[i])) {
+
                 StringBuilder identifier = new StringBuilder();
                 while (Character.isLetter(symbols[i])) {
                     identifier.append(symbols[i]);
-                    if (i == symbols.length - 1) break;
+                    if (i == symbols.length - 1) {
+                        isExit = true;
+                        break;
+                    }
                     i++;
                 }
                 i--;

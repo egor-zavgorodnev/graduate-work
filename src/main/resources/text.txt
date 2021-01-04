@@ -1,12 +1,4 @@
- Var n, a;
+ Var n, f;
  Begin
-    n := 1;
-    If n = 1 Then
-    Begin
-        n := 123
-    End;
-    If n = 1 Then
-    Begin
-        n := 123
-    End
+    n := n + ((1 + f))
  End.

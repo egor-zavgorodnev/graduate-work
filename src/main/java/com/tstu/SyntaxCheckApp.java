@@ -14,7 +14,7 @@ import java.util.List;
 public class SyntaxCheckApp {
 
     public static void main(String[] args) throws LexicalAnalyzeException {
-        String data = FileReader.parseFromFile("src/main/resources/text3.txt");
+        String data = FileReader.parseFromFile("src/main/resources/text.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         INameTable nameTable = new IdentifierTable();

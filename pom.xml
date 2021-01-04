@@ -44,11 +44,11 @@
             <version>11</version>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>5.0.3</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.commsen.stopwatch.api/stopwatch -->
+
 
     </dependencies>
 

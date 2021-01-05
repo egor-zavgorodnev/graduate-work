@@ -1,8 +1,9 @@
-package com.tstu;
+package com.tstu.execution;
 
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
-import com.tstu.backend.exceptions.LexicalAnalyzeException;
+import com.tstu.backend.generator.bytecode.ByteCodeGenerator;
+import com.tstu.backend.generator.pl0.PL0CodeGenerator;
 import com.tstu.backend.lexems.IdentifierTable;
 import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Keyword;
@@ -11,9 +12,9 @@ import com.tstu.util.FileReader;
 
 import java.util.List;
 
-public class SyntaxCheckApp {
+public class ExecTest {
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException {
 
-    public static void main(String[] args) throws LexicalAnalyzeException {
         String data = FileReader.parseFromFile("src/main/resources/text.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
@@ -23,6 +24,10 @@ public class SyntaxCheckApp {
 
         ISyntaxAnalyzer syntaxAnalyzer = new RecursiveDescentParser(lexems,nameTable);
         syntaxAnalyzer.checkSyntax();
+        ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator(PL0CodeGenerator.getInstructions());
 
+        Class<?> aClass = ByteCodeLoader.clazz.loadClass(byteCodeGenerator.generateAsByteArray());
+
+        ((Runnable)aClass.newInstance()).run(); //создаем класс и запускаем
     }
 }

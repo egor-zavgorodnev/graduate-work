@@ -1,4 +1,5 @@
- Var n, f;
+ Var n;
  Begin
-    n := n + ((1 + f))
+    n := 2;
+    n := n * 1
  End.

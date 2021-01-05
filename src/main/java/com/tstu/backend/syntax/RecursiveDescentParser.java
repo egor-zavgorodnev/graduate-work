@@ -6,7 +6,7 @@ import com.tstu.backend.generator.pl0.PL0CodeGenerator;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
-import com.tstu.backend.model.enums.Function;
+import com.tstu.backend.model.enums.OpCode;
 import com.tstu.backend.model.enums.IdentifierCategory;
 import com.tstu.backend.model.enums.Lexem;
 import com.tstu.backend.structures.ExpressionParser;
@@ -143,8 +143,8 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     void condition() {
         if (isAccept(Command.ODD)) {
             evaluateExpression();
-            PL0CodeGenerator.addInstruction(Function.OPR, 0, "odd");
-            PL0CodeGenerator.addInstruction(Function.JPC, 0, null);
+            PL0CodeGenerator.addInstruction(OpCode.OPR, 0, "odd");
+            PL0CodeGenerator.addInstruction(OpCode.JPC, 0, null);
         } else {
             evaluateExpression();
             Lexem operator = currentKeyword.lex;
@@ -156,8 +156,8 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
                     operator == Lexem.MORE_OR_EQUAL_THAN) {
                 getNextKeyword();
                 evaluateExpression();
-                PL0CodeGenerator.addInstruction(Function.OPR, 0, operator.getValue());
-                PL0CodeGenerator.addInstruction(Function.JPC, 0, null);
+                PL0CodeGenerator.addInstruction(OpCode.OPR, 0, operator.getValue());
+                PL0CodeGenerator.addInstruction(OpCode.JPC, 0, null);
             } else {
                 error(20);
                 getNextKeyword();
@@ -184,7 +184,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         if (isAccept(IdentifierCategory.VAR)) {
             isExpect(Lexem.ASSIGN, 19);
             evaluateExpression();
-            PL0CodeGenerator.addInstruction(Function.STO, identifier.getLevel(), identifier.getAddress());
+            PL0CodeGenerator.addInstruction(OpCode.STO, identifier.getLevel(), identifier.getAddress());
         } else if (isAccept(Command.CALL)) {
             isExpect(Lexem.NAME, 14);
         } else if (isAccept(Command.BEGIN)) {
@@ -207,7 +207,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
             statement();
             int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             PL0CodeGenerator.changeInstructionAddress(jpcCodeAddress, currentCodeAddress + 2);
-            PL0CodeGenerator.addInstruction(Function.JMP, 0, String.valueOf(jmpCodeAddress));
+            PL0CodeGenerator.addInstruction(OpCode.JMP, 0, String.valueOf(jmpCodeAddress));
         } else {
             error(11);
             getNextKeyword();
@@ -238,7 +238,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
                 }
                 isExpect(Lexem.NAME, 4);
             } while (isAccept(Lexem.SEMI));
-            PL0CodeGenerator.addInstruction(Function.INT, currentLevel, String.valueOf(currentDataAddress));
+            PL0CodeGenerator.addInstruction(OpCode.INT, currentLevel, String.valueOf(currentDataAddress));
             isExpect(Lexem.SEMICOLON, 5);
         }
         while (isAccept(Command.PROCEDURE)) {
@@ -351,7 +351,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     @Override
     public boolean checkSyntax() {
         program();
-        PL0CodeGenerator.addInstruction(Function.OPR, 0, "return");
+        PL0CodeGenerator.addInstruction(OpCode.OPR, 0, "return");
         PL0CodeGenerator.printInstructions();
         return hasErrors;
     }

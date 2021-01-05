@@ -1,25 +1,25 @@
 package com.tstu.backend.generator.pl0;
 
-import com.tstu.backend.model.enums.Function;
+import com.tstu.backend.model.enums.OpCode;
 
 public class PL0Instruction {
 
-    private Function function;
+    private OpCode opCode;
     private int level;
     private String address;
 
-    public PL0Instruction(Function function, int level, String address) {
-        this.function = function;
+    public PL0Instruction(OpCode opCode, int level, String address) {
+        this.opCode = opCode;
         this.level = level;
         this.address = address;
     }
 
-    public Function getFunction() {
-        return function;
+    public OpCode getOpCode() {
+        return opCode;
     }
 
-    public void setFunction(Function function) {
-        this.function = function;
+    public void setFunction(OpCode opCode) {
+        this.opCode = opCode;
     }
 
     public int getLevel() {

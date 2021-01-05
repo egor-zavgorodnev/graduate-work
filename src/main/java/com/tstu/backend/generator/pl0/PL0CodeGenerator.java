@@ -1,6 +1,6 @@
 package com.tstu.backend.generator.pl0;
 
-import com.tstu.backend.model.enums.Function;
+import com.tstu.backend.model.enums.OpCode;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -16,15 +16,15 @@ public class PL0CodeGenerator {
 
     private static Map<Integer, PL0Instruction> instructions = new HashMap();
 
-    public static int addInstruction(Function function, int level, String address) {
-        instructions.put(++instructionNumber, new PL0Instruction(function,level,address));
+    public static int addInstruction(OpCode opCode, int level, String address) {
+        instructions.put(++instructionNumber, new PL0Instruction(opCode,level,address));
        // stackMachineCode.append('\n');
         return instructionNumber;
     }
 
     public static void printInstructions() {
         for (Map.Entry<Integer, PL0Instruction> entry : instructions.entrySet()) {
-            logger.info(entry.getKey() + " " + entry.getValue().getFunction() + " " + entry.getValue().getLevel()
+            logger.info(entry.getKey() + " " + entry.getValue().getOpCode() + " " + entry.getValue().getLevel()
                     + " " + entry.getValue().getAddress());
         }
     }
@@ -39,6 +39,7 @@ public class PL0CodeGenerator {
         return instructionNumber;
     }
 
-
-
+    public static Map<Integer, PL0Instruction> getInstructions() {
+        return instructions;
+    }
 }

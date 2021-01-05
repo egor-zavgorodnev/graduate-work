@@ -7,7 +7,7 @@ import com.tstu.backend.generator.pl0.PL0CodeGenerator;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.Operation;
-import com.tstu.backend.model.enums.Function;
+import com.tstu.backend.model.enums.OpCode;
 import com.tstu.backend.model.enums.IdentifierCategory;
 import com.tstu.backend.model.enums.Lexem;
 import org.apache.log4j.Logger;
@@ -40,12 +40,12 @@ public class ExpressionParser {
         switch (sourceVariable.lex) {
             case NUMBER:
                 // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
-                PL0CodeGenerator.addInstruction(Function.LIT, 0, expression.get(0).word);
+                PL0CodeGenerator.addInstruction(OpCode.LIT, 0, expression.get(0).word);
                 break;
             case NAME:
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.VAR) {
                     // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
-                    PL0CodeGenerator.addInstruction(Function.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
+                    PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                 }
                 break;
             default:
@@ -140,13 +140,13 @@ public class ExpressionParser {
                             if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
                                 //do nothing
                             } else {
-                                PL0CodeGenerator.addInstruction(Function.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
+                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
                             }
                         } else {
-                            PL0CodeGenerator.addInstruction(Function.LIT, 1, arg.word);
+                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
                         }
                     }
-                    PL0CodeGenerator.addInstruction(Function.OPR, 1, "+");
+                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "+");
                     argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
                     break;
                 case SUBTRACTION:
@@ -157,13 +157,13 @@ public class ExpressionParser {
                             if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
                                 //do nothing
                             } else {
-                                PL0CodeGenerator.addInstruction(Function.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
+                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
                             }
                         } else {
-                            PL0CodeGenerator.addInstruction(Function.LIT, 1, arg.word);
+                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
                         }
                     }
-                    PL0CodeGenerator.addInstruction(Function.OPR, 1, "-");
+                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "-");
                     argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
                     break;
                 case MULTIPLICATION:
@@ -174,13 +174,13 @@ public class ExpressionParser {
                             if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
                                 //do nothing
                             } else {
-                                PL0CodeGenerator.addInstruction(Function.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
+                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
                             }
                         } else {
-                            PL0CodeGenerator.addInstruction(Function.LIT, 1, arg.word);
+                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
                         }
                     }
-                    PL0CodeGenerator.addInstruction(Function.OPR, 1, "*");
+                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "*");
                     argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
                     break;
                 case DIVISION:
@@ -191,13 +191,13 @@ public class ExpressionParser {
                             if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
                                 //do nothing
                             } else {
-                                PL0CodeGenerator.addInstruction(Function.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
+                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
                             }
                         } else {
-                            PL0CodeGenerator.addInstruction(Function.LIT, 1, arg.word);
+                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
                         }
                     }
-                    PL0CodeGenerator.addInstruction(Function.OPR, 1, "/");
+                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "/");
                     argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
                     break;
 

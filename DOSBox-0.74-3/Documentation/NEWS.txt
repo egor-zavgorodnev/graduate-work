@@ -53,7 +53,7 @@ See the Changelog for a full list of changes.
   - Add DOS fixes to terminate program. (fixes Fortune Teller) 
   - Add FFREEP. (fixes Trucks)
   - Improve FPU ST80 in C mode when writing zero. (fixes Antigok)
-  - Add special int10 scanline function. (fixes mz700 and probably lots
+  - Add special int10 scanline opCode. (fixes mz700 and probably lots
     of games that mess with them)
   - Fix scrolling in rarely used video modes. (fixes Orphee)
   - Modify game specific hacks a bit so that Kick off 3 works again.
@@ -288,7 +288,7 @@ See the Changelog for a full list of changes.
   - Try to reduce the impact of using an analog joystick.
   - Several measures to avoid code invalidation on certain types
     of self modification in the dynamic core.
-  - Add dynamic core memory function inlining.
+  - Add dynamic core memory opCode inlining.
   - A few small mouse improvements. (some games are using things they
     shouldn't)
   - Add nullmodem emulation.(h-a-l-9000)
@@ -501,7 +501,7 @@ See the Changelog for a full list of changes.
   - Added hercules graphics emulation
   - Made CGA/TANDY modes more compatible
   - Updated textmode drawing routines to support blinking colors
-  - Fixed VESA set page function that was documented wrong
+  - Fixed VESA set page opCode that was documented wrong
   - Fixed some wrongly emulated cpu opcodes.
   - improved exception handling
   - debugger: fixes; logging of gdt,lgt,idt, new commands(Fizzban)
@@ -589,15 +589,15 @@ See the Changelog for a full list of changes.
   - fixed all fcb-write functions
   - fixed fcb-parseline
   - added debugger under linux/freebsd 
-  - added debugger memory breakpoints and autolog function (heavy debug)
+  - added debugger memory breakpoints and autolog opCode (heavy debug)
   - added loadfix.com program that eats up memory (default 64kb)
     Usage  : loadfix [-option] [programname] [parameters]...
     Example: loadfix mm2      (Allocates 64kb and starts executable mm2)
              loadfix -32 mm2  (Allocates 32kb and starts executable mm2)
              loadfix -128     (Allocates 128kb)
              loadfix -f       (frees all previous allocated memory)
-  - added echoing of characters for input function
-  - added support for backspace for input function
+  - added echoing of characters for input opCode
+  - added support for backspace for input opCode
   - added partial support for int10:01 set cursortype
   - fixed most of the problems/bugs with character input.
   - fixed allocationinfo call.(darksun series)
@@ -617,7 +617,7 @@ See the Changelog for a full list of changes.
   - fixed a bug in XMS
   - fixed a bug with the joystick when pressing a button
   - create nicer configfiles.
-  - bios_disk function improved. 
+  - bios_disk opCode improved.
   - trapflag support
   - improved vertical retrace timing.
   - PIT Timer improvements and many bug fixes

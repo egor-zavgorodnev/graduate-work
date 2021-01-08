@@ -69,79 +69,10 @@ public class ByteCodeGenerator {
         MethodNode runMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
 
         InsnList runMethodInstructionList = runMethodNode.instructions;
-        Map <Integer, AbstractInsnNode> instructionsWithNumber = new HashMap<>();
-        LabelNode ifLabel = new LabelNode();
-        LabelNode gotoLabel = new LabelNode();
 
-        for (Map.Entry<Integer, PL0Instruction> entry : pl0Instructions.entrySet()) {
-            Integer instructionNumber = entry.getKey();
-            OpCode opCode = entry.getValue().getOpCode();
-            String address = entry.getValue().getAddress();
-            switch (opCode) {
-                case INT:
-                    break;
-                case LIT:
-                    if (instructionsNeedLabel.contains(instructionNumber)) {
-                        runMethodInstructionList.add(gotoLabel);
-                    }
-                    runMethodInstructionList.add(new LdcInsnNode(Integer.parseInt(address)));
-                    break;
-                case LOD:
-                    if (instructionsNeedLabel.contains(instructionNumber)) {
-                        runMethodInstructionList.add(gotoLabel);
-                    }
-                    runMethodInstructionList.add(new VarInsnNode(ILOAD, Integer.parseInt(address)));
-                    break;
-                case STO:
-                    runMethodInstructionList.add(new VarInsnNode(ISTORE, Integer.parseInt(address)));
-                    // print current variable value (spec requirement)
-                    runMethodInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-                    runMethodInstructionList.add(new VarInsnNode(ILOAD, Integer.parseInt(address)));
-                    runMethodInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false));
-                    break;
-                case JPC:
-                    gotoLabel = getLabelForInstruction(Integer.parseInt(address));
-                    runMethodInstructionList.add(new JumpInsnNode(GOTO, gotoLabel));
-                    runMethodInstructionList.add(ifLabel);
-                    break;
-                case OPR:
-                    switch (address) {
-                        case "+":
-                            runMethodInstructionList.add(new InsnNode(IADD));
-                            break;
-                        case "-":
-                            runMethodInstructionList.add(new InsnNode(ISUB));
-                            break;
-                        case "*":
-                            runMethodInstructionList.add(new InsnNode(IMUL));
-                            break;
-                        case "/":
-                            runMethodInstructionList.add(new InsnNode(IDIV));
-                            break;
-                        case "<":
-                            ifLabel = getLabelForInstruction(instructionNumber + 2);
-                            runMethodInstructionList.add(new JumpInsnNode(IF_ICMPLT, ifLabel));
-                            break;
-                        case ">":
-                            runMethodInstructionList.add(new InsnNode(IDIV));
-                            break;
-                        case "<=":
-                            runMethodInstructionList.add(new InsnNode(IDIV));
-                            break;
-                        case "=>":
-                            runMethodInstructionList.add(new InsnNode(IDIV));
-                            break;
-                        case "#":
-                            runMethodInstructionList.add(new InsnNode(IDIV));
-                            break;
-                        case "return":
-                            runMethodInstructionList.add(new InsnNode(RETURN));
-                            break;
-                    }
-                    break;
-            }
+        for (AbstractInsnNode node : BCG.getInsnNodeList()) {
+            runMethodInstructionList.add(node);
         }
-
 
         classNode.methods.add(runMethodNode);
     }

@@ -7,7 +7,7 @@ import com.tstu.backend.generator.pl0.PL0CodeGenerator;
 import com.tstu.backend.lexems.IdentifierTable;
 import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Keyword;
-import com.tstu.backend.syntax.RecursiveDescentParser;
+import com.tstu.backend.syntax.SyntaxParserWithBytecodeGen;
 import com.tstu.util.FileReader;
 
 import java.util.List;
@@ -22,13 +22,13 @@ public class ExecTest {
         List<Keyword> lexems = lexicalAnalyzer.recognizeAllLexem(data);
         nameTable.recognizeAllIdentifiers(lexems);
 
-        ISyntaxAnalyzer syntaxAnalyzer = new RecursiveDescentParser(lexems,nameTable);
+        ISyntaxAnalyzer syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems,nameTable);
         syntaxAnalyzer.checkSyntax();
         ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator(PL0CodeGenerator.getInstructions());
 
-        byteCodeGenerator.generateAsFileByPath();
-//        Class<?> aClass = ByteCodeLoader.clazz.loadClass(byteCodeGenerator.generateAsByteArray());
-//
-//        ((Runnable)aClass.newInstance()).run(); //создаем класс и запускаем
+       // byteCodeGenerator.generateAsFileByPath();
+        Class<?> aClass = ByteCodeLoader.clazz.loadClass(byteCodeGenerator.generateAsByteArray());
+
+        ((Runnable)aClass.newInstance()).run(); //создаем класс и запускаем
     }
 }

@@ -6,7 +6,7 @@ import com.tstu.backend.exceptions.LexicalAnalyzeException;
 import com.tstu.backend.lexems.IdentifierTable;
 import com.tstu.backend.lexems.LexicalAnalyzer;
 import com.tstu.backend.model.Keyword;
-import com.tstu.backend.syntax.RecursiveDescentParser;
+import com.tstu.backend.syntax.SyntaxParserWithPl0StackCodeGen;
 import com.tstu.util.FileReader;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class SyntaxAndPl0CheckApp {
         List<Keyword> lexems = lexicalAnalyzer.recognizeAllLexem(data);
         nameTable.recognizeAllIdentifiers(lexems);
 
-        ISyntaxAnalyzer syntaxAnalyzer = new RecursiveDescentParser(lexems,nameTable);
+        ISyntaxAnalyzer syntaxAnalyzer = new SyntaxParserWithPl0StackCodeGen(lexems,nameTable);
         syntaxAnalyzer.checkSyntax();
 
     }

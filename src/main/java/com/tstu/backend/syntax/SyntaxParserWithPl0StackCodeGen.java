@@ -13,14 +13,14 @@ import com.tstu.backend.structures.ExpressionParser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyntaxParserWithPl0StackGen extends RecursiveDescentParser {
+public class SyntaxParserWithPl0StackCodeGen extends RecursiveDescentParser {
 
     private List<Keyword> currentExpression;
 
     private int currentDataAddress = 3; // because exists system vars RA,DL,SL
     private int currentLevel = 0;
 
-    public SyntaxParserWithPl0StackGen(List<Keyword> lexems, INameTable nameTable) {
+    public SyntaxParserWithPl0StackCodeGen(List<Keyword> lexems, INameTable nameTable) {
         super(lexems, nameTable);
         iterator = lexems.iterator();
         currentExpression = new ArrayList<>();

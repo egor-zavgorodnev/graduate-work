@@ -1,8 +1,8 @@
  Var n;
  Begin
-    n := 2;
-    If n < 3 Then
+    n := 1;
+    While n < 10 Do
     Begin
-        n := 3
+        n := n + 1
     End
  End.

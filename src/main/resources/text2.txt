@@ -1,14 +1,10 @@
-Procedure increase;
 Var n, f;
 Begin
    n := 0;
-   f := 1;
+   f := 1
    While n > 16 Do
    Begin
       n := n + 1;
       f := f * n
    End
-End;
-
-Call increase
-.
+End.

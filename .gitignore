@@ -1,5 +1,5 @@
 HELP.md
-src/main/java/com/tstu/environment
+src/main/java/ru/tver/tstu/environment
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

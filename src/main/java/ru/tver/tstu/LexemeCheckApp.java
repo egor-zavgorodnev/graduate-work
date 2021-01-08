@@ -1,0 +1,16 @@
+package ru.tver.tstu;
+
+import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
+import ru.tver.tstu.backend.lexems.LexicalAnalyzer;
+import ru.tver.tstu.util.FileReader;
+
+public class LexemeCheckApp {
+
+    public static void main(String[] args) throws LexicalAnalyzeException {
+       String data = FileReader.parseFromFile("src/main/resources/text.txt");
+
+        LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
+
+        lexicalAnalyzer.recognizeAllLexem(data);
+    }
+}

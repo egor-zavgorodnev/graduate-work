@@ -1,4 +1,4 @@
-package ru.tstu.tver.backend.model.enums;
+package ru.tver.tstu.backend.model.enums;
 
 public enum Lexem {
 

@@ -1,14 +1,14 @@
-package ru.tstu.tver.backend.syntax;
+package ru.tver.tstu.backend.syntax;
 
-import ru.tstu.tver.backend.INameTable;
-import ru.tstu.tver.backend.generator.pl0.PL0CodeGenerator;
-import ru.tstu.tver.backend.model.Identifier;
-import ru.tstu.tver.backend.model.Keyword;
-import ru.tstu.tver.backend.model.enums.Command;
-import ru.tstu.tver.backend.model.enums.IdentifierCategory;
-import ru.tstu.tver.backend.model.enums.Lexem;
-import ru.tstu.tver.backend.model.enums.OpCode;
-import ru.tstu.tver.backend.structures.ExpressionParser;
+import ru.tver.tstu.backend.INameTable;
+import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
+import ru.tver.tstu.backend.model.Identifier;
+import ru.tver.tstu.backend.model.Keyword;
+import ru.tver.tstu.backend.model.enums.Command;
+import ru.tver.tstu.backend.model.enums.IdentifierCategory;
+import ru.tver.tstu.backend.model.enums.Lexem;
+import ru.tver.tstu.backend.model.enums.OpCode;
+import ru.tver.tstu.backend.structures.ExpressionParser;
 
 import java.util.ArrayList;
 import java.util.List;

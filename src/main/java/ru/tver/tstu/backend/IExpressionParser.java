@@ -1,4 +1,4 @@
-package ru.tstu.tver.backend;
+package ru.tver.tstu.backend;
 
 public interface IExpressionParser {
     boolean parseExpression();

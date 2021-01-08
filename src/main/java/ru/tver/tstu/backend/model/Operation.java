@@ -1,4 +1,4 @@
-package ru.tstu.tver.backend.model;
+package ru.tver.tstu.backend.model;
 
 public class Operation {
     private Keyword sign;

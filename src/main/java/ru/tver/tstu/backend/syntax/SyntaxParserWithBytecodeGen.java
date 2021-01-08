@@ -1,19 +1,17 @@
-package ru.tstu.tver.backend.syntax;
+package ru.tver.tstu.backend.syntax;
 
-import ru.tstu.tver.backend.generator.bytecode.BCG;
-import ru.tstu.tver.backend.INameTable;
-import ru.tstu.tver.backend.generator.pl0.PL0CodeGenerator;
-import ru.tstu.tver.backend.model.Identifier;
-import ru.tstu.tver.backend.model.Keyword;
-import ru.tstu.tver.backend.model.enums.Command;
-import ru.tstu.tver.backend.model.enums.IdentifierCategory;
-import ru.tstu.tver.backend.model.enums.Lexem;
-import ru.tstu.tver.backend.model.enums.OpCode;
-import ru.tstu.tver.backend.structures.ExpressionParser;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import javafx.scene.control.Label;
+import org.objectweb.asm.tree.*;
+import ru.tver.tstu.backend.generator.bytecode.BCG;
+import ru.tver.tstu.backend.INameTable;
+import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
+import ru.tver.tstu.backend.model.Identifier;
+import ru.tver.tstu.backend.model.Keyword;
+import ru.tver.tstu.backend.model.enums.Command;
+import ru.tver.tstu.backend.model.enums.IdentifierCategory;
+import ru.tver.tstu.backend.model.enums.Lexem;
+import ru.tver.tstu.backend.model.enums.OpCode;
+import ru.tver.tstu.backend.structures.ExpressionParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +21,9 @@ import static org.objectweb.asm.Opcodes.*;
 public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
     private List<Keyword> currentExpression;
+    private LabelNode ifLabel;
+    private LabelNode gotoLabel;
+    private LabelNode whileLabel;
 
     private int currentDataAddress = 3; // because exists system vars RA,DL,SL
     private int currentLevel = 0;
@@ -82,8 +83,14 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             PL0CodeGenerator.addInstruction(OpCode.OPR, 0, "odd");
             PL0CodeGenerator.addInstruction(OpCode.JPC, 0, null);
         } else {
+            ifLabel = new LabelNode();
+            gotoLabel = new LabelNode();
+            whileLabel = new LabelNode();
+
+            BCG.addInstr(whileLabel);
             evaluateExpression();
             Lexem operator = currentKeyword.lex;
+            //TODO rewrite
             if (operator == Lexem.EQUAL ||
                     operator == Lexem.NOT_EQUAL ||
                     operator == Lexem.LESS_THAN ||
@@ -92,8 +99,10 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
                     operator == Lexem.MORE_OR_EQUAL_THAN) {
                 getNextKeyword();
                 evaluateExpression();
-                PL0CodeGenerator.addInstruction(OpCode.OPR, 0, operator.getValue());
-                PL0CodeGenerator.addInstruction(OpCode.JPC, 0, null);
+
+                BCG.addInstr(new JumpInsnNode(IF_ICMPLT, ifLabel));
+                BCG.addInstr(new JumpInsnNode(GOTO, gotoLabel));
+                BCG.addInstr(ifLabel);
             } else {
                 error(20);
                 getNextKeyword();
@@ -133,19 +142,14 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
         } else if (isAccept(Command.IF)) {
             condition();
             isExpect(Command.THEN, 16);
-            int jumpCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             statement();
-            int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
-            PL0CodeGenerator.changeInstructionAddress(jumpCodeAddress, currentCodeAddress + 1);
+            BCG.addInstr(gotoLabel);
         } else if (isAccept(Command.WHILE)) {
-            int jmpCodeAddress = PL0CodeGenerator.getLastCodeAddress() + 1;
             condition();
             isExpect(Command.DO, 18);
-            int jpcCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             statement();
-            int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
-            PL0CodeGenerator.changeInstructionAddress(jpcCodeAddress, currentCodeAddress + 2);
-            PL0CodeGenerator.addInstruction(OpCode.JMP, 0, String.valueOf(jmpCodeAddress));
+            BCG.addInstr(new JumpInsnNode(GOTO,whileLabel));
+            BCG.addInstr(gotoLabel);
         } else {
             error(11);
             getNextKeyword();

@@ -1,4 +1,4 @@
-package ru.tstu.tver.backend.generator.bytecode;
+package ru.tver.tstu.backend.generator.bytecode;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
 

@@ -1,13 +1,13 @@
-package ru.tstu.tver.execution;
+package ru.tver.tstu.execution;
 
-import ru.tstu.tver.backend.syntax.SyntaxParserWithBytecodeGen;
-import ru.tstu.tver.backend.INameTable;
-import ru.tstu.tver.backend.ISyntaxAnalyzer;
-import ru.tstu.tver.backend.generator.bytecode.ByteCodeGenerator;
-import ru.tstu.tver.backend.lexems.IdentifierTable;
-import ru.tstu.tver.backend.lexems.LexicalAnalyzer;
-import ru.tstu.tver.backend.model.Keyword;
-import ru.tstu.tver.util.FileReader;
+import ru.tver.tstu.backend.syntax.SyntaxParserWithBytecodeGen;
+import ru.tver.tstu.backend.INameTable;
+import ru.tver.tstu.backend.ISyntaxAnalyzer;
+import ru.tver.tstu.backend.generator.bytecode.ByteCodeGenerator;
+import ru.tver.tstu.backend.lexems.IdentifierTable;
+import ru.tver.tstu.backend.lexems.LexicalAnalyzer;
+import ru.tver.tstu.backend.model.Keyword;
+import ru.tver.tstu.util.FileReader;
 
 import java.util.List;
 

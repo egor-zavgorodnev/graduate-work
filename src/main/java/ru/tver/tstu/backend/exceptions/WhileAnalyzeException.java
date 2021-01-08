@@ -1,4 +1,4 @@
-package ru.tstu.tver.backend.exceptions;
+package ru.tver.tstu.backend.exceptions;
 
 public class WhileAnalyzeException extends RuntimeException {
     public WhileAnalyzeException(String message) {

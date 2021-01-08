@@ -1,4 +1,4 @@
-package ru.tstu.tver.execution;
+package ru.tver.tstu.execution;
 
 public class ByteCodeLoader extends ClassLoader {
     public static final ByteCodeLoader clazz = new ByteCodeLoader();

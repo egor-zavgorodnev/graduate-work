@@ -1,6 +1,6 @@
-package ru.tstu.tver.backend.model;
+package ru.tver.tstu.backend.model;
 
-import ru.tstu.tver.backend.model.enums.Lexem;
+import ru.tver.tstu.backend.model.enums.Lexem;
 
 import java.util.Objects;
 

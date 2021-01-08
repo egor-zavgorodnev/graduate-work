@@ -1,6 +1,6 @@
-package ru.tstu.tver.backend.model;
+package ru.tver.tstu.backend.model;
 
-import ru.tstu.tver.backend.model.enums.IdentifierCategory;
+import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 
 import java.util.Objects;
 

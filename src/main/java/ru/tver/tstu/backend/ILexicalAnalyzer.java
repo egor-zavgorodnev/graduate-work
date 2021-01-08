@@ -1,7 +1,7 @@
-package ru.tstu.tver.backend;
+package ru.tver.tstu.backend;
 
-import ru.tstu.tver.backend.exceptions.LexicalAnalyzeException;
-import ru.tstu.tver.backend.model.Keyword;
+import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
+import ru.tver.tstu.backend.model.Keyword;
 
 import java.util.List;
 

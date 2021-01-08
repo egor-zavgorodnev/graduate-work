@@ -1,4 +1,4 @@
-package ru.tstu.tver.backend.generator.bytecode;
+package ru.tver.tstu.backend.generator.bytecode;
 
 import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassWriter;
@@ -11,7 +11,6 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class ByteCodeGenerator {
 
-    private static final org.apache.log4j.Logger logger = Logger.getLogger(ByteCodeGenerator.class.getName());
     private static final String CLASS_FILE_PATH = "file.class"; //root dir
 
     private static final ClassNode classNode = new ClassNode();

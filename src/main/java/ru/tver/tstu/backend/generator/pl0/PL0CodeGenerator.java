@@ -1,6 +1,6 @@
-package ru.tstu.tver.backend.generator.pl0;
+package ru.tver.tstu.backend.generator.pl0;
 
-import ru.tstu.tver.backend.model.enums.OpCode;
+import ru.tver.tstu.backend.model.enums.OpCode;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

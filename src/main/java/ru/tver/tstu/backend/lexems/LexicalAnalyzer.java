@@ -1,9 +1,9 @@
-package ru.tstu.tver.backend.lexems;
+package ru.tver.tstu.backend.lexems;
 
-import ru.tstu.tver.backend.ILexicalAnalyzer;
-import ru.tstu.tver.backend.exceptions.LexicalAnalyzeException;
-import ru.tstu.tver.backend.model.enums.Lexem;
-import ru.tstu.tver.backend.model.Keyword;
+import ru.tver.tstu.backend.ILexicalAnalyzer;
+import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
+import ru.tver.tstu.backend.model.enums.Lexem;
+import ru.tver.tstu.backend.model.Keyword;
 import org.apache.log4j.Logger;
 
 

@@ -1,12 +1,12 @@
-package ru.tstu.tver.backend.lexems;
+package ru.tver.tstu.backend.lexems;
 
-import ru.tstu.tver.backend.INameTable;
-import ru.tstu.tver.backend.exceptions.LexicalAnalyzeException;
-import ru.tstu.tver.backend.model.Identifier;
-import ru.tstu.tver.backend.model.enums.Lexem;
-import ru.tstu.tver.backend.model.Keyword;
-import ru.tstu.tver.backend.model.enums.Command;
-import ru.tstu.tver.backend.model.enums.IdentifierCategory;
+import ru.tver.tstu.backend.INameTable;
+import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
+import ru.tver.tstu.backend.model.Identifier;
+import ru.tver.tstu.backend.model.enums.Lexem;
+import ru.tver.tstu.backend.model.Keyword;
+import ru.tver.tstu.backend.model.enums.Command;
+import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 import org.apache.log4j.Logger;
 
 import java.util.EnumSet;

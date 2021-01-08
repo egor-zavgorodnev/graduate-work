@@ -26,8 +26,9 @@ public class ExecTest {
         syntaxAnalyzer.checkSyntax();
         ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator(PL0CodeGenerator.getInstructions());
 
-        Class<?> aClass = ByteCodeLoader.clazz.loadClass(byteCodeGenerator.generateAsByteArray());
-
-        ((Runnable)aClass.newInstance()).run(); //создаем класс и запускаем
+        byteCodeGenerator.generateAsFileByPath();
+//        Class<?> aClass = ByteCodeLoader.clazz.loadClass(byteCodeGenerator.generateAsByteArray());
+//
+//        ((Runnable)aClass.newInstance()).run(); //создаем класс и запускаем
     }
 }

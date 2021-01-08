@@ -2,50 +2,41 @@ package com.tstu.backend.syntax;
 
 import com.tstu.backend.INameTable;
 import com.tstu.backend.ISyntaxAnalyzer;
-import com.tstu.backend.generator.pl0.PL0CodeGenerator;
 import com.tstu.backend.model.Identifier;
 import com.tstu.backend.model.Keyword;
 import com.tstu.backend.model.enums.Command;
-import com.tstu.backend.model.enums.OpCode;
 import com.tstu.backend.model.enums.IdentifierCategory;
 import com.tstu.backend.model.enums.Lexem;
-import com.tstu.backend.structures.ExpressionParser;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class RecursiveDescentParser implements ISyntaxAnalyzer {
 
-    private static final Logger logger = Logger.getLogger(RecursiveDescentParser.class.getName());
+    protected static final Logger logger = Logger.getLogger(RecursiveDescentParser.class.getName());
 
-    private List<Keyword> lexems;
-    private List<Keyword> currentExpression;
-    private final INameTable identifierTable;
-
-    private Keyword currentKeyword;
-    private Iterator<Keyword> iterator;
-    private boolean hasErrors;
-
-    private int currentDataAddress = 3; // because exists system vars RA,DL,SL
-    private int currentLevel = 0;
+    protected List<Keyword> lexems;
+    protected final INameTable identifierTable;
+    
+    protected Keyword currentKeyword;
+    protected Iterator<Keyword> iterator;
+    protected boolean hasErrors;
 
     public RecursiveDescentParser(List<Keyword> lexems, INameTable nameTable) {
         this.lexems = lexems;
         this.identifierTable = nameTable;
         iterator = lexems.iterator();
-        currentExpression = new ArrayList<>();
     }
 
-    void getNextKeyword() {
+    protected void getNextKeyword() {
         if (iterator.hasNext()) {
             currentKeyword = iterator.next();
         }
     }
 
     // accept not command
-    boolean isAccept(Lexem lex) {
+    protected boolean isAccept(Lexem lex) {
         if (currentKeyword.lex == lex) {
             if (currentKeyword.lex == Lexem.NAME) {
                 Identifier identifier = identifierTable.getIdentifier(currentKeyword.word);
@@ -60,7 +51,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     }
 
     // accept command only
-    boolean isAccept(Command command) {
+    protected boolean isAccept(Command command) {
         if (currentKeyword.lex == Lexem.NAME) {
             Identifier identifier = identifierTable.getIdentifier(currentKeyword.word);
             if (identifier.getCategory().equals(IdentifierCategory.COMMAND)) {
@@ -74,7 +65,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     }
 
     // accept ident with category
-    boolean isAccept(IdentifierCategory category) {
+    protected boolean isAccept(IdentifierCategory category) {
         if (currentKeyword.lex == Lexem.NAME) {
             Identifier identifier = identifierTable.getIdentifier(currentKeyword.word);
             if (identifier.getCategory().equals(category)) {
@@ -85,7 +76,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         return false;
     }
 
-    boolean isExpect(Lexem lex, int errorCode) {
+    protected boolean isExpect(Lexem lex, int errorCode) {
         if (isAccept(lex)) {
             return true;
         }
@@ -93,7 +84,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         return false;
     }
 
-    boolean isExpect(Command command, int errorCode) {
+    protected boolean isExpect(Command command, int errorCode) {
         if (isAccept(command)) {
             return true;
         }
@@ -101,16 +92,13 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         return false;
     }
 
-    void factor() {
+    protected void factor() {
         if (currentKeyword.lex == Lexem.NAME) { // var or const
-            currentExpression.add(currentKeyword);
             isAccept(Lexem.NAME);
         } else if (currentKeyword.lex == Lexem.NUMBER) {
-            currentExpression.add(currentKeyword);
             isAccept(Lexem.NUMBER);
         } else if (isAccept(Lexem.LEFT_BRACKET)) {
             expression();
-            currentExpression.add(currentKeyword);
             isExpect(Lexem.RIGHT_BRACKET, 22);
         } else {
             error(12);
@@ -118,35 +106,30 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         }
     }
 
-    void term() {
+    protected void term() {
         factor();
         while (currentKeyword.lex == Lexem.MULTIPLICATION || currentKeyword.lex == Lexem.DIVISION) {
-            currentExpression.add(currentKeyword);
             getNextKeyword();
             factor();
         }
     }
 
-    void expression() {
+    protected void expression() {
         if (currentKeyword.lex == Lexem.ADDITION || currentKeyword.lex == Lexem.SUBTRACTION) {
-            currentExpression.add(currentKeyword);
             getNextKeyword();
         }
         term();
         while (currentKeyword.lex == Lexem.ADDITION || currentKeyword.lex == Lexem.SUBTRACTION) {
-            currentExpression.add(currentKeyword);
             getNextKeyword();
             term();
         }
     }
 
-    void condition() {
+    protected void condition() {
         if (isAccept(Command.ODD)) {
-            evaluateExpression();
-            PL0CodeGenerator.addInstruction(OpCode.OPR, 0, "odd");
-            PL0CodeGenerator.addInstruction(OpCode.JPC, 0, null);
+            expression();
         } else {
-            evaluateExpression();
+            expression();
             Lexem operator = currentKeyword.lex;
             if (operator == Lexem.EQUAL ||
                     operator == Lexem.NOT_EQUAL ||
@@ -155,9 +138,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
                     operator == Lexem.MORE_THAN ||
                     operator == Lexem.MORE_OR_EQUAL_THAN) {
                 getNextKeyword();
-                evaluateExpression();
-                PL0CodeGenerator.addInstruction(OpCode.OPR, 0, operator.getValue());
-                PL0CodeGenerator.addInstruction(OpCode.JPC, 0, null);
+                expression();
             } else {
                 error(20);
                 getNextKeyword();
@@ -165,14 +146,8 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         }
     }
 
-    private void evaluateExpression() {
-        currentExpression.clear();
-        expression();
-        ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable);
-        expressionParser.parseExpression();
-    }
 
-    void statement() {
+    protected void statement() {
         Identifier identifier;
         if (currentKeyword.lex == Lexem.NAME) {
             identifier = identifierTable.getIdentifier(currentKeyword.word);
@@ -183,8 +158,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         }
         if (isAccept(IdentifierCategory.VAR)) {
             isExpect(Lexem.ASSIGN, 19);
-            evaluateExpression();
-            PL0CodeGenerator.addInstruction(OpCode.STO, identifier.getLevel(), identifier.getAddress());
+            expression();
         } else if (isAccept(Command.CALL)) {
             isExpect(Lexem.NAME, 14);
         } else if (isAccept(Command.BEGIN)) {
@@ -195,32 +169,23 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         } else if (isAccept(Command.IF)) {
             condition();
             isExpect(Command.THEN, 16);
-            int jumpCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             statement();
-            int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
-            PL0CodeGenerator.changeInstructionAddress(jumpCodeAddress, currentCodeAddress + 1);
         } else if (isAccept(Command.WHILE)) {
-            int jmpCodeAddress = PL0CodeGenerator.getLastCodeAddress() + 1;
             condition();
             isExpect(Command.DO, 18);
-            int jpcCodeAddress = PL0CodeGenerator.getLastCodeAddress();
             statement();
-            int currentCodeAddress = PL0CodeGenerator.getLastCodeAddress();
-            PL0CodeGenerator.changeInstructionAddress(jpcCodeAddress, currentCodeAddress + 2);
-            PL0CodeGenerator.addInstruction(OpCode.JMP, 0, String.valueOf(jmpCodeAddress));
         } else {
             error(11);
             getNextKeyword();
         }
     }
 
-    void block() {
-        currentLevel++;
+    protected void block() {
         if (isAccept(Command.CONST)) {
             do {
                 Identifier identifier = identifierTable.getIdentifier(currentKeyword.word);
                 if (currentKeyword.lex == Lexem.NAME) {
-                    updateIdentifierInfo(IdentifierCategory.CONST, currentLevel, "0");
+                    updateIdentifierInfo(IdentifierCategory.CONST);
                 }
                 isExpect(Lexem.NAME, 4);
                 isExpect(Lexem.EQUAL, 3);
@@ -234,16 +199,15 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         if (isAccept(Command.VAR)) {
             do {
                 if (currentKeyword.lex == Lexem.NAME) {
-                    updateIdentifierInfo(IdentifierCategory.VAR, currentLevel, String.valueOf(currentDataAddress++));
+                    updateIdentifierInfo(IdentifierCategory.VAR);
                 }
                 isExpect(Lexem.NAME, 4);
             } while (isAccept(Lexem.SEMI));
-            PL0CodeGenerator.addInstruction(OpCode.INT, currentLevel, String.valueOf(currentDataAddress));
             isExpect(Lexem.SEMICOLON, 5);
         }
         while (isAccept(Command.PROCEDURE)) {
             if (currentKeyword.lex == Lexem.NAME) {
-                updateIdentifierInfo(IdentifierCategory.PROCEDURE_NAME, currentLevel, "0");
+                updateIdentifierInfo(IdentifierCategory.PROCEDURE_NAME);
             }
             isExpect(Lexem.NAME, 4);
             isExpect(Lexem.SEMICOLON, 5);
@@ -251,16 +215,13 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
             isExpect(Lexem.SEMICOLON, 5);
         }
         statement();
-        currentLevel--;
     }
 
-    private void updateIdentifierInfo(IdentifierCategory category, int level, String address) {
+    private void updateIdentifierInfo(IdentifierCategory category) {
         identifierTable.getIdentifier(currentKeyword.word).setCategory(category);
-        identifierTable.getIdentifier(currentKeyword.word).setLevel(level);
-        identifierTable.getIdentifier(currentKeyword.word).setAddress(address);
     }
 
-    void error(int errorCode) {
+    protected void error(int errorCode) {
         hasErrors = true;
         switch (errorCode) {
             case 1:
@@ -341,7 +302,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         }
     }
 
-    void program() {
+    protected void program() {
         getNextKeyword();
         block();
         isExpect(Lexem.DOT, 9);
@@ -351,8 +312,6 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     @Override
     public boolean checkSyntax() {
         program();
-        PL0CodeGenerator.addInstruction(OpCode.OPR, 0, "return");
-        PL0CodeGenerator.printInstructions();
         return hasErrors;
     }
 }

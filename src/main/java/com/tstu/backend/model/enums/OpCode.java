@@ -1,5 +1,5 @@
 package com.tstu.backend.model.enums;
 
-public enum Function {
+public enum OpCode {
     LIT,OPR,LOD,STO,CAL,INT,JMP,JPC
 }

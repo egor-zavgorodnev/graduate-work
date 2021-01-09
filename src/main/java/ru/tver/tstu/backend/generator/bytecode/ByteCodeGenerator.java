@@ -1,6 +1,5 @@
 package ru.tver.tstu.backend.generator.bytecode;
 
-import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
 
@@ -15,15 +14,16 @@ public class ByteCodeGenerator {
 
     private static final ClassNode classNode = new ClassNode();
 
+
     public static void generateAsFileByPath() {
         generateWrapperClassAndInitMethod();
-        generateRunMethod();
+        generateProgramMethods();
         writeFile();
     }
 
     public static byte[] generateAsByteArray() {
         generateWrapperClassAndInitMethod();
-        generateRunMethod();
+        generateProgramMethods();
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 
         classNode.accept(cw);
@@ -52,17 +52,18 @@ public class ByteCodeGenerator {
 
     }
 
-    private static void generateRunMethod() {
+    private static void generateProgramMethods() {
 
-        MethodNode runMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
+        for (MethodNode node : BCG.getMethods()) {
+            classNode.methods.add(node);
 
-        InsnList runMethodInstructionList = runMethodNode.instructions;
-
-        for (AbstractInsnNode node : BCG.getInsnNodeList()) {
-            runMethodInstructionList.add(node);
+        }
+        //TODO equals/hashcode
+        for (FieldNode node : BCG.getFields()) {
+            classNode.fields.add(node);
         }
 
-        classNode.methods.add(runMethodNode);
+
     }
 
 

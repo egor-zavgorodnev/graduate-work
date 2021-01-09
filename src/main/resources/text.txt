@@ -1,8 +1,6 @@
- Var n;
+ Var n,f;
  Begin
+    f := 0;
     n := 1;
-    If Odd n Then
-    Begin
-        n := n + 1
-    End
+    n := f + 1
  End.

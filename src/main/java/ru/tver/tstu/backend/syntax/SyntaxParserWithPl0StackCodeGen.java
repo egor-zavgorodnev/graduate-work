@@ -97,7 +97,7 @@ public class SyntaxParserWithPl0StackCodeGen extends RecursiveDescentParser {
     private void evaluateExpression() {
         currentExpression.clear();
         expression();
-        ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable);
+        ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable, null);
         expressionParser.parseExpression();
     }
 
@@ -111,7 +111,7 @@ public class SyntaxParserWithPl0StackCodeGen extends RecursiveDescentParser {
             getNextKeyword();
             return;
         }
-        if (isAccept(IdentifierCategory.VAR)) {
+        if (isAccept(IdentifierCategory.LOCAL_VAR)) {
             isExpect(Lexem.ASSIGN, 19);
             evaluateExpression();
             PL0CodeGenerator.addInstruction(OpCode.STO, identifier.getLevel(), identifier.getAddress());
@@ -165,7 +165,7 @@ public class SyntaxParserWithPl0StackCodeGen extends RecursiveDescentParser {
         if (isAccept(Command.VAR)) {
             do {
                 if (currentKeyword.lex == Lexem.NAME) {
-                    updateIdentifierInfo(IdentifierCategory.VAR, currentLevel, String.valueOf(currentDataAddress++));
+                    updateIdentifierInfo(IdentifierCategory.LOCAL_VAR, currentLevel, String.valueOf(currentDataAddress++));
                 }
                 isExpect(Lexem.NAME, 4);
             } while (isAccept(Lexem.SEMI));

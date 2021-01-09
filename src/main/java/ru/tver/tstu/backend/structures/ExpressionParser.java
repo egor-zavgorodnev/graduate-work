@@ -1,20 +1,18 @@
 package ru.tver.tstu.backend.structures;
 
+import org.apache.log4j.Logger;
+import org.objectweb.asm.tree.*;
 import ru.tver.tstu.backend.INameTable;
 import ru.tver.tstu.backend.exceptions.ExpressionAnalyzeException;
 import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.generator.bytecode.BCG;
+import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.Operation;
 import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 import ru.tver.tstu.backend.model.enums.Lexem;
 import ru.tver.tstu.backend.model.enums.OpCode;
-import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
-import org.apache.log4j.Logger;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.List;
 import java.util.Stack;
@@ -26,6 +24,7 @@ public class ExpressionParser {
     private static final String SPECIAL_KEYWORD_NAME = "expr";
 
     private INameTable nameTable;
+    private MethodNode currentMethodNode;
     private Stack<Operation> operationStack;
     private Stack<Keyword> argumentStack;
 
@@ -34,9 +33,10 @@ public class ExpressionParser {
     private Logger logger = Logger.getLogger(ExpressionParser.class.getName());
     //= new CustomLogger(ExpressionParser.class.getName());
 
-    public ExpressionParser(List<Keyword> expression, INameTable nameTable) {
+    public ExpressionParser(List<Keyword> expression, INameTable nameTable, MethodNode currentMethodNode) {
         this.expression = expression;
         this.nameTable = nameTable;
+        this.currentMethodNode = currentMethodNode;
     }
 
     private void parseDeclaration() throws ExpressionAnalyzeException, LexicalAnalyzeException {
@@ -47,13 +47,19 @@ public class ExpressionParser {
             case NUMBER:
                 // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                 PL0CodeGenerator.addInstruction(OpCode.LIT, 0, expression.get(0).word);
-                BCG.addInstr(new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
+                BCG.addInstr(currentMethodNode, new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
                 break;
             case NAME:
-                if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.VAR) {
+                if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.LOCAL_VAR) {
                     // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
-                    BCG.addInstr(new VarInsnNode(ILOAD, Integer.parseInt(currentIdentifier.getAddress())));
+                    BCG.addInstr(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(currentIdentifier.getAddress())));
+                }
+                if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.CLASS_VAR) {
+                    // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                    PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
+                    BCG.addInstr(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
+                            currentIdentifier.getName(), "I"));
                 }
                 break;
             default:
@@ -111,6 +117,33 @@ public class ExpressionParser {
 
     }
 
+    private void calculateOperation(Keyword arg1, Keyword arg2, String operation, int instructionCode) {
+
+        for (Keyword arg : List.of(arg1, arg2)) {
+            Identifier identifier = nameTable.getIdentifier(arg.word);
+            if (arg.lex == Lexem.NAME) {
+                if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
+                    //do nothing
+                } else {
+                    PL0CodeGenerator.addInstruction(OpCode.LOD, 1, identifier.getAddress());
+                    if (identifier.getCategory() == IdentifierCategory.LOCAL_VAR) {
+                        BCG.addInstr(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(identifier.getAddress())));
+                    }
+                    if (identifier.getCategory() == IdentifierCategory.CLASS_VAR) {
+                        BCG.addInstr(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
+                                identifier.getName(), "I"));
+                    }
+
+                }
+            } else {
+                PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
+                BCG.addInstr(currentMethodNode, new LdcInsnNode(Integer.parseInt(arg.word)));
+            }
+        }
+        PL0CodeGenerator.addInstruction(OpCode.OPR, 1, operation);
+        BCG.addInstr(currentMethodNode, new InsnNode(instructionCode));
+        argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
+    }
 
     private void calculateOperations(int minPriority) {
         if (operationStack.size() == 0)
@@ -119,89 +152,19 @@ public class ExpressionParser {
         Operation currentOperation = operationStack.peek();
 
         if (currentOperation.getPriority() >= minPriority) {
-            Keyword arg1;
-            Keyword arg2;
             currentOperation = operationStack.pop();
             switch (currentOperation.getSign().lex) {
                 case ADDITION:
-                    arg1 = argumentStack.pop();
-                    arg2 = argumentStack.pop();
-                    for (Keyword arg : List.of(arg1, arg2)) {
-                        if (arg.lex == Lexem.NAME) {
-                            if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
-                                //do nothing
-                            } else {
-                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
-                                BCG.addInstr(new VarInsnNode(ILOAD, Integer.parseInt(nameTable.getIdentifier(arg.word).getAddress())));
-                            }
-                        } else {
-                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
-                            BCG.addInstr(new LdcInsnNode(Integer.parseInt(arg.word)));
-                        }
-                    }
-                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "+");
-                    BCG.addInstr(new InsnNode(IADD));
-                    argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
+                    calculateOperation(argumentStack.pop(), argumentStack.pop(), "+", IADD);
                     break;
                 case SUBTRACTION:
-                    arg1 = argumentStack.pop();
-                    arg2 = argumentStack.pop();
-                    for (Keyword arg : List.of(arg1, arg2)) {
-                        if (arg.lex == Lexem.NAME) {
-                            if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
-                                //do nothing
-                            } else {
-                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
-                                BCG.addInstr(new VarInsnNode(ILOAD, Integer.parseInt(nameTable.getIdentifier(arg.word).getAddress())));
-                            }
-                        } else {
-                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
-                            BCG.addInstr(new LdcInsnNode(Integer.parseInt(arg.word)));
-                        }
-                    }
-                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "-");
-                    BCG.addInstr(new InsnNode(ISUB));
-                    argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
+                    calculateOperation(argumentStack.pop(), argumentStack.pop(), "-", ISUB);
                     break;
                 case MULTIPLICATION:
-                    arg1 = argumentStack.pop();
-                    arg2 = argumentStack.pop();
-                    for (Keyword arg : List.of(arg1, arg2)) {
-                        if (arg.lex == Lexem.NAME) {
-                            if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
-                                //do nothing
-                            } else {
-                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
-                                BCG.addInstr(new VarInsnNode(ILOAD, Integer.parseInt(nameTable.getIdentifier(arg.word).getAddress())));
-                            }
-                        } else {
-                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
-                            BCG.addInstr(new LdcInsnNode(Integer.parseInt(arg.word)));
-                        }
-                    }
-                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "*");
-                    BCG.addInstr(new InsnNode(IMUL));
-                    argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
+                    calculateOperation(argumentStack.pop(), argumentStack.pop(), "*", IMUL);
                     break;
                 case DIVISION:
-                    arg1 = argumentStack.pop();
-                    arg2 = argumentStack.pop();
-                    for (Keyword arg : List.of(arg1, arg2)) {
-                        if (arg.lex == Lexem.NAME) {
-                            if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
-                                //do nothing
-                            } else {
-                                PL0CodeGenerator.addInstruction(OpCode.LOD, 1, nameTable.getIdentifier(arg.word).getAddress());
-                                BCG.addInstr(new VarInsnNode(ILOAD, Integer.parseInt(nameTable.getIdentifier(arg.word).getAddress())));
-                            }
-                        } else {
-                            PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
-                            BCG.addInstr(new LdcInsnNode(Integer.parseInt(arg.word)));
-                        }
-                    }
-                    PL0CodeGenerator.addInstruction(OpCode.OPR, 1, "/");
-                    BCG.addInstr(new InsnNode(IDIV));
-                    argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
+                    calculateOperation(argumentStack.pop(), argumentStack.pop(), "/", IDIV);
                     break;
 
             }

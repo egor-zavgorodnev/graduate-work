@@ -148,15 +148,13 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
 
 
     protected void statement() {
-        Identifier identifier;
         if (currentKeyword.lex == Lexem.NAME) {
-            identifier = identifierTable.getIdentifier(currentKeyword.word);
         } else {
             error(11);
             getNextKeyword();
             return;
         }
-        if (isAccept(IdentifierCategory.VAR)) {
+        if (isAccept(IdentifierCategory.LOCAL_VAR)) {
             isExpect(Lexem.ASSIGN, 19);
             expression();
         } else if (isAccept(Command.CALL)) {
@@ -199,7 +197,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         if (isAccept(Command.VAR)) {
             do {
                 if (currentKeyword.lex == Lexem.NAME) {
-                    updateIdentifierInfo(IdentifierCategory.VAR);
+                    updateIdentifierInfo(IdentifierCategory.LOCAL_VAR);
                 }
                 isExpect(Lexem.NAME, 4);
             } while (isAccept(Lexem.SEMI));

@@ -1,7 +1,7 @@
  Var n;
  Begin
     n := 1;
-    While n < 10 Do
+    If Odd n Then
     Begin
         n := n + 1
     End

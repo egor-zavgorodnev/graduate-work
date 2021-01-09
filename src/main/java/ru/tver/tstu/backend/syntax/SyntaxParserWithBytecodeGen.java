@@ -1,16 +1,13 @@
 package ru.tver.tstu.backend.syntax;
 
-import javafx.scene.control.Label;
 import org.objectweb.asm.tree.*;
-import ru.tver.tstu.backend.generator.bytecode.BCG;
 import ru.tver.tstu.backend.INameTable;
-import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
+import ru.tver.tstu.backend.generator.bytecode.BCG;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.enums.Command;
 import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 import ru.tver.tstu.backend.model.enums.Lexem;
-import ru.tver.tstu.backend.model.enums.OpCode;
 import ru.tver.tstu.backend.structures.ExpressionParser;
 
 import java.util.ArrayList;
@@ -78,15 +75,18 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
     @Override
     protected void condition() {
+        ifLabel = new LabelNode();
+        gotoLabel = new LabelNode();
+        whileLabel = new LabelNode();
+
         if (isAccept(Command.ODD)) {
             evaluateExpression();
-            PL0CodeGenerator.addInstruction(OpCode.OPR, 0, "odd");
-            PL0CodeGenerator.addInstruction(OpCode.JPC, 0, null);
+            BCG.addInstr(new LdcInsnNode(2));
+            BCG.addInstr(new InsnNode(IREM));
+            BCG.addInstr(new JumpInsnNode(IFEQ, ifLabel));
+            BCG.addInstr(new JumpInsnNode(GOTO, gotoLabel));
+            BCG.addInstr(ifLabel);
         } else {
-            ifLabel = new LabelNode();
-            gotoLabel = new LabelNode();
-            whileLabel = new LabelNode();
-
             BCG.addInstr(whileLabel);
             evaluateExpression();
             Lexem operator = currentKeyword.lex;
@@ -148,7 +148,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             condition();
             isExpect(Command.DO, 18);
             statement();
-            BCG.addInstr(new JumpInsnNode(GOTO,whileLabel));
+            BCG.addInstr(new JumpInsnNode(GOTO, whileLabel));
             BCG.addInstr(gotoLabel);
         } else {
             error(11);
@@ -206,6 +206,13 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
         identifierTable.getIdentifier(currentKeyword.word).setCategory(category);
         identifierTable.getIdentifier(currentKeyword.word).setLevel(level);
         identifierTable.getIdentifier(currentKeyword.word).setAddress(address);
+    }
+
+    private void isOdd() {
+        int n = 3;
+        if (n % 2 == 0) {
+            n = 4;
+        }
     }
 
     @Override

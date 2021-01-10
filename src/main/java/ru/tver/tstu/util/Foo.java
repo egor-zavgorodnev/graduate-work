@@ -1,9 +1,13 @@
 package ru.tver.tstu.util;
 
 public class Foo {
-    int n;
+    static int n;
 
-    void i() {
+    static void i() {
         n = 0;
+    }
+
+    public static void main(String[] args) {
+        i();
     }
 }

@@ -76,12 +76,13 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             if (currentKeyword.lex == Lexem.NAME) {
                 updateIdentifierInfo(IdentifierCategory.PROCEDURE_NAME, currentLevel, "0");
             }
-            currentMethodNode = new MethodNode(ACC_PUBLIC, currentKeyword.word, "()V", null, null);
+            currentMethodNode = new MethodNode(ACC_PUBLIC + ACC_STATIC, currentKeyword.word, "()V", null, null);
             isExpect(Lexem.NAME, 4);
             isExpect(Lexem.SEMICOLON, 5);
             block();
             isExpect(Lexem.SEMICOLON, 5);
             // get back to default method
+            BCG.addInstr(currentMethodNode, new InsnNode(RETURN));
             currentMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
         }
         statement();
@@ -232,6 +233,8 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             addPrintBytecodeCommands(identifier);
 
         } else if (isAccept(Command.CALL)) {
+            BCG.addInstr(currentMethodNode, new MethodInsnNode(INVOKESTATIC, "ClassTest",
+                    currentKeyword.word, "()V"));
             isExpect(Lexem.NAME, 14);
         } else if (isAccept(Command.BEGIN)) {
             do {

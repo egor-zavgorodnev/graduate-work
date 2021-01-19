@@ -14,7 +14,7 @@ import java.util.List;
 public class ExecTest {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
 
-        String data = FileReader.parseFromFile("src/main/resources/text3.txt");
+        String data = FileReader.parseFromFile("src/main/resources/tests/if/nested-if.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         INameTable nameTable = new IdentifierTable();

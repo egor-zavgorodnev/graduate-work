@@ -11,9 +11,15 @@ import static org.objectweb.asm.Opcodes.*;
 public class ByteCodeGenerator {
 
     private static final String CLASS_FILE_PATH = "file.class"; //root dir
-
     private static final ClassNode classNode = new ClassNode();
 
+    static {
+        classNode.version = V1_8;
+        classNode.access = ACC_PUBLIC + ACC_SUPER;
+        classNode.name = "ClassTest";
+        classNode.superName = "java/lang/Object";
+        classNode.interfaces.add("java/lang/Runnable");
+    }
 
     public static void generateAsFileByPath() {
         generateWrapperClassAndInitMethod();
@@ -33,12 +39,6 @@ public class ByteCodeGenerator {
 
     private static void generateWrapperClassAndInitMethod() {
 
-        classNode.version = V1_8;
-        classNode.access = ACC_PUBLIC + ACC_SUPER;
-        classNode.name = "ClassTest";
-        classNode.superName = "java/lang/Object";
-        classNode.interfaces.add("java/lang/Runnable");
-
         MethodNode initMethodNode = new MethodNode(ACC_PUBLIC, "<init>", "()V", null, null);
 
         InsnList initMethodInstructionList = initMethodNode.instructions;
@@ -54,15 +54,14 @@ public class ByteCodeGenerator {
 
     private static void generateProgramMethods() {
 
-        for (MethodNode node : BCG.getMethods()) {
+        for (MethodNode node : ByteCodeBuilder.getMethods()) {
             classNode.methods.add(node);
 
         }
-        //TODO equals/hashcode
-        for (FieldNode node : BCG.getFields()) {
+
+        for (FieldNode node : ByteCodeBuilder.getFields()) {
             classNode.fields.add(node);
         }
-
 
     }
 

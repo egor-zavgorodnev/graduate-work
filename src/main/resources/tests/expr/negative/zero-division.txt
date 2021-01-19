@@ -1,0 +1,4 @@
+ Var n;
+ Begin
+    n := 1 / 0
+ End.

@@ -7,7 +7,7 @@ import ru.tver.tstu.util.FileReader;
 public class LexemeCheckApp {
 
     public static void main(String[] args) throws LexicalAnalyzeException {
-       String data = FileReader.parseFromFile("src/main/resources/text.txt");
+       String data = FileReader.parseFromFile("src/main/resources/nested-if.txt");
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 

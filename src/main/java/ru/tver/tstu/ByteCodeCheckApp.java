@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ByteCodeCheckApp {
     public static void main(String[] args) throws LexicalAnalyzeException {
-        String data = FileReader.parseFromFile("src/main/resources/tests/procedure/rec.txt");
+        String data = FileReader.parseFromFile("src/main/resources/tests/while/nested-while.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         INameTable nameTable = new IdentifierTable();

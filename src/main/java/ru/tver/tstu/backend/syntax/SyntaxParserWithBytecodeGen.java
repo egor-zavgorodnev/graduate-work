@@ -22,9 +22,8 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
     private List<Keyword> currentExpression;
     private LabelNode ifLabel;
-    //private LabelNode gotoLabel;
     private Stack<LabelNode> gotoLabels;
-    private LabelNode whileLabel;
+    private Stack<LabelNode> whileLabels;
 
     //default method node (main method analog)
     MethodNode currentMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
@@ -34,6 +33,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
         iterator = lexems.iterator();
         currentExpression = new ArrayList<>();
         gotoLabels = new Stack<>();
+        whileLabels = new Stack<>();
     }
 
     @Override
@@ -133,10 +133,8 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     protected void condition() {
         ifLabel = new LabelNode();
         gotoLabels.push(new LabelNode());
-        whileLabel = new LabelNode();
 
         if (isAccept(Command.ODD)) {
-            ByteCodeBuilder.addInstruction(currentMethodNode, whileLabel);
             evaluateExpression();
             ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(ICONST_2));
             ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(IREM));
@@ -144,7 +142,6 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
             ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
         } else {
-            ByteCodeBuilder.addInstruction(currentMethodNode, whileLabel);
             evaluateExpression();
             Lexem operator = currentKeyword.lex;
             switch (operator) {
@@ -241,10 +238,12 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             statement();
             ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
         } else if (isAccept(Command.WHILE)) {
+            whileLabels.push(new LabelNode());
+            ByteCodeBuilder.addInstruction(currentMethodNode, whileLabels.peek());
             condition();
             isExpect(Command.DO, 18);
             statement();
-            ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, whileLabel));
+            ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, whileLabels.pop()));
             ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
         } else {
             error(11);

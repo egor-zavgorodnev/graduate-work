@@ -12,6 +12,7 @@ import ru.tver.tstu.backend.structures.ExpressionParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -21,7 +22,8 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
     private List<Keyword> currentExpression;
     private LabelNode ifLabel;
-    private LabelNode gotoLabel;
+    //private LabelNode gotoLabel;
+    private Stack<LabelNode> gotoLabels;
     private LabelNode whileLabel;
 
     //default method node (main method analog)
@@ -31,6 +33,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
         super(lexems, nameTable);
         iterator = lexems.iterator();
         currentExpression = new ArrayList<>();
+        gotoLabels = new Stack<>();
     }
 
     @Override
@@ -129,7 +132,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     @Override
     protected void condition() {
         ifLabel = new LabelNode();
-        gotoLabel = new LabelNode();
+        gotoLabels.push(new LabelNode());
         whileLabel = new LabelNode();
 
         if (isAccept(Command.ODD)) {
@@ -138,7 +141,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(ICONST_2));
             ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(IREM));
             ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IFEQ, ifLabel));
-            ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabel));
+            ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
             ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
         } else {
             ByteCodeBuilder.addInstruction(currentMethodNode, whileLabel);
@@ -149,42 +152,42 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
                     getNextKeyword();
                     evaluateExpression();
                     ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPEQ, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabel));
+                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
                     ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case NOT_EQUAL:
                     getNextKeyword();
                     evaluateExpression();
                     ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPNE, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabel));
+                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
                     ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case LESS_THAN:
                     getNextKeyword();
                     evaluateExpression();
                     ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPLT, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabel));
+                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
                     ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case LESS_OR_EQUAL_THAN:
                     getNextKeyword();
                     evaluateExpression();
                     ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPLE, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabel));
+                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
                     ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case MORE_THAN:
                     getNextKeyword();
                     evaluateExpression();
                     ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPGT, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabel));
+                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
                     ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case MORE_OR_EQUAL_THAN:
                     getNextKeyword();
                     evaluateExpression();
                     ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPGE, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabel));
+                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
                     ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 default:
@@ -236,13 +239,13 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             condition();
             isExpect(Command.THEN, 16);
             statement();
-            ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabel);
+            ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
         } else if (isAccept(Command.WHILE)) {
             condition();
             isExpect(Command.DO, 18);
             statement();
             ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, whileLabel));
-            ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabel);
+            ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
         } else {
             error(11);
             getNextKeyword();

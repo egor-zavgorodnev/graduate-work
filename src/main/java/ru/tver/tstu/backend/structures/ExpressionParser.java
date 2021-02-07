@@ -45,23 +45,25 @@ public class ExpressionParser {
         Identifier currentIdentifier = nameTable.getIdentifier(expression.get(0).word);
         switch (sourceVariable.lex) {
             case NUMBER:
-                // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                 logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                 PL0CodeGenerator.addInstruction(OpCode.LIT, 0, expression.get(0).word);
                 ByteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
                 break;
             case NAME:
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.LOCAL_VAR) {
-                    // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                     logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                     ByteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(currentIdentifier.getAddress())));
+                    break;
                 }
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.CLASS_VAR) {
-                    // logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                     logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                     ByteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
                             currentIdentifier.getName(), "I"));
+                    break;
                 }
-                break;
+                throw new ExpressionAnalyzeException("Ожидается значение переменной");
             default:
                 throw new ExpressionAnalyzeException("Ожидается значение переменной");
         }
@@ -97,9 +99,20 @@ public class ExpressionParser {
                     needValue = true;
                     break;
                 case NAME:
+                    //is variable
+                    if (nameTable.getIdentifier(expression.get(i).word).getCategory() == IdentifierCategory.LOCAL_VAR
+                            || nameTable.getIdentifier(expression.get(i).word).getCategory() == IdentifierCategory.CLASS_VAR) {
+                        if (!needValue) {
+                            throw new ExpressionAnalyzeException("Ожидается значение переменной или число");
+                        }
+                        argumentStack.push(expression.get(i));
+                        needValue = false;
+                        break;
+                    }
+                    throw new ExpressionAnalyzeException("Ожидается значение переменной или число");
                 case NUMBER:
                     if (!needValue) {
-                        throw new ExpressionAnalyzeException("Ожидается значение");
+                        throw new ExpressionAnalyzeException("Ожидается значение переменной или число");
                     }
                     argumentStack.push(expression.get(i));
                     needValue = false;
@@ -112,7 +125,6 @@ public class ExpressionParser {
                     break;
             }
         }
-
         calculateOperations(0);
 
     }
@@ -183,9 +195,8 @@ public class ExpressionParser {
         } else {
             StringBuilder expr = new StringBuilder();
             expression.forEach(e -> expr.append(e.word));
-            //logger.info("\nРазбор выражения - " + expr);
+            logger.info("\nРазбор выражения - " + expr);
             calculateExpression();
-            //CodeGenerator.addInstruction("mov " + expression.get(0).word + ", ax");
         }
     }
 }

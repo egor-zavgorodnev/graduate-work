@@ -20,13 +20,13 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
     private static final String RUN = "run";
 
-    private List<Keyword> currentExpression;
-    private LabelNode ifLabel;
-    private Stack<LabelNode> gotoLabels;
-    private Stack<LabelNode> whileLabels;
+    private final List<Keyword> currentExpression;
+
+    private final Stack<LabelNode> gotoLabels;
+    private final Stack<LabelNode> whileLabels;
 
     //default method node (main method analog)
-    MethodNode currentMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
+    private MethodNode currentMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
 
     public SyntaxParserWithBytecodeGen(List<Keyword> lexems, INameTable nameTable) {
         super(lexems, nameTable);
@@ -131,7 +131,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
     @Override
     protected void condition() {
-        ifLabel = new LabelNode();
+        LabelNode ifLabel = new LabelNode();
         gotoLabels.push(new LabelNode());
 
         if (isAccept(Command.ODD)) {
@@ -224,9 +224,14 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
                     identifier.getName(), "I"));
             addPrintBytecodeCommands(identifier);
         } else if (isAccept(Command.CALL)) {
-            ByteCodeBuilder.addInstruction(currentMethodNode, new MethodInsnNode(INVOKESTATIC, "ClassTest",
-                    currentKeyword.word, "()V"));
-            isExpect(Lexem.NAME, 14);
+            if (identifierTable.getIdentifier(currentKeyword.word).getCategory().equals(IdentifierCategory.PROCEDURE_NAME)) {
+                ByteCodeBuilder.addInstruction(currentMethodNode, new MethodInsnNode(INVOKESTATIC, "ClassTest",
+                        currentKeyword.word, "()V"));
+                isExpect(Lexem.NAME, 14);
+            } else {
+                error(11);
+                getNextKeyword();
+            }
         } else if (isAccept(Command.BEGIN)) {
             do {
                 statement();

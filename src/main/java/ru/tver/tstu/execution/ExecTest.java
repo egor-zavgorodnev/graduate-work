@@ -14,7 +14,7 @@ import java.util.List;
 public class ExecTest {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
 
-        String data = FileReader.parseFromFile("src/main/resources/tests/while/if-while.txt");
+        String data = FileReader.parseFromFile("src/main/resources/tests/procedure/3-proc.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         INameTable nameTable = new IdentifierTable();

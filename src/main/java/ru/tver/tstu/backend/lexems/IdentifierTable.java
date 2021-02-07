@@ -1,6 +1,5 @@
 package ru.tver.tstu.backend.lexems;
 
-import ru.tver.tstu.backend.INameTable;
 import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.enums.Lexem;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class IdentifierTable implements INameTable {
+public class IdentifierTable {
 
     private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());
 
@@ -31,19 +30,17 @@ public class IdentifierTable implements INameTable {
         identifiers.add(identifier);
     }
 
-    @Override
     public Identifier getIdentifier(String name) throws LexicalAnalyzeException {
         return identifiers.stream()
                 .filter(i -> i.getName().equals(name))
                 .findAny().orElse(null);
     }
 
-    @Override
     public void recognizeAllIdentifiers(List<Keyword> keywords) {
         logger.info("\n---Разбор идентификаторов---\n");
         for (Keyword keyword : keywords) {
             if (keyword.lex.equals(Lexem.NAME)) {
-                if (EnumSet.allOf(Command.class).stream().anyMatch(e -> e.getName().equals(keyword.word))) {
+                if (EnumSet.allOf(Command.class).stream().anyMatch(e -> e.getName().toLowerCase().equals(keyword.word.toLowerCase()))) {
                     addIdentifier(keyword.word, IdentifierCategory.COMMAND);
                     logger.info(keyword.word + "(команда)");
                 } else {
@@ -55,12 +52,10 @@ public class IdentifierTable implements INameTable {
 
     }
 
-    @Override
     public Set<Identifier> getIdentifiers() {
         return identifiers;
     }
 
-    @Override
     public void clear() {
         identifiers.clear();
     }

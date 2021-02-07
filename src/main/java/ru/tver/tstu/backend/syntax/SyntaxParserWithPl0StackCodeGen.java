@@ -1,7 +1,7 @@
 package ru.tver.tstu.backend.syntax;
 
-import ru.tver.tstu.backend.INameTable;
 import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
+import ru.tver.tstu.backend.lexems.*;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.enums.Command;
@@ -20,7 +20,7 @@ public class SyntaxParserWithPl0StackCodeGen extends RecursiveDescentParser {
     private int currentDataAddress = 3; // because exists system vars RA,DL,SL
     private int currentLevel = 0;
 
-    public SyntaxParserWithPl0StackCodeGen(List<Keyword> lexems, INameTable nameTable) {
+    public SyntaxParserWithPl0StackCodeGen(List<Keyword> lexems, IdentifierTable nameTable) {
         super(lexems, nameTable);
         iterator = lexems.iterator();
         currentExpression = new ArrayList<>();

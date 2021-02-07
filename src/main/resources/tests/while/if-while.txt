@@ -1,11 +1,11 @@
- Var n;
- Begin
+ VAR n;
+ BEGIN
    n := 3;
-   If Odd n Then
-     Begin
-      While n < 16 Do
-        Begin
+   IF Odd n THEN
+     BEGIN
+      WHILE n < 16 DO
+        BEGIN
            n := n + 1
-        End
-     End
-  End.
+        END
+     END
+  END.

@@ -1,7 +1,7 @@
-Var x, squ, cub;
+var x, squ, cub;
 
-Procedure square;
- Begin
+procedure square;
+ begin
    squ:= x * x
  End;
 
@@ -12,7 +12,7 @@ Procedure square;
 
  Begin
    x := 1;
-   While x < 10 Do
+   while x < 10 Do
    Begin
       Call square;
       Call cube;

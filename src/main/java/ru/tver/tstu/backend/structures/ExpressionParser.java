@@ -2,11 +2,11 @@ package ru.tver.tstu.backend.structures;
 
 import org.apache.log4j.Logger;
 import org.objectweb.asm.tree.*;
-import ru.tver.tstu.backend.INameTable;
 import ru.tver.tstu.backend.exceptions.ExpressionAnalyzeException;
 import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.generator.bytecode.ByteCodeBuilder;
 import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
+import ru.tver.tstu.backend.lexems.*;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.Operation;
@@ -23,7 +23,7 @@ public class ExpressionParser {
 
     private static final String SPECIAL_KEYWORD_NAME = "expr";
 
-    private INameTable nameTable;
+    private IdentifierTable nameTable;
     private MethodNode currentMethodNode;
     private Stack<Operation> operationStack;
     private Stack<Keyword> argumentStack;
@@ -33,7 +33,7 @@ public class ExpressionParser {
     private Logger logger = Logger.getLogger(ExpressionParser.class.getName());
     //= new CustomLogger(ExpressionParser.class.getName());
 
-    public ExpressionParser(List<Keyword> expression, INameTable nameTable, MethodNode currentMethodNode) {
+    public ExpressionParser(List<Keyword> expression, IdentifierTable nameTable, MethodNode currentMethodNode) {
         this.expression = expression;
         this.nameTable = nameTable;
         this.currentMethodNode = currentMethodNode;

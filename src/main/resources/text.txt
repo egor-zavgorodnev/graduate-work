@@ -1,6 +1,6 @@
- Var n,f;
- Begin
+ var n,f;
+ begin
     f := 0;
     n := 1;
     n := f + 1
- End.
+ end.

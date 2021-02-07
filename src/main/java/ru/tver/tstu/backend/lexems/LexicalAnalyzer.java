@@ -1,6 +1,5 @@
 package ru.tver.tstu.backend.lexems;
 
-import ru.tver.tstu.backend.ILexicalAnalyzer;
 import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.model.enums.Lexem;
 import ru.tver.tstu.backend.model.Keyword;
@@ -10,7 +9,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LexicalAnalyzer implements ILexicalAnalyzer {
+public class LexicalAnalyzer {
 
     private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());
             //= new CustomLogger(LexicalAnalyzer.class.getName());//

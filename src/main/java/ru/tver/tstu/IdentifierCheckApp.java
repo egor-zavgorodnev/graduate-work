@@ -1,6 +1,5 @@
 package ru.tver.tstu;
 
-import ru.tver.tstu.backend.INameTable;
 import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.lexems.IdentifierTable;
 import ru.tver.tstu.backend.lexems.LexicalAnalyzer;
@@ -13,7 +12,7 @@ public class IdentifierCheckApp {
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
-        INameTable nameTable = new IdentifierTable();
+        IdentifierTable nameTable = new IdentifierTable();
 
         nameTable.recognizeAllIdentifiers(lexicalAnalyzer.recognizeAllLexem(data));
 

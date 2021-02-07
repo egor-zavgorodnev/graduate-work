@@ -1,8 +1,8 @@
 package ru.tver.tstu.backend.syntax;
 
 import org.objectweb.asm.tree.*;
-import ru.tver.tstu.backend.INameTable;
 import ru.tver.tstu.backend.generator.bytecode.ByteCodeBuilder;
+import ru.tver.tstu.backend.lexems.*;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.enums.Command;
@@ -28,7 +28,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     //default method node (main method analog)
     private MethodNode currentMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
 
-    public SyntaxParserWithBytecodeGen(List<Keyword> lexems, INameTable nameTable) {
+    public SyntaxParserWithBytecodeGen(List<Keyword> lexems, IdentifierTable nameTable) {
         super(lexems, nameTable);
         iterator = lexems.iterator();
         currentExpression = new ArrayList<>();

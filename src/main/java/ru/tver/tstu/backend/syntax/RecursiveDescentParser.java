@@ -1,7 +1,6 @@
 package ru.tver.tstu.backend.syntax;
 
-import ru.tver.tstu.backend.INameTable;
-import ru.tver.tstu.backend.ISyntaxAnalyzer;
+import ru.tver.tstu.backend.lexems.*;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.enums.Command;
@@ -12,18 +11,18 @@ import org.apache.log4j.Logger;
 import java.util.Iterator;
 import java.util.List;
 
-public class RecursiveDescentParser implements ISyntaxAnalyzer {
+public class RecursiveDescentParser {
 
     protected static final Logger logger = Logger.getLogger(RecursiveDescentParser.class.getName());
 
     protected List<Keyword> lexems;
-    protected final INameTable identifierTable;
+    protected final IdentifierTable identifierTable;
 
     protected Keyword currentKeyword;
     protected Iterator<Keyword> iterator;
     protected boolean hasErrors;
 
-    public RecursiveDescentParser(List<Keyword> lexems, INameTable nameTable) {
+    public RecursiveDescentParser(List<Keyword> lexems, IdentifierTable nameTable) {
         this.lexems = lexems;
         this.identifierTable = nameTable;
         iterator = lexems.iterator();
@@ -55,7 +54,7 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
         if (currentKeyword.lex == Lexem.NAME) {
             Identifier identifier = identifierTable.getIdentifier(currentKeyword.word);
             if (identifier.getCategory().equals(IdentifierCategory.COMMAND)) {
-                if (identifier.getName().equals(command.getName())) {
+                if (identifier.getName().toLowerCase().equals(command.getName().toLowerCase())) {
                     getNextKeyword();
                     return true;
                 }
@@ -307,7 +306,6 @@ public class RecursiveDescentParser implements ISyntaxAnalyzer {
     }
 
 
-    @Override
     public boolean checkSyntax() {
         program();
         return hasErrors;

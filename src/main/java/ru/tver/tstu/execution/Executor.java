@@ -13,7 +13,7 @@ public class Executor {
     private static final String CLASS_FILE_PATH = "file.class"; //root dir;
 
 
-/*    public static void main(String[] args) throws IOException, IllegalAccessException, InstantiationException {
+    public static void main(String[] args) throws IOException, IllegalAccessException, InstantiationException {
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         IdentifierTable nameTable = new IdentifierTable();
@@ -26,8 +26,8 @@ public class Executor {
         Class<?> aClass = ByteCodeLoader.clazz.loadClass(Files.readAllBytes(Path.of(CLASS_FILE_PATH)));
 
         ((Runnable) aClass.newInstance()).run();
-    }*/
-    public static void execute(String sourceCode) throws IllegalAccessException, InstantiationException, IOException {
+    }
+/*    public static void execute(String sourceCode) throws IllegalAccessException, InstantiationException, IOException {
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         IdentifierTable nameTable = new IdentifierTable();
@@ -40,5 +40,5 @@ public class Executor {
         Class<?> aClass = ByteCodeLoader.clazz.loadClass(Files.readAllBytes(Path.of(CLASS_FILE_PATH)));
 
         ((Runnable) aClass.newInstance()).run();
-    }
+    }*/
 }

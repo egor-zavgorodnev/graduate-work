@@ -98,11 +98,11 @@ public class MainWindow {
 
     @FXML
     void execute() {
-        try {
-            Executor.execute(sourceCodeBox.getText());
-        } catch (IllegalAccessException | InstantiationException | IOException e) {
-            appendLog(e.getMessage());
-        }
+//        try {
+//            Executor.execute(sourceCodeBox.getText());
+//        } catch (IllegalAccessException | InstantiationException | IOException e) {
+//            appendLog(e.getMessage());
+//        }
     }
 
     @FXML

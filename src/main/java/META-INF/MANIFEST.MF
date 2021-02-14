@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: ru.tver.tstu.execution.Executor
-Class-Path: javafx-fxml-11.jar javafx-graphics-11-win.jar javafx-control
- s-11-win.jar javafx-controls-11.jar javafx-fxml-11-win.jar log4j-1.2.17
- .jar asm-all-5.0.3.jar javafx-base-11.jar javafx-base-11-win.jar config
- -1.2.1.jar javafx-graphics-11.jar
-

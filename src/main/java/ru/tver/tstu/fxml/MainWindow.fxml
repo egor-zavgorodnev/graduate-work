@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="556.0" prefWidth="926.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tstu.controllers.MainWindow">
+<AnchorPane prefHeight="777.0" prefWidth="926.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.tver.tstu.controllers.MainWindow">
    <children>
-      <TitledPane animated="false" layoutX="9.0" layoutY="31.0" prefHeight="318.0" prefWidth="266.0" text="Исходный код">
+      <TitledPane animated="false" layoutX="28.0" layoutY="97.0" prefHeight="350.0" prefWidth="870.0" text="Исходный код">
          <content>
-            <TextArea fx:id="sourceCodeBox" prefHeight="297.0" prefWidth="250.0" />
+            <TextArea fx:id="sourceCodeBox" pickOnBounds="false" prefHeight="324.0" prefWidth="858.0" visible="false">
+               <font>
+                  <Font name="Consolas" size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor></TextArea>
          </content>
       </TitledPane>
-      <TitledPane animated="false" layoutX="623.0" layoutY="31.0" prefHeight="318.0" prefWidth="272.0" text="Результат">
-         <content>
-            <TextArea fx:id="resultBox" editable="false" prefHeight="292.0" prefWidth="260.0" />
-         </content>
-      </TitledPane>
-      <TitledPane animated="false" layoutX="9.0" layoutY="392.0" prefHeight="150.0" prefWidth="914.0" text="Состояние компиляции">
+      <TitledPane animated="false" layoutX="6.0" layoutY="613.0" prefHeight="150.0" prefWidth="914.0" text="Результат компиляции">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
@@ -29,22 +28,51 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <MenuBar layoutX="9.0" layoutY="2.0" prefHeight="25.0" prefWidth="75.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="Меню">
-            <items>
-              <MenuItem fx:id="fileButton" mnemonicParsing="false" onAction="#openFileDialog" text="Выбрать" />
-              <MenuItem fx:id="compileButton" mnemonicParsing="false" onAction="#compile" text="Скомпилировать" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <TitledPane animated="false" layoutX="285.0" layoutY="32.0" prefHeight="318.0" prefWidth="322.0" text="Логи">
+      <TitledPane animated="false" layoutX="6.0" layoutY="459.0" prefHeight="139.0" prefWidth="914.0" text="Логи">
          <content>
-            <TextArea fx:id="logsBox" editable="false" prefHeight="292.0" prefWidth="308.0" />
+            <TextArea fx:id="logsBox" editable="false" prefHeight="292.0" prefWidth="308.0">
+               <font>
+                  <Font size="18.0" />
+               </font></TextArea>
          </content>
       </TitledPane>
-      <Button fx:id="clearLogs" layoutX="379.0" layoutY="357.0" mnemonicParsing="false" onAction="#clear" prefHeight="25.0" prefWidth="96.0" text="Очистить логи" />
-      <Button fx:id="ExecuteButton" layoutX="733.0" layoutY="357.0" mnemonicParsing="false" onAction="#execute" text="Исполнить код" visible="false" />
+      <Button fx:id="ExecuteButton" ellipsisString="..........." layoutX="845.0" layoutY="55.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#execute" prefHeight="33.0" prefWidth="32.0" text="▶" textAlignment="CENTER" textFill="#3ef231" visible="false">
+         <font>
+            <Font size="30.0" />
+         </font>
+         <padding>
+            <Insets right="-1.0" top="-5.0" />
+         </padding></Button>
+      <Button fx:id="compileButton" ellipsisString="...." layoutX="800.0" layoutY="55.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#compile" prefHeight="33.0" prefWidth="32.0" text="🔨" textAlignment="CENTER" textFill="#42f032" textOverrun="CENTER_ELLIPSIS">
+         <font>
+            <Font size="20.0" />
+         </font>
+         <padding>
+            <Insets top="-1.0" />
+         </padding>
+      </Button>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="926.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Файл">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#openFileDialog" text="Выбрать" />
+               </items></Menu>
+            <Menu mnemonicParsing="false" onAction="#switchToShadowMode" text="Настройки">
+               <items>
+                  <CheckMenuItem mnemonicParsing="false" text="Темная цветовая схема" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Справка">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="О программе">
+              <items>
+                <MenuItem fx:id="programInfo" mnemonicParsing="false" onAction="#getInfo" text="Информация" />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
    </children>
 </AnchorPane>

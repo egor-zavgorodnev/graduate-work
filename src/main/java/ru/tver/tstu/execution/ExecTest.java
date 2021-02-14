@@ -12,7 +12,7 @@ import java.util.List;
 public class ExecTest {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
 
-        String data = FileReader.parseFromFile("src/main/resources/tests/while/if-while.txt");
+        String data = FileReader.parseFromSourceCodeFile("src/main/resources/text.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         IdentifierTable nameTable = new IdentifierTable();

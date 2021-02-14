@@ -6,7 +6,7 @@ module translator {
     requires log4j;
     requires asm.all;
 
-//    opens com.tstu;
-//    opens com.tstu.controllers;
-//    opens com.tstu.fxml;
+    opens ru.tver.tstu;
+    opens ru.tver.tstu.controllers;
+    opens ru.tver.tstu.fxml;
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class SyntaxAndPl0CheckApp {
 
     public static void main(String[] args) throws LexicalAnalyzeException {
-        String data = FileReader.parseFromFile("src/main/resources/text3.txt");
+        String data = FileReader.parseFromSourceCodeFile("src/main/resources/text3.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         IdentifierTable nameTable = new IdentifierTable();

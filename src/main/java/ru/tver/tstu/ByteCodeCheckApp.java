@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ByteCodeCheckApp {
     public static void main(String[] args) throws LexicalAnalyzeException {
-        String data = FileReader.parseFromFile("src/main/resources/tests/while/nested-while.txt");
+        String data = FileReader.parseFromSourceCodeFile("src/main/resources/tests/while/nested-while.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         IdentifierTable nameTable = new IdentifierTable();

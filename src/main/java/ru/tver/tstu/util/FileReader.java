@@ -11,10 +11,10 @@ public class FileReader {
     private static final Logger logger = Logger.getLogger(FileReader.class.getName());
             //= new CustomLogger(FileReader.class.getName());
 
-    public static String parseFromFile(String filePath) {
+    public static String parseFromSourceCodeFile(String filePath) {
         StringBuilder input = new StringBuilder();
         try {
-            Files.lines(Paths.get(filePath), StandardCharsets.UTF_8).forEach(input::append);
+            Files.lines(Paths.get(filePath), StandardCharsets.UTF_8).forEach(e -> input.append(e).append("\n"));
             logger.info("Чтение из файла");
         } catch (IOException e) {
             e.fillInStackTrace();
@@ -22,4 +22,5 @@ public class FileReader {
         }
         return input.toString();
     }
+
 }

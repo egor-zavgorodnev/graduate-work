@@ -8,7 +8,7 @@ import ru.tver.tstu.util.FileReader;
 public class IdentifierCheckApp {
 
     public static void main(String[] args) throws LexicalAnalyzeException {
-       String data = FileReader.parseFromFile("src/main/resources/text3.txt");
+       String data = FileReader.parseFromSourceCodeFile("src/main/resources/text3.txt");
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 

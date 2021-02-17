@@ -1,15 +1,11 @@
 package ru.tver.tstu.util;
 
-
-import org.apache.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 public class FileReader {
-    private static final Logger logger = Logger.getLogger(FileReader.class.getName());
-            //= new CustomLogger(FileReader.class.getName());
+    private static final Logger logger = new CustomLogger(FileReader.class.getName());
 
     public static String parseFromSourceCodeFile(String filePath) {
         StringBuilder input = new StringBuilder();

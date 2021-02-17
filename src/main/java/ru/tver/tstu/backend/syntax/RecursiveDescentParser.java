@@ -6,14 +6,14 @@ import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.enums.Command;
 import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 import ru.tver.tstu.backend.model.enums.Lexem;
-import org.apache.log4j.Logger;
+import ru.tver.tstu.util.*;
 
 import java.util.Iterator;
 import java.util.List;
 
 public class RecursiveDescentParser {
 
-    protected static final Logger logger = Logger.getLogger(RecursiveDescentParser.class.getName());
+    protected static final Logger logger = new CustomLogger(RecursiveDescentParser .class.getName());
 
     protected List<Keyword> lexems;
     protected final IdentifierTable identifierTable;

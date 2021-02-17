@@ -6,7 +6,7 @@ import ru.tver.tstu.backend.model.enums.Lexem;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.enums.Command;
 import ru.tver.tstu.backend.model.enums.IdentifierCategory;
-import org.apache.log4j.Logger;
+import ru.tver.tstu.util.*;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class IdentifierTable {
 
-    private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());
+    private Logger logger = new CustomLogger(IdentifierTable.class.getName());
 
     private static Set<Identifier> identifiers;
 

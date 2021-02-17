@@ -3,16 +3,15 @@ package ru.tver.tstu.backend.lexems;
 import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.model.enums.Lexem;
 import ru.tver.tstu.backend.model.Keyword;
-import org.apache.log4j.Logger;
-
+import ru.tver.tstu.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LexicalAnalyzer {
 
-    private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());
-            //= new CustomLogger(LexicalAnalyzer.class.getName());//
+    private Logger logger = new CustomLogger(LexicalAnalyzer.class.getName());
+
 
     private static List<Keyword> keywords;
 

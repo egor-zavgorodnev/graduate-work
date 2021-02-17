@@ -281,6 +281,6 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     public boolean checkSyntax() {
         program();
         ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(RETURN));
-        return hasErrors;
+        return !hasErrors;
     }
 }

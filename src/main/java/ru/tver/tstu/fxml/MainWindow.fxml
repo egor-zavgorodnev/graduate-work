@@ -30,10 +30,7 @@
       </TitledPane>
       <TitledPane animated="false" layoutX="6.0" layoutY="459.0" prefHeight="139.0" prefWidth="914.0" text="Логи">
          <content>
-            <TextArea fx:id="logsBox" editable="false" prefHeight="292.0" prefWidth="308.0">
-               <font>
-                  <Font size="18.0" />
-               </font></TextArea>
+            <TextArea fx:id="logsBox" editable="false" prefHeight="292.0" prefWidth="308.0" />
          </content>
       </TitledPane>
       <Button fx:id="ExecuteButton" ellipsisString="..........." layoutX="845.0" layoutY="55.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#execute" prefHeight="33.0" prefWidth="32.0" text="▶" textAlignment="CENTER" textFill="#3ef231" visible="false">

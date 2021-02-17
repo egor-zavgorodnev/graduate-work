@@ -1,6 +1,5 @@
 package ru.tver.tstu.backend.structures;
 
-import org.apache.log4j.Logger;
 import org.objectweb.asm.tree.*;
 import ru.tver.tstu.backend.generator.bytecode.ByteCodeBuilder;
 import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
@@ -11,6 +10,7 @@ import ru.tver.tstu.backend.model.Operation;
 import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 import ru.tver.tstu.backend.model.enums.Lexem;
 import ru.tver.tstu.backend.model.enums.OpCode;
+import ru.tver.tstu.util.*;
 
 import java.util.List;
 import java.util.Stack;
@@ -28,10 +28,10 @@ public class ExpressionParser {
 
     private List<Keyword> expression;
 
-    private Logger logger = Logger.getLogger(ExpressionParser.class.getName());
+    private final Logger logger = new CustomLogger(ExpressionParser.class.getName());
 
     private boolean hasErrors = false;
-    //= new CustomLogger(ExpressionParser.class.getName());
+
 
     public ExpressionParser(List<Keyword> expression, IdentifierTable nameTable, MethodNode currentMethodNode) {
         this.expression = expression;

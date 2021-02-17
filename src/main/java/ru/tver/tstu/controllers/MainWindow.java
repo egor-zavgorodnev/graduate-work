@@ -81,7 +81,7 @@ public class MainWindow {
 
 
     @FXML
-    void openFileDialog(ActionEvent event) {
+    void openFileDialog() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));

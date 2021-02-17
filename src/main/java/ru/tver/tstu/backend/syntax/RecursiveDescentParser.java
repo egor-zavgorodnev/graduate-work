@@ -308,6 +308,6 @@ public class RecursiveDescentParser {
 
     public boolean checkSyntax() {
         program();
-        return hasErrors;
+        return !hasErrors;
     }
 }

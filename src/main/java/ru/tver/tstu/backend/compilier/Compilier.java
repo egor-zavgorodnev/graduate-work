@@ -17,7 +17,10 @@ public class Compilier {
         nameTable.recognizeAllIdentifiers(lexems);
 
         RecursiveDescentParser syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems,nameTable);
-        syntaxAnalyzer.checkSyntax();
+
+        if (!syntaxAnalyzer.checkSyntax()) {
+            return false;
+        }
 
         ByteCodeGenerator.generateAsFileByPath();
         //TODO exception handling

@@ -199,7 +199,10 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
         currentExpression.clear();
         expression();
         ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable, currentMethodNode);
-        expressionParser.parseExpression();
+        if (expressionParser.parseExpression()) {
+            hasErrors = true;
+        }
+
     }
 
     @Override

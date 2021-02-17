@@ -19,7 +19,6 @@ import java.nio.file.StandardOpenOption;
 public class MainWindow {
 
     private final Path watchPath = Paths.get("logging.txt");
-    private static final String CLASS_FILE_PATH = "file.class"; //root dir;
 
     @FXML
     private TextArea sourceCodeBox;

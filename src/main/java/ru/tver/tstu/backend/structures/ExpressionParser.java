@@ -2,8 +2,6 @@ package ru.tver.tstu.backend.structures;
 
 import org.apache.log4j.Logger;
 import org.objectweb.asm.tree.*;
-import ru.tver.tstu.backend.exceptions.ExpressionAnalyzeException;
-import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.generator.bytecode.ByteCodeBuilder;
 import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
 import ru.tver.tstu.backend.lexems.*;
@@ -31,6 +29,8 @@ public class ExpressionParser {
     private List<Keyword> expression;
 
     private Logger logger = Logger.getLogger(ExpressionParser.class.getName());
+
+    private boolean hasErrors = false;
     //= new CustomLogger(ExpressionParser.class.getName());
 
     public ExpressionParser(List<Keyword> expression, IdentifierTable nameTable, MethodNode currentMethodNode) {
@@ -39,37 +39,41 @@ public class ExpressionParser {
         this.currentMethodNode = currentMethodNode;
     }
 
-    private void parseDeclaration() throws ExpressionAnalyzeException, LexicalAnalyzeException {
+    private void parseDeclaration() {
 
         Keyword sourceVariable = expression.get(0);
         Identifier currentIdentifier = nameTable.getIdentifier(expression.get(0).word);
         switch (sourceVariable.lex) {
             case NUMBER:
-                 logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                 //logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                 PL0CodeGenerator.addInstruction(OpCode.LIT, 0, expression.get(0).word);
                 ByteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
                 break;
             case NAME:
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.LOCAL_VAR) {
-                     logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                     //logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                     ByteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(currentIdentifier.getAddress())));
                     break;
                 }
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.CLASS_VAR) {
-                     logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                     //logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                     ByteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
                             currentIdentifier.getName(), "I"));
                     break;
                 }
-                throw new ExpressionAnalyzeException("Ожидается значение переменной");
+                logger.error("Ожидается значение переменной");
+                hasErrors = true;
+                break;
             default:
-                throw new ExpressionAnalyzeException("Ожидается значение переменной");
+                logger.error("Ожидается значение переменной");
+                hasErrors = true;
+                break;
         }
     }
 
-    private void calculateExpression() throws ExpressionAnalyzeException, LexicalAnalyzeException {
+    private void calculateExpression() {
         operationStack = new Stack<>();
         argumentStack = new Stack<>();
 
@@ -81,7 +85,8 @@ public class ExpressionParser {
                 case ADDITION:
                 case SUBTRACTION:
                     if (needValue) {
-                        throw new ExpressionAnalyzeException("Ожидается операция");
+                        logger.error("Ожидается операция");
+                        hasErrors = true;
                     }
                     currentOperation = new Operation(expression.get(i), 1 + depth);
                     calculateOperations(currentOperation.getPriority());
@@ -91,7 +96,8 @@ public class ExpressionParser {
                 case MULTIPLICATION:
                 case DIVISION:
                     if (needValue) {
-                        throw new ExpressionAnalyzeException("Ожидается операция");
+                        logger.error("Ожидается операция");
+                        hasErrors = true;
                     }
                     currentOperation = new Operation(expression.get(i), 2 + depth);
                     calculateOperations(currentOperation.getPriority());
@@ -103,16 +109,19 @@ public class ExpressionParser {
                     if (nameTable.getIdentifier(expression.get(i).word).getCategory() == IdentifierCategory.LOCAL_VAR
                             || nameTable.getIdentifier(expression.get(i).word).getCategory() == IdentifierCategory.CLASS_VAR) {
                         if (!needValue) {
-                            throw new ExpressionAnalyzeException("Ожидается значение переменной или число");
+                            logger.error("Ожидается значение переменной или число");
                         }
                         argumentStack.push(expression.get(i));
                         needValue = false;
                         break;
                     }
-                    throw new ExpressionAnalyzeException("Ожидается значение переменной или число");
+                    logger.error("Ожидается значение переменной или число");
+                    hasErrors = true;
+                    break;
                 case NUMBER:
                     if (!needValue) {
-                        throw new ExpressionAnalyzeException("Ожидается значение переменной или число");
+                        logger.error("Ожидается значение переменной или число");
+                        hasErrors = true;
                     }
                     argumentStack.push(expression.get(i));
                     needValue = false;
@@ -189,7 +198,7 @@ public class ExpressionParser {
 
     }
 
-    public void parseExpression() throws ExpressionAnalyzeException, LexicalAnalyzeException {
+    public boolean parseExpression() {
         if (expression.size() <= 1) {
             parseDeclaration();
         } else {
@@ -198,5 +207,7 @@ public class ExpressionParser {
             logger.info("\nРазбор выражения - " + expr);
             calculateExpression();
         }
+
+        return hasErrors;
     }
 }

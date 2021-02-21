@@ -99,7 +99,7 @@ public class MainWindow {
     void execute() {
         try {
             Executor.execute(sourceCodeBox.getText());
-        } catch (IllegalAccessException | InstantiationException | IOException e) {
+        } catch (IOException e) {
             appendLog(e.getMessage());
         }
     }

@@ -5,15 +5,13 @@ import java.io.*;
 
 public class Executor {
 
-    //root dir;
-
-    public static void execute(String sourceCode) throws IllegalAccessException, InstantiationException, IOException {
+    public static void execute(String sourceCode) throws IOException {
 
         File startBat = new File("start.bat");
         FileWriter fileWriter = new FileWriter(startBat);
 
-        fileWriter.write("@echo off\n");
-        fileWriter.write("java -jar executor.jar " + sourceCode.replaceAll("\n", "/n"));
+       // fileWriter.write("@echo off\n");
+        fileWriter.write("java -jar executor.jar \"" + sourceCode.replaceAll("\n", "/n") + "\"");
         fileWriter.write("\npause");
         fileWriter.close();
 

@@ -54,9 +54,10 @@
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#openFileDialog" text="Выбрать" />
                </items></Menu>
-            <Menu mnemonicParsing="false" onAction="#switchToShadowMode" text="Настройки">
+            <Menu mnemonicParsing="false" text="Настройки">
                <items>
-                  <CheckMenuItem mnemonicParsing="false" text="Темная цветовая схема" />
+                  <CheckMenuItem onAction="#switchToShadowMode" mnemonicParsing="false" text="Темная цветовая схема" />
+                  <CheckMenuItem onAction="#showErrorsOnly" mnemonicParsing="false" text="Показывать только Error в логах" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Справка">

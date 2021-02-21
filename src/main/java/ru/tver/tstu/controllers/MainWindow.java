@@ -1,24 +1,22 @@
 package ru.tver.tstu.controllers;
 
 import javafx.event.*;
-import javafx.fxml.FXML;
+import javafx.fxml.*;
 import javafx.scene.control.*;
-import javafx.stage.FileChooser;
+import javafx.stage.*;
 import ru.tver.tstu.*;
 import ru.tver.tstu.backend.compilier.*;
 import ru.tver.tstu.execution.*;
-import ru.tver.tstu.util.*;
+import ru.tver.tstu.util.FileReader;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.io.*;
+import java.nio.file.*;
 
 public class MainWindow {
 
     private final Path watchPath = Paths.get("logging.txt");
+
+    public static boolean errorOnly;
 
     @FXML
     private TextArea sourceCodeBox;
@@ -106,14 +104,19 @@ public class MainWindow {
 
     @FXML
     void switchToShadowMode(ActionEvent event) {
-        Menu menu = (Menu)event.getSource();
-        CheckMenuItem checkItem = (CheckMenuItem) menu.getItems().get(0);
+        CheckMenuItem checkItem = (CheckMenuItem) event.getSource();
+
         if (checkItem.isSelected()) {
             sourceCodeBox.setStyle("-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-font-size: 18px; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: #000000; -fx-text-fill: #00ff00; ");
-        }
-        else {
+        } else {
             sourceCodeBox.setStyle("");
         }
+    }
+
+    @FXML
+    void showErrorsOnly(ActionEvent event) {
+        CheckMenuItem checkItem = (CheckMenuItem) event.getSource();
+        errorOnly = checkItem.isSelected();
     }
 
     @FXML

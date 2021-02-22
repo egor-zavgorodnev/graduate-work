@@ -1,18 +1,18 @@
 package ru.tver.tstu.execution;
 
 import ru.tver.tstu.backend.generator.bytecode.*;
+import ru.tver.tstu.backend.lexems.*;
+import ru.tver.tstu.backend.model.*;
 import ru.tver.tstu.backend.syntax.*;
-import ru.tver.tstu.backend.lexems.IdentifierTable;
-import ru.tver.tstu.backend.lexems.LexicalAnalyzer;
-import ru.tver.tstu.backend.model.Keyword;
-import ru.tver.tstu.util.FileReader;
+import ru.tver.tstu.util.*;
 
-import java.util.List;
+import java.util.*;
 
 public class ExecTest {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
+        ByteCodeLoader.clear();
 
-        String data = FileReader.parseFromSourceCodeFile("src/main/resources/tests/while/while-if.txt");
+        String data = FileReader.parseFromSourceCodeFile("src/main/resources/tests/expr/all-op-12171.6.txt");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 
         IdentifierTable nameTable = new IdentifierTable();
@@ -28,5 +28,6 @@ public class ExecTest {
         Class<?> aClass = ByteCodeLoader.clazz.loadClass(byteCodeGenerator.generateAsByteArray());
 
         ((Runnable) aClass.newInstance()).run(); //создаем класс и запускаем
+
     }
 }

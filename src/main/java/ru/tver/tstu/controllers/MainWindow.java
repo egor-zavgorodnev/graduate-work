@@ -57,6 +57,7 @@ public class MainWindow {
 
     @FXML
     void compile(ActionEvent event) {
+        logsBox.clear();
         Compilier compilier = new Compilier();
         if (sourceCodeBox.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -73,8 +74,6 @@ public class MainWindow {
             compileStatusBox.appendText("Произошла ошибка компиляции \n");
             ExecuteButton.setVisible(false);
         }
-        //TODO clear
-        //CodeGenerator.clear();
     }
 
 

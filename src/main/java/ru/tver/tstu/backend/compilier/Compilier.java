@@ -18,7 +18,9 @@ public class Compilier {
 
         ByteCodeBuilder byteCodeBuilder = new ByteCodeBuilder();
         RecursiveDescentParser syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems, nameTable, byteCodeBuilder);
-        syntaxAnalyzer.checkSyntax();
+        if (!syntaxAnalyzer.checkSyntax()) {
+            return false;
+        }
 
         ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator(byteCodeBuilder);
 

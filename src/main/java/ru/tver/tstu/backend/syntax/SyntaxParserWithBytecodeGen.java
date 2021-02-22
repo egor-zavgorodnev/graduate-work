@@ -200,7 +200,6 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
         if (expressionParser.parseExpression()) {
             hasErrors = true;
         }
-        expressionParser.parseExpression();
     }
 
     @Override

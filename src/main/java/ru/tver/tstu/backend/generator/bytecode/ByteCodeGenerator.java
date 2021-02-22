@@ -11,23 +11,25 @@ import static org.objectweb.asm.Opcodes.*;
 public class ByteCodeGenerator {
 
     private static final String CLASS_FILE_PATH = "file.class"; //root dir
-    private static final ClassNode classNode = new ClassNode();
+    private final ClassNode classNode = new ClassNode();
+    private final ByteCodeBuilder byteCodeBuilder;
 
-    static {
+    public ByteCodeGenerator(ByteCodeBuilder byteCodeBuilder) {
         classNode.version = V1_8;
         classNode.access = ACC_PUBLIC + ACC_SUPER;
         classNode.name = "ClassTest";
         classNode.superName = "java/lang/Object";
         classNode.interfaces.add("java/lang/Runnable");
+        this.byteCodeBuilder = byteCodeBuilder;
     }
 
-    public static void generateAsFileByPath() {
+    public void generateAsFileByPath() {
         generateWrapperClassAndInitMethod();
         generateProgramMethods();
         writeFile();
     }
 
-    public static byte[] generateAsByteArray() {
+    public byte[] generateAsByteArray() {
         generateWrapperClassAndInitMethod();
         generateProgramMethods();
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -37,7 +39,7 @@ public class ByteCodeGenerator {
         return cw.toByteArray();
     }
 
-    private static void generateWrapperClassAndInitMethod() {
+    private void generateWrapperClassAndInitMethod() {
 
         MethodNode initMethodNode = new MethodNode(ACC_PUBLIC, "<init>", "()V", null, null);
 
@@ -52,21 +54,13 @@ public class ByteCodeGenerator {
 
     }
 
-    private static void generateProgramMethods() {
-
-        for (MethodNode node : ByteCodeBuilder.getMethods()) {
-            classNode.methods.add(node);
-
-        }
-
-        for (FieldNode node : ByteCodeBuilder.getFields()) {
-            classNode.fields.add(node);
-        }
-
+    private void generateProgramMethods() {
+        classNode.methods.addAll(byteCodeBuilder.getMethods());
+        classNode.fields.addAll(byteCodeBuilder.getFields());
     }
 
 
-    private static void writeFile() {
+    private void writeFile() {
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 
@@ -78,6 +72,5 @@ public class ByteCodeGenerator {
             e.printStackTrace();
         }
     }
-
 
 }

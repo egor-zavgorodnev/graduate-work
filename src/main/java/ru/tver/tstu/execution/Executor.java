@@ -1,5 +1,6 @@
 package ru.tver.tstu.execution;
 
+import ru.tver.tstu.backend.generator.bytecode.*;
 import ru.tver.tstu.backend.lexems.*;
 import ru.tver.tstu.backend.model.*;
 import ru.tver.tstu.backend.syntax.*;
@@ -20,7 +21,9 @@ public class Executor {
         List<Keyword> lexems = lexicalAnalyzer.recognizeAllLexem(args[0]);
         nameTable.recognizeAllIdentifiers(lexems);
 
-        RecursiveDescentParser syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems, nameTable);
+        ByteCodeBuilder byteCodeBuilder = new ByteCodeBuilder();
+
+        RecursiveDescentParser syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems, nameTable, byteCodeBuilder);
         syntaxAnalyzer.checkSyntax();
 
         Class<?> aClass = ByteCodeLoader.clazz.loadClass(Files.readAllBytes(Path.of(CLASS_FILE_PATH)));

@@ -1,6 +1,6 @@
  VAR n;
  BEGIN
-   n := 3;
+   n := 2;
    IF Odd n THEN
      BEGIN
       WHILE n < 16 DO

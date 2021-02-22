@@ -1,21 +1,15 @@
 package ru.tver.tstu.backend.structures;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 import org.objectweb.asm.tree.*;
-import ru.tver.tstu.backend.exceptions.ExpressionAnalyzeException;
-import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
-import ru.tver.tstu.backend.generator.bytecode.ByteCodeBuilder;
-import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
+import ru.tver.tstu.backend.exceptions.*;
+import ru.tver.tstu.backend.generator.bytecode.*;
+import ru.tver.tstu.backend.generator.pl0.*;
 import ru.tver.tstu.backend.lexems.*;
-import ru.tver.tstu.backend.model.Identifier;
-import ru.tver.tstu.backend.model.Keyword;
-import ru.tver.tstu.backend.model.Operation;
-import ru.tver.tstu.backend.model.enums.IdentifierCategory;
-import ru.tver.tstu.backend.model.enums.Lexem;
-import ru.tver.tstu.backend.model.enums.OpCode;
+import ru.tver.tstu.backend.model.*;
+import ru.tver.tstu.backend.model.enums.*;
 
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -30,13 +24,16 @@ public class ExpressionParser {
 
     private List<Keyword> expression;
 
+    private final ByteCodeBuilder byteCodeBuilder;
+
     private Logger logger = Logger.getLogger(ExpressionParser.class.getName());
     //= new CustomLogger(ExpressionParser.class.getName());
 
-    public ExpressionParser(List<Keyword> expression, IdentifierTable nameTable, MethodNode currentMethodNode) {
+    public ExpressionParser(List<Keyword> expression, IdentifierTable nameTable, MethodNode currentMethodNode, ByteCodeBuilder byteCodeBuilder) {
         this.expression = expression;
         this.nameTable = nameTable;
         this.currentMethodNode = currentMethodNode;
+        this.byteCodeBuilder = byteCodeBuilder;
     }
 
     private void parseDeclaration() throws ExpressionAnalyzeException, LexicalAnalyzeException {
@@ -45,21 +42,21 @@ public class ExpressionParser {
         Identifier currentIdentifier = nameTable.getIdentifier(expression.get(0).word);
         switch (sourceVariable.lex) {
             case NUMBER:
-                 logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                 PL0CodeGenerator.addInstruction(OpCode.LIT, 0, expression.get(0).word);
-                ByteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
+                byteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
                 break;
             case NAME:
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.LOCAL_VAR) {
-                     logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                    logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(currentIdentifier.getAddress())));
+                    byteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(currentIdentifier.getAddress())));
                     break;
                 }
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.CLASS_VAR) {
-                     logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                    logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                     PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
+                    byteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
                             currentIdentifier.getName(), "I"));
                     break;
                 }
@@ -139,21 +136,21 @@ public class ExpressionParser {
                 } else {
                     PL0CodeGenerator.addInstruction(OpCode.LOD, 1, identifier.getAddress());
                     if (identifier.getCategory() == IdentifierCategory.LOCAL_VAR) {
-                        ByteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(identifier.getAddress())));
+                        byteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(identifier.getAddress())));
                     }
                     if (identifier.getCategory() == IdentifierCategory.CLASS_VAR) {
-                        ByteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
+                        byteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
                                 identifier.getName(), "I"));
                     }
 
                 }
             } else {
                 PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
-                ByteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(arg.word)));
+                byteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(arg.word)));
             }
         }
         PL0CodeGenerator.addInstruction(OpCode.OPR, 1, operation);
-        ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(instructionCode));
+        byteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(instructionCode));
         argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
     }
 

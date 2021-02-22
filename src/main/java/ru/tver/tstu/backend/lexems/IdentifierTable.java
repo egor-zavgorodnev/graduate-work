@@ -18,7 +18,7 @@ public class IdentifierTable {
 
     private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());
 
-    private static Set<Identifier> identifiers;
+    private final Set<Identifier> identifiers;
 
     public IdentifierTable() {
         identifiers = new HashSet<>();
@@ -52,11 +52,4 @@ public class IdentifierTable {
 
     }
 
-    public Set<Identifier> getIdentifiers() {
-        return identifiers;
-    }
-
-    public void clear() {
-        identifiers.clear();
-    }
 }

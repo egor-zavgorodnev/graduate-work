@@ -23,9 +23,6 @@ public class MainWindow {
     private TextArea sourceCodeBox;
 
     @FXML
-    private TextArea resultBox;
-
-    @FXML
     private TextArea compileStatusBox;
 
     @FXML
@@ -35,16 +32,7 @@ public class MainWindow {
     private TextArea logsBox;
 
     @FXML
-    private Button clearLogs;
-
-    @FXML
     private Button ExecuteButton;
-
-    @FXML
-    private MenuItem fileButton;
-
-    @FXML
-    private MenuItem shadowMode;
 
     @FXML
     void clear() {
@@ -59,6 +47,7 @@ public class MainWindow {
     @FXML
     void compile(ActionEvent event) {
         logsBox.clear();
+        compileStatusBox.clear();
         Compilier compilier = new Compilier();
         if (sourceCodeBox.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -1,6 +1,5 @@
 package ru.tver.tstu.backend.lexems;
 
-import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.enums.Lexem;
 import ru.tver.tstu.backend.model.Keyword;
@@ -30,7 +29,7 @@ public class IdentifierTable {
         identifiers.add(identifier);
     }
 
-    public Identifier getIdentifier(String name) throws LexicalAnalyzeException {
+    public Identifier getIdentifier(String name) {
         return identifiers.stream()
                 .filter(i -> i.getName().equals(name))
                 .findAny().orElse(null);

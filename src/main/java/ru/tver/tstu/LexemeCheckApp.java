@@ -1,13 +1,12 @@
 package ru.tver.tstu;
 
-import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
-import ru.tver.tstu.backend.lexems.LexicalAnalyzer;
-import ru.tver.tstu.util.FileReader;
+import ru.tver.tstu.backend.lexems.*;
+import ru.tver.tstu.util.*;
 
 public class LexemeCheckApp {
 
-    public static void main(String[] args) throws LexicalAnalyzeException {
-       String data = FileReader.parseFromSourceCodeFile("src/main/resources/nested-if.txt");
+    public static void main(String[] args) {
+        String data = FileReader.parseFromSourceCodeFile("src/main/resources/nested-if.txt");
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
 

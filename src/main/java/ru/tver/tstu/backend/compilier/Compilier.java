@@ -14,6 +14,11 @@ public class Compilier {
 
         IdentifierTable nameTable = new IdentifierTable();
         List<Keyword> lexems = lexicalAnalyzer.recognizeAllLexem(sourceCode);
+
+        if (lexems == null) {
+            return false;
+        }
+
         nameTable.recognizeAllIdentifiers(lexems);
 
         ByteCodeBuilder byteCodeBuilder = new ByteCodeBuilder();

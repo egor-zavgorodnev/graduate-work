@@ -1,6 +1,5 @@
 package ru.tver.tstu.backend.lexems;
 
-import ru.tver.tstu.backend.exceptions.LexicalAnalyzeException;
 import ru.tver.tstu.backend.model.enums.Lexem;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.util.*;
@@ -36,7 +35,7 @@ public class LexicalAnalyzer {
         return Lexem.NAME;
     }
 
-    public List<Keyword> recognizeAllLexem(String data) throws LexicalAnalyzeException {
+    public List<Keyword> recognizeAllLexem(String data) {
         logger.info("\n---Разбор лексем---\n");
         char[] symbols = data.toCharArray();
         boolean isExit = false;
@@ -178,7 +177,8 @@ public class LexicalAnalyzer {
                 continue;
             }
 
-            throw new LexicalAnalyzeException("Недопустимый символ : " + symbols[i]);
+            logger.error("Недопустимый символ : " + symbols[i]);
+            return null;
         }
 
         return keywords;

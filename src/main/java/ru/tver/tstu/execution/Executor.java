@@ -9,7 +9,7 @@ public class Executor {
         File startBat = new File("start.bat");
         FileWriter fileWriter = new FileWriter(startBat);
 
-       // fileWriter.write("@echo off\n");
+        fileWriter.write("@echo off\n");
         fileWriter.write("java -jar executor.jar \"" + sourceCode.replaceAll("\n", "/n") + "\"");
         fileWriter.write("\npause");
         fileWriter.close();

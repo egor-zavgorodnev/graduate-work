@@ -3,6 +3,7 @@ package ru.tver.tstu.controllers;
 import javafx.event.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.scene.image.*;
 import javafx.stage.*;
 import ru.tver.tstu.*;
 import ru.tver.tstu.backend.compilier.*;
@@ -121,10 +122,14 @@ public class MainWindow {
     @FXML
     void getInfo() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Image image = new Image("forward.png");
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(48);
+        imageView.setFitHeight(48);
+        alert.setGraphic(imageView);
         alert.setTitle("Инфо");
-        alert.setHeaderText("О программе");
-        alert.setContentText("Версия: v1.0.0");
-        alert.setContentText("Автор: Егор Завгороднев\nGithub: egorka99");
+        alert.setHeaderText("Транслятор");
+        alert.setContentText("Версия: v1.0.0\nАвтор: Егор Завгороднев\nGithub: egorka99");
         alert.showAndWait();
     }
 

@@ -14,6 +14,7 @@ public class Compilier {
 
         IdentifierTable nameTable = new IdentifierTable();
         List<Keyword> lexems = lexicalAnalyzer.recognizeAllLexem(sourceCode);
+        nameTable.recognizeAllIdentifiers(lexems);
 
         ByteCodeBuilder byteCodeBuilder = new ByteCodeBuilder();
         RecursiveDescentParser syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems, nameTable, byteCodeBuilder);

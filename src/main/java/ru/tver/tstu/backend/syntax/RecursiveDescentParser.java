@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RecursiveDescentParser {
 
-    protected static final Logger logger = new CustomLogger(RecursiveDescentParser .class.getName());
+    protected static final Logger logger = new CustomLogger(RecursiveDescentParser.class.getName());
 
     protected List<Keyword> lexems;
     protected final IdentifierTable identifierTable;

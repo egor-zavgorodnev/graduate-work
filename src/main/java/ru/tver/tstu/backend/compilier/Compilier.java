@@ -14,16 +14,15 @@ public class Compilier {
 
         IdentifierTable nameTable = new IdentifierTable();
         List<Keyword> lexems = lexicalAnalyzer.recognizeAllLexem(sourceCode);
-        nameTable.recognizeAllIdentifiers(lexems);
 
-        RecursiveDescentParser syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems,nameTable);
+        ByteCodeBuilder byteCodeBuilder = new ByteCodeBuilder();
+        RecursiveDescentParser syntaxAnalyzer = new SyntaxParserWithBytecodeGen(lexems, nameTable, byteCodeBuilder);
+        syntaxAnalyzer.checkSyntax();
 
-        if (!syntaxAnalyzer.checkSyntax()) {
-            return false;
-        }
+        ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator(byteCodeBuilder);
 
-        ByteCodeGenerator.generateAsFileByPath();
-        //TODO exception handling
+        byteCodeGenerator.generateAsFileByPath();
+
         return true;
     }
 }

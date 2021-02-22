@@ -13,7 +13,7 @@ public class LexicalAnalyzer {
     private Logger logger = new CustomLogger(LexicalAnalyzer.class.getName());
 
 
-    private static List<Keyword> keywords;
+    private List<Keyword> keywords;
 
     public LexicalAnalyzer() {
         keywords = new ArrayList<>();

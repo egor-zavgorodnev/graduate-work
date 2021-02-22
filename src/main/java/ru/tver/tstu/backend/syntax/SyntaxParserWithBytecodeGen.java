@@ -1,18 +1,13 @@
 package ru.tver.tstu.backend.syntax;
 
 import org.objectweb.asm.tree.*;
-import ru.tver.tstu.backend.generator.bytecode.ByteCodeBuilder;
+import ru.tver.tstu.backend.generator.bytecode.*;
 import ru.tver.tstu.backend.lexems.*;
-import ru.tver.tstu.backend.model.Identifier;
-import ru.tver.tstu.backend.model.Keyword;
-import ru.tver.tstu.backend.model.enums.Command;
-import ru.tver.tstu.backend.model.enums.IdentifierCategory;
-import ru.tver.tstu.backend.model.enums.Lexem;
-import ru.tver.tstu.backend.structures.ExpressionParser;
+import ru.tver.tstu.backend.model.*;
+import ru.tver.tstu.backend.model.enums.*;
+import ru.tver.tstu.backend.structures.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -25,15 +20,18 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     private final Stack<LabelNode> gotoLabels;
     private final Stack<LabelNode> whileLabels;
 
+    private final ByteCodeBuilder byteCodeBuilder;
+
     //default method node (main method analog)
     private MethodNode currentMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
 
-    public SyntaxParserWithBytecodeGen(List<Keyword> lexems, IdentifierTable nameTable) {
+    public SyntaxParserWithBytecodeGen(List<Keyword> lexems, IdentifierTable nameTable, ByteCodeBuilder byteCodeBuilder) {
         super(lexems, nameTable);
         iterator = lexems.iterator();
         currentExpression = new ArrayList<>();
         gotoLabels = new Stack<>();
         whileLabels = new Stack<>();
+        this.byteCodeBuilder = byteCodeBuilder;
     }
 
     @Override
@@ -65,7 +63,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
                 }
                 // if method is default, variable becomes class field
                 if (currentMethodNode.name.equals(RUN)) {
-                    ByteCodeBuilder.addField(new FieldNode(ACC_PRIVATE + ACC_STATIC, currentKeyword.word, "I", null, TOP));
+                    byteCodeBuilder.addField(new FieldNode(ACC_PRIVATE + ACC_STATIC, currentKeyword.word, "I", null, TOP));
                 }
                 isExpect(Lexem.NAME, 4);
             } while (isAccept(Lexem.SEMI));
@@ -81,7 +79,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             block();
             isExpect(Lexem.SEMICOLON, 5);
             // get back to default method
-            ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(RETURN));
+            byteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(RETURN));
             currentMethodNode = new MethodNode(ACC_PUBLIC, "run", "()V", null, null);
         }
         statement();
@@ -136,11 +134,11 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
         if (isAccept(Command.ODD)) {
             evaluateExpression();
-            ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(ICONST_2));
-            ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(IREM));
-            ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IFEQ, ifLabel));
-            ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
-            ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
+            byteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(ICONST_2));
+            byteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(IREM));
+            byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IFEQ, ifLabel));
+            byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
+            byteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
         } else {
             evaluateExpression();
             Lexem operator = currentKeyword.lex;
@@ -148,44 +146,44 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
                 case EQUAL:
                     getNextKeyword();
                     evaluateExpression();
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPEQ, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPEQ, ifLabel));
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
+                    byteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case NOT_EQUAL:
                     getNextKeyword();
                     evaluateExpression();
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPNE, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPNE, ifLabel));
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
+                    byteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case LESS_THAN:
                     getNextKeyword();
                     evaluateExpression();
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPLT, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPLT, ifLabel));
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
+                    byteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case LESS_OR_EQUAL_THAN:
                     getNextKeyword();
                     evaluateExpression();
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPLE, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPLE, ifLabel));
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
+                    byteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case MORE_THAN:
                     getNextKeyword();
                     evaluateExpression();
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPGT, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPGT, ifLabel));
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
+                    byteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 case MORE_OR_EQUAL_THAN:
                     getNextKeyword();
                     evaluateExpression();
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPGE, ifLabel));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
-                    ByteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(IF_ICMPGE, ifLabel));
+                    byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, gotoLabels.peek()));
+                    byteCodeBuilder.addInstruction(currentMethodNode, ifLabel);
                     break;
                 default:
                     error(20);
@@ -198,11 +196,11 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     private void evaluateExpression() {
         currentExpression.clear();
         expression();
-        ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable, currentMethodNode);
+        ExpressionParser expressionParser = new ExpressionParser(currentExpression, identifierTable, currentMethodNode, byteCodeBuilder);
         if (expressionParser.parseExpression()) {
             hasErrors = true;
         }
-
+        expressionParser.parseExpression();
     }
 
     @Override
@@ -218,17 +216,17 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
         if (isAccept(IdentifierCategory.LOCAL_VAR)) {
             isExpect(Lexem.ASSIGN, 19);
             evaluateExpression();
-            ByteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ISTORE, Integer.parseInt(identifier.getAddress())));
+            byteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ISTORE, Integer.parseInt(identifier.getAddress())));
             addPrintBytecodeCommands(identifier);
         } else if (isAccept(IdentifierCategory.CLASS_VAR)) {
             isExpect(Lexem.ASSIGN, 19);
             evaluateExpression();
-            ByteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(PUTSTATIC, "ClassTest",
+            byteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(PUTSTATIC, "ClassTest",
                     identifier.getName(), "I"));
             addPrintBytecodeCommands(identifier);
         } else if (isAccept(Command.CALL)) {
             if (identifierTable.getIdentifier(currentKeyword.word).getCategory().equals(IdentifierCategory.PROCEDURE_NAME)) {
-                ByteCodeBuilder.addInstruction(currentMethodNode, new MethodInsnNode(INVOKESTATIC, "ClassTest",
+                byteCodeBuilder.addInstruction(currentMethodNode, new MethodInsnNode(INVOKESTATIC, "ClassTest",
                         currentKeyword.word, "()V"));
                 isExpect(Lexem.NAME, 14);
             } else {
@@ -244,15 +242,15 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
             condition();
             isExpect(Command.THEN, 16);
             statement();
-            ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
+            byteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
         } else if (isAccept(Command.WHILE)) {
             whileLabels.push(new LabelNode());
-            ByteCodeBuilder.addInstruction(currentMethodNode, whileLabels.peek());
+            byteCodeBuilder.addInstruction(currentMethodNode, whileLabels.peek());
             condition();
             isExpect(Command.DO, 18);
             statement();
-            ByteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, whileLabels.pop()));
-            ByteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
+            byteCodeBuilder.addInstruction(currentMethodNode, new JumpInsnNode(GOTO, whileLabels.pop()));
+            byteCodeBuilder.addInstruction(currentMethodNode, gotoLabels.pop());
         } else {
             error(11);
             getNextKeyword();
@@ -260,16 +258,16 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     }
 
     private void addPrintBytecodeCommands(Identifier identifier) {
-        ByteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+        byteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
         if (identifier.getCategory() == IdentifierCategory.LOCAL_VAR) {
-            ByteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(identifier.getAddress())));
+            byteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(identifier.getAddress())));
         }
         if (identifier.getCategory() == IdentifierCategory.CLASS_VAR) {
-            ByteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
+            byteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
                     identifier.getName(), "I"));
         }
 
-        ByteCodeBuilder.addInstruction(currentMethodNode, new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false));
+        byteCodeBuilder.addInstruction(currentMethodNode, new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false));
     }
 
 
@@ -280,7 +278,7 @@ public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
     @Override
     public boolean checkSyntax() {
         program();
-        ByteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(RETURN));
+        byteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(RETURN));
         return !hasErrors;
     }
 }

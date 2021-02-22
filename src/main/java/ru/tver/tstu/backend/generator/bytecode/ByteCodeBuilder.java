@@ -1,32 +1,31 @@
 package ru.tver.tstu.backend.generator.bytecode;
 
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ByteCodeBuilder {
 
-    static Set<MethodNode> methods = new HashSet<>();
-    static Set<FieldNode> fields = new HashSet<>();
+     Set<MethodNode> methods = new HashSet<>();
+     Set<FieldNode> fields = new HashSet<>();
 
-    public static void addField(FieldNode fieldNode) {
+    public ByteCodeBuilder() {
+    }
+
+    public void addField(FieldNode fieldNode) {
         fields.add(fieldNode);
     }
 
-    public static void addInstruction(MethodNode methodNode, AbstractInsnNode insnNode) {
+    public void addInstruction(MethodNode methodNode, AbstractInsnNode insnNode) {
         methodNode.instructions.add(insnNode);
         methods.add(methodNode);
     }
 
-    public static Set<MethodNode> getMethods() {
+    public Set<MethodNode> getMethods() {
         return methods;
     }
 
-    public static Set<FieldNode> getFields() {
+    public Set<FieldNode> getFields() {
         return fields;
     }
 }

@@ -2,7 +2,6 @@ package ru.tver.tstu.execution;
 
 import java.io.*;
 
-
 public class Executor {
 
     public static void execute(String sourceCode) throws IOException {

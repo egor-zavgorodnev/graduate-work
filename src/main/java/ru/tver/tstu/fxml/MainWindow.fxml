@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="777.0" prefWidth="926.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.tver.tstu.controllers.MainWindow">
+<AnchorPane prefHeight="792.0" prefWidth="926.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.tver.tstu.controllers.MainWindow">
    <children>
       <TitledPane animated="false" layoutX="28.0" layoutY="97.0" prefHeight="350.0" prefWidth="870.0" text="Исходный код">
          <content>
@@ -19,7 +19,7 @@
                </cursor></TextArea>
          </content>
       </TitledPane>
-      <TitledPane animated="false" layoutX="6.0" layoutY="613.0" prefHeight="150.0" prefWidth="914.0" text="Результат компиляции">
+      <TitledPane animated="false" layoutX="6.0" layoutY="668.0" prefHeight="113.0" prefWidth="914.0" text="Результат компиляции">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
@@ -28,9 +28,9 @@
             </AnchorPane>
         </content>
       </TitledPane>
-      <TitledPane animated="false" layoutX="6.0" layoutY="459.0" prefHeight="139.0" prefWidth="914.0" text="Логи">
+      <TitledPane animated="false" layoutX="6.0" layoutY="459.0" prefHeight="200.0" prefWidth="914.0" text="Логи">
          <content>
-            <TextArea fx:id="logsBox" editable="false" prefHeight="292.0" prefWidth="308.0" />
+            <TextArea fx:id="logsBox" editable="false" prefHeight="181.0" prefWidth="912.0" />
          </content>
       </TitledPane>
       <Button fx:id="ExecuteButton" ellipsisString="..........." layoutX="845.0" layoutY="55.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#execute" prefHeight="33.0" prefWidth="32.0" text="▶" textAlignment="CENTER" textFill="#3ef231" visible="false">
@@ -56,8 +56,8 @@
                </items></Menu>
             <Menu mnemonicParsing="false" text="Настройки">
                <items>
-                  <CheckMenuItem onAction="#switchToShadowMode" mnemonicParsing="false" text="Темная цветовая схема" />
-                  <CheckMenuItem onAction="#showErrorsOnly" mnemonicParsing="false" text="Показывать только Error в логах" />
+                  <CheckMenuItem mnemonicParsing="false" onAction="#switchToShadowMode" text="Темная цветовая схема" />
+                  <CheckMenuItem mnemonicParsing="false" onAction="#showErrorsOnly" text="Показывать только Error в логах" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Справка">

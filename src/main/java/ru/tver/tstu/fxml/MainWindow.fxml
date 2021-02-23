@@ -60,11 +60,6 @@
                   <CheckMenuItem mnemonicParsing="false" onAction="#showErrorsOnly" text="Показывать только Error в логах" />
                </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Справка">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
             <Menu mnemonicParsing="false" text="О программе">
               <items>
                 <MenuItem fx:id="programInfo" mnemonicParsing="false" onAction="#getInfo" text="Информация" />

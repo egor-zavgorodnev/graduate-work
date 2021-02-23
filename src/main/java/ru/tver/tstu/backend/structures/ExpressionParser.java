@@ -48,6 +48,7 @@ public class ExpressionParser {
         switch (sourceVariable.lex) {
             case NUMBER:
                  //logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
+                tryParseInt(expression.get(0).word);
                 PL0CodeGenerator.addInstruction(OpCode.LIT, 0, expression.get(0).word);
                 byteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
                 break;
@@ -125,6 +126,7 @@ public class ExpressionParser {
                         logger.error("Ожидается значение переменной или число");
                         hasErrors = true;
                     }
+                    tryParseInt(expression.get(i).word);
                     argumentStack.push(expression.get(i));
                     needValue = false;
                     break;
@@ -211,5 +213,14 @@ public class ExpressionParser {
         }
 
         return hasErrors;
+    }
+
+    void tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            logger.error("The number is not a integer");
+            hasErrors = true;
+        }
     }
 }

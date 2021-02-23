@@ -28,6 +28,7 @@ public class App extends Application {
         primaryStage.setTitle("Транслятор");
         primaryStage.setScene(new Scene(root));
         primaryStage.getIcons().add(new Image("file:forward.png"));
+        primaryStage.setResizable(false);
         runStage(primaryStage);
     }
 

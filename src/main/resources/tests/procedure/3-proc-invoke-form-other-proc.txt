@@ -1,15 +1,15 @@
 Var x, squ, cub;
 
+ Procedure cube;
+  Begin
+    cub:= x * x * x
+  End;
+
 Procedure square;
  Begin
    squ:= x * x;
    Call cube
  End;
-
- Procedure cube;
-  Begin
-    cub:= x * x * x
-  End;
 
  Begin
    x := 1;

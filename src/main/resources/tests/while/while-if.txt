@@ -1,11 +1,13 @@
- Var n;
+ Var n,f;
  Begin
    n := 0;
-   While n < 16 Do
+   f := 0;
+   While f < 16 Do
    Begin
       If Odd n Then
       Begin
          n := n + 1
-      End
+      End;
+      f := f + 1
    End
   End.

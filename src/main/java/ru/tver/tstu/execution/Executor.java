@@ -15,6 +15,7 @@ public class Executor {
         fileWriter.write("@echo off\n");
         fileWriter.write("java -jar executor.jar \"" + sourceCode.replaceAll("\n", "/n") + "\"");
         fileWriter.write("\npause");
+        fileWriter.write("\nexit");
         fileWriter.close();
 
         Runtime rt = Runtime.getRuntime();

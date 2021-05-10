@@ -11,6 +11,9 @@ import ru.tver.tstu.util.*;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Класс отвечающий за проверку корректности синтаксиса. Принимает в конструкторе список лексем и идентификаторов.
+ */
 public class RecursiveDescentParser {
 
     protected static final Logger logger = new CustomLogger(RecursiveDescentParser.class.getName());

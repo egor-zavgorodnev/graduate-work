@@ -1,5 +1,8 @@
 package ru.tver.tstu.execution;
 
+/**
+ * Класс, загружающий создающий класс из байт кода
+ */
 public class ByteCodeLoader extends ClassLoader {
     public static ByteCodeLoader clazz = new ByteCodeLoader();
 

@@ -7,6 +7,9 @@ import ru.tver.tstu.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Лексический анализ, разбитие исходного текста на токены
+ */
 public class LexicalAnalyzer {
 
     private Logger logger = new CustomLogger(LexicalAnalyzer.class.getName());

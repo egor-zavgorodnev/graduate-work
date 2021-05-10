@@ -13,6 +13,9 @@ import ru.tver.tstu.util.FileReader;
 import java.io.*;
 import java.nio.file.*;
 
+/**
+ * JavaFx контроллер, обрабатывающий действия пользователя на UI
+ */
 public class MainWindow {
 
     private final Path watchPath = Paths.get("logging.txt");

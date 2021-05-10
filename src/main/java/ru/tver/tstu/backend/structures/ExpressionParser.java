@@ -18,6 +18,9 @@ import java.util.*;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Класс, отвечающий за разбор выражений, реализует рекурсивный алгоритм со стеком операций и аргументов
+ */
 public class ExpressionParser {
 
     private static final String SPECIAL_KEYWORD_NAME = "expr";

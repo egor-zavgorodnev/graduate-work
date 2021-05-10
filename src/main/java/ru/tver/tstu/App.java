@@ -8,6 +8,9 @@ import javafx.scene.image.*;
 import javafx.stage.Stage;
 import ru.tver.tstu.controllers.*;
 
+/**
+ * Запуск UI приложения
+ */
 public class App extends Application {
     public static void main(String[] args) {
         launch(args);

@@ -7,7 +7,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+/**
+ * Логер, осуществляющий вывод логов в окно на форме
+ */
 public class CustomLogger implements Logger {
     private final MainWindow window;
     private final org.apache.log4j.Logger logger;

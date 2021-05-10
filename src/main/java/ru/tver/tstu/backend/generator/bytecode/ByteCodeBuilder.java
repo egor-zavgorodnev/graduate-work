@@ -4,6 +4,9 @@ import org.objectweb.asm.tree.*;
 
 import java.util.*;
 
+/**
+ * Класс - структура для хранения методов и полей генерируемого класса
+ */
 public class ByteCodeBuilder {
 
      Set<MethodNode> methods = new HashSet<>();

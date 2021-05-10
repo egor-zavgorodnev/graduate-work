@@ -4,6 +4,9 @@ import ru.tver.tstu.backend.model.enums.Lexem;
 
 import java.util.Objects;
 
+/**
+ * Класс, представляющий токен
+ */
 public class Keyword {
     public String word;
     public Lexem lex;

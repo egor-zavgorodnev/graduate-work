@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
+
 public class FileReader {
     private static final Logger logger = new CustomLogger(FileReader.class.getName());
 

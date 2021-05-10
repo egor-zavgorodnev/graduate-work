@@ -2,6 +2,9 @@ package ru.tver.tstu.execution;
 
 import java.io.*;
 
+/**
+ * Класс, отвечающий за исполнение исходного кода программы
+ */
 public class Executor {
 
     public static void execute(String sourceCode) throws IOException {

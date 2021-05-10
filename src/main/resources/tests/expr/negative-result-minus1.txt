@@ -1,4 +1,0 @@
- Var n,f;
- Begin
-    n := 0 - 1
- End.

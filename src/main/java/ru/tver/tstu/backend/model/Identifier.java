@@ -4,6 +4,9 @@ import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 
 import java.util.Objects;
 
+/**
+ * Класс, представляющий идентификатор
+ */
 public class Identifier {
     private String name;
     private IdentifierCategory category;

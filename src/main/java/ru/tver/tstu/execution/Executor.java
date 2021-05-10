@@ -9,6 +9,9 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+/**
+ * Класс, отвечающий за исполнение исходного кода программы
+ */
 public class Executor {
 
     private static final String CLASS_FILE_PATH = "file.class"; //root dir;

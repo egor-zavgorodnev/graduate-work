@@ -11,6 +11,9 @@ import org.apache.log4j.Logger;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Класс отвечающий за проверку корректности синтаксиса. Принимает в конструкторе список лексем и идентификаторов.
+ */
 public class RecursiveDescentParser {
 
     protected static final Logger logger = Logger.getLogger(RecursiveDescentParser.class.getName());

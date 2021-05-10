@@ -8,6 +8,9 @@ import java.io.IOException;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Генерация класса программы, его конструктора, генерация методов и полей
+ */
 public class ByteCodeGenerator {
 
     private static final String CLASS_FILE_PATH = "file.class"; //root dir

@@ -11,6 +11,9 @@ import java.util.*;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Класс расширяющий {@link RecursiveDescentParser}, добавляющий методы для генерации кода
+ */
 public class SyntaxParserWithBytecodeGen extends RecursiveDescentParser {
 
     private static final String RUN = "run";

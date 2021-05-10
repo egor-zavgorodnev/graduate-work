@@ -13,7 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
+/**
+ * Хранение идентификаторов в HashSet, распознавание идентификаторов
+ */
 public class IdentifierTable {
 
     private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());

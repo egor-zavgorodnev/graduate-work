@@ -1,5 +1,8 @@
 package ru.tver.tstu.backend.model.enums;
 
+/**
+ * Виды лексем
+ */
 public enum Lexem {
 
     NAME,

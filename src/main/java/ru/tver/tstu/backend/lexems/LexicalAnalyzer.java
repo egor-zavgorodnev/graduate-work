@@ -9,6 +9,9 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Лексический анализ, разбитие исходного текста на токены
+ */
 public class LexicalAnalyzer {
 
     private Logger logger = Logger.getLogger(LexicalAnalyzer.class.getName());

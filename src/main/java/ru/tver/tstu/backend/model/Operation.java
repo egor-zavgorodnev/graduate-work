@@ -1,5 +1,8 @@
 package ru.tver.tstu.backend.model;
 
+/**
+ * Класс, представляющий операцию
+ */
 public class Operation {
     private Keyword sign;
     private int priority;

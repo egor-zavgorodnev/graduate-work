@@ -8,7 +8,7 @@
 //import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 //import ru.tver.tstu.backend.model.enums.Lexem;
 //import ru.tver.tstu.backend.model.enums.OpCode;
-//import ru.tver.tstu.backend.structures.ExpressionParser;
+//import ru.tver.tstu.backend.syntax.ExpressionParser;
 //
 //import java.util.ArrayList;
 //import java.util.List;

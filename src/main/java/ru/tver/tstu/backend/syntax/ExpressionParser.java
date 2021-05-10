@@ -1,4 +1,4 @@
-package ru.tver.tstu.backend.structures;
+package ru.tver.tstu.backend.syntax;
 
 
 import org.objectweb.asm.tree.*;

@@ -5,7 +5,6 @@ import ru.tver.tstu.backend.generator.bytecode.*;
 import ru.tver.tstu.backend.lexems.*;
 import ru.tver.tstu.backend.model.*;
 import ru.tver.tstu.backend.model.enums.*;
-import ru.tver.tstu.backend.structures.*;
 
 import java.util.*;
 

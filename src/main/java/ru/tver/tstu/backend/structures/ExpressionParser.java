@@ -3,14 +3,12 @@ package ru.tver.tstu.backend.structures;
 
 import org.objectweb.asm.tree.*;
 import ru.tver.tstu.backend.generator.bytecode.ByteCodeBuilder;
-import ru.tver.tstu.backend.generator.pl0.PL0CodeGenerator;
 import ru.tver.tstu.backend.lexems.*;
 import ru.tver.tstu.backend.model.Identifier;
 import ru.tver.tstu.backend.model.Keyword;
 import ru.tver.tstu.backend.model.Operation;
 import ru.tver.tstu.backend.model.enums.IdentifierCategory;
 import ru.tver.tstu.backend.model.enums.Lexem;
-import ru.tver.tstu.backend.model.enums.OpCode;
 import ru.tver.tstu.util.*;
 
 
@@ -52,19 +50,16 @@ public class ExpressionParser {
             case NUMBER:
                  //logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
                 tryParseInt(expression.get(0).word);
-                PL0CodeGenerator.addInstruction(OpCode.LIT, 0, expression.get(0).word);
                 byteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(expression.get(0).word)));
                 break;
             case NAME:
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.LOCAL_VAR) {
                      //logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
-                    PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                     byteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(currentIdentifier.getAddress())));
                     break;
                 }
                 if (nameTable.getIdentifier(sourceVariable.word).getCategory() == IdentifierCategory.CLASS_VAR) {
                      //logger.info("Присваивание - " + expression.get(0).word + " = " + sourceVariable.word);
-                    PL0CodeGenerator.addInstruction(OpCode.LOD, currentIdentifier.getLevel(), currentIdentifier.getAddress());
                     byteCodeBuilder.addInstruction(currentMethodNode, new FieldInsnNode(GETSTATIC, "ClassTest",
                             currentIdentifier.getName(), "I"));
                     break;
@@ -153,7 +148,6 @@ public class ExpressionParser {
                 if (arg.word.equals(SPECIAL_KEYWORD_NAME)) {
                     //do nothing
                 } else {
-                    PL0CodeGenerator.addInstruction(OpCode.LOD, 1, identifier.getAddress());
                     if (identifier.getCategory() == IdentifierCategory.LOCAL_VAR) {
                         byteCodeBuilder.addInstruction(currentMethodNode, new VarInsnNode(ILOAD, Integer.parseInt(identifier.getAddress())));
                     }
@@ -164,11 +158,9 @@ public class ExpressionParser {
 
                 }
             } else {
-                PL0CodeGenerator.addInstruction(OpCode.LIT, 1, arg.word);
                 byteCodeBuilder.addInstruction(currentMethodNode, new LdcInsnNode(Integer.parseInt(arg.word)));
             }
         }
-        PL0CodeGenerator.addInstruction(OpCode.OPR, 1, operation);
         byteCodeBuilder.addInstruction(currentMethodNode, new InsnNode(instructionCode));
         argumentStack.push(new Keyword(SPECIAL_KEYWORD_NAME, Lexem.NAME)); // special kw for addition in stack
     }

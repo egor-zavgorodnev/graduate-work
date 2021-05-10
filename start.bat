@@ -1,4 +1,4 @@
 @echo off
-java -jar executor.jar "Var x, squ;/n/nProcedure rec;/n Begin/n   x := x - 1;/n   If x > 0 Then/n   Begin/n      Call rec/n   End/n End;/n/n Begin/n   x := 9;/n   Call rec/n End./n"
+java -jar executor.jar " var n,f;/n begin/n    f := 2;/n    n := 2;/n    n := f + 1/n end./n"
 pause
 exit

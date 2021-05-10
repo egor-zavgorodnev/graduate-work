@@ -1,10 +1,9 @@
-package ru.tver.tstu.backend.generator.bytecode;
+package ru.tver.tstu.backend.generator;
 
-import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import static org.objectweb.asm.Opcodes.*;
 

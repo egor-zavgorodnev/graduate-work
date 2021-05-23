@@ -48,7 +48,7 @@ public class MainWindow {
     }
 
     @FXML
-    void compile(ActionEvent event) {
+    void compile() {
         logsBox.clear();
         compileStatusBox.clear();
         Compilier compilier = new Compilier();
@@ -92,6 +92,7 @@ public class MainWindow {
         } catch (IOException e) {
             appendLog(e.getMessage());
         }
+        ExecuteButton.setVisible(false);
     }
 
     @FXML

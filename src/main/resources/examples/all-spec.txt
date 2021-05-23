@@ -17,7 +17,7 @@ procedure square;
        If Odd x Then
        Begin
           Call square;
-          Call cube;
+          Call cube
        End;
        x := x + 1
    End
